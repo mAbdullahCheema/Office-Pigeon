@@ -1,0 +1,6 @@
+{
+  "name": "Office Pigeon",
+  "description": "Premium AI-powered business solutions brand building beautiful websites, smart chatbots, and workflow automations to help businesses grow.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

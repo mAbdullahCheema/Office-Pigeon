@@ -1,0 +1,384 @@
+/**
+ * @license
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+import { useEffect, useRef, useState } from 'react';
+import * as THREE from 'three';
+
+export default function ThreeHub() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [activeNode, setActiveNode] = useState<string | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+  const [webGlSupported, setWebGlSupported] = useState(true);
+
+  useEffect(() => {
+    // Check for webgl support before starting
+    try {
+      const canvas = document.createElement('canvas');
+      const support = !!(window.WebGLRenderingContext && 
+        (canvas.getContext('webgl') || canvas.getContext('experimental-webgl')));
+      setWebGlSupported(support);
+    } catch {
+      setWebGlSupported(false);
+    }
+
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  useEffect(() => {
+    if (!webGlSupported || !containerRef.current) return;
+
+    const container = containerRef.current;
+    const width = container.clientWidth || 500;
+    const height = container.clientHeight || 500;
+
+    // SCENE
+    const scene = new THREE.Scene();
+
+    // CAMERA
+    const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
+    const screenWidth = window.innerWidth;
+    if (screenWidth < 640) {
+      camera.position.z = 7.8; // Zoomed in closer for mobile devices so the planets are prominent and not too tiny
+    } else if (screenWidth >= 640 && screenWidth < 1024) {
+      camera.position.z = 8.2; // Zoomed-in for tablet to make the planetary interaction highly captivating
+    } else {
+      camera.position.z = 8.5; // Perfect perspective for desktop background
+    }
+
+    // RENDERER
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    container.appendChild(renderer.domElement);
+
+    // ROOT GROUP
+    const mainGroup = new THREE.Group();
+    scene.add(mainGroup);
+
+    // LIGHTS
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+    scene.add(ambientLight);
+
+    const pointLight = new THREE.PointLight(0xf97316, 1.8, 100);
+    pointLight.position.set(5, 5, 5);
+    scene.add(pointLight);
+
+    const secondaryPointLight = new THREE.PointLight(0xec4899, 1.4, 100);
+    secondaryPointLight.position.set(-5, -5, 5);
+    scene.add(secondaryPointLight);
+
+    // CENTRAL HUB GEOMETRY
+    const hubGeometry = new THREE.IcosahedronGeometry(1.6, 2);
+    const hubMaterial = new THREE.MeshPhongMaterial({
+      color: 0x1f1f1f,
+      wireframe: true,
+      transparent: true,
+      opacity: 0.15,
+    });
+    const hubMesh = new THREE.Mesh(hubGeometry, hubMaterial);
+    mainGroup.add(hubMesh);
+
+    // GLOWING INNER SPHERE
+    const innerGeometry = new THREE.IcosahedronGeometry(0.8, 1);
+    const innerMaterial = new THREE.MeshPhongMaterial({
+      color: 0xf97316,
+      emissive: 0xea580c,
+      shininess: 100,
+      flatShading: true,
+    });
+    const innerMesh = new THREE.Mesh(innerGeometry, innerMaterial);
+    mainGroup.add(innerMesh);
+
+    // ORBIT PATH RINGS
+    const createOrbitRing = (radius: number, color: THREE.ColorRepresentation, rotationZ = 0) => {
+      const ringGeom = new THREE.RingGeometry(radius - 0.02, radius + 0.01, 64);
+      const ringMat = new THREE.MeshBasicMaterial({
+        color: color,
+        side: THREE.DoubleSide,
+        transparent: true,
+        opacity: 0.1,
+      });
+      const ringMesh = new THREE.Mesh(ringGeom, ringMat);
+      ringMesh.rotation.x = Math.PI / 2;
+      ringMesh.rotation.y = rotationZ;
+      mainGroup.add(ringMesh);
+    };
+
+    createOrbitRing(3.2, 0xf97316, 0.2);
+    createOrbitRing(4.2, 0xec4899, -0.3);
+    createOrbitRing(5.0, 0xf59e0b, 0.5);
+
+    // SATELLITE NODES
+    const nodeGroup = new THREE.Group();
+    mainGroup.add(nodeGroup);
+
+    const createNode = (radius: number, angle: number, colorId: number, speed: number) => {
+      const parent = new THREE.Group();
+      
+      const geom = new THREE.SphereGeometry(0.3, 16, 16);
+      const mat = new THREE.MeshPhongMaterial({
+        color: colorId,
+        emissive: colorId,
+        emissiveIntensity: 0.8,
+        shininess: 30,
+      });
+      const mesh = new THREE.Mesh(geom, mat);
+      
+      // Position on orbital circle
+      const x = radius * Math.cos(angle);
+      const y = radius * Math.sin(angle) * 0.3; // slightly inclined
+      const z = radius * Math.sin(angle) * 0.9;
+      mesh.position.set(x, y, z);
+      
+      parent.add(mesh);
+      
+      // Return details for update loops
+      return { parent, mesh, radius, angle, speed, initialY: y };
+    };
+
+    const nodesData = [
+      { id: 'web', label: 'Websites', node: createNode(3.2, 0, 0xf97316, 0.008) },
+      { id: 'chat', label: 'Chatbots', node: createNode(4.2, Math.PI * 0.7, 0xec4899, 0.005) },
+      { id: 'auto', label: 'Automations', node: createNode(5.0, Math.PI * 1.4, 0xf59e0b, 0.003) }
+    ];
+
+    nodesData.forEach(item => {
+      nodeGroup.add(item.node.parent);
+    });
+
+    // PARTICLE SWARM / FLIGHT PATHS
+    const particleCount = isMobile ? 60 : 150;
+    const particleGeometry = new THREE.BufferGeometry();
+    const particlePositions = new Float32Array(particleCount * 3);
+    const particleSpeeds: number[] = [];
+
+    for (let i = 0; i < particleCount; i++) {
+      // Randomly disperse particles inside sphere shell
+      const r = 2.0 + Math.random() * 3.5;
+      const u = Math.random();
+      const v = Math.random();
+      const theta = u * 2.0 * Math.PI;
+      const phi = Math.acos(2.0 * v - 1.0);
+      
+      const x = r * Math.sin(phi) * Math.cos(theta);
+      const y = r * Math.sin(phi) * Math.sin(theta) * 0.4; // squashed y
+      const z = r * Math.cos(phi);
+
+      particlePositions[i * 3] = x;
+      particlePositions[i * 3 + 1] = y;
+      particlePositions[i * 3 + 2] = z;
+
+      particleSpeeds.push(0.01 + Math.random() * 0.02);
+    }
+
+    particleGeometry.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
+    const particleMaterial = new THREE.PointsMaterial({
+      color: 0xf97316,
+      size: isMobile ? 0.06 : 0.08,
+      transparent: true,
+      opacity: 0.6,
+      blending: THREE.AdditiveBlending,
+    });
+
+    const particles = new THREE.Points(particleGeometry, particleMaterial);
+    mainGroup.add(particles);
+
+    // TRACK MOUSE COORDINATES FOR ELASTIC ROTATIONS
+    let mouseX = 0;
+    let mouseY = 0;
+    let targetX = 0;
+    let targetY = 0;
+
+    const onMouseMove = (event: MouseEvent) => {
+      const rect = container.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
+      
+      // Normalize between -1 and 1
+      mouseX = (x / rect.width) * 2 - 1;
+      mouseY = -(y / rect.height) * 2 + 1;
+    };
+
+    const onTouchMove = (event: TouchEvent) => {
+      if (event.touches.length > 0) {
+        const rect = container.getBoundingClientRect();
+        const x = event.touches[0].clientX - rect.left;
+        const y = event.touches[0].clientY - rect.top;
+        mouseX = (x / rect.width) * 2 - 1;
+        mouseY = -(y / rect.height) * 2 + 1;
+      }
+    };
+
+    window.addEventListener('mousemove', onMouseMove);
+    window.addEventListener('touchmove', onTouchMove, { passive: true });
+
+    // RENDER LOOP WITH SPRING PHYSICS ELASTIC INTERACTION
+    let animationFrameId: number;
+    let lastTime = 0;
+
+    const animate = (time: number) => {
+      animationFrameId = requestAnimationFrame(animate);
+
+      // Smooth Lerping movement back to cursor position
+      targetX += (mouseX - targetX) * 0.06;
+      targetY += (mouseY - targetY) * 0.06;
+
+      // Rotate group accordingly
+      mainGroup.rotation.y = targetX * 0.6;
+      mainGroup.rotation.x = -targetY * 0.4;
+      
+      // Auto idle orbit swing
+      mainGroup.rotation.y += time * 0.0001;
+      hubMesh.rotation.y -= 0.001;
+      innerMesh.rotation.x += 0.003;
+
+      // Satellite orbital movement
+      nodesData.forEach((item, index) => {
+        const n = item.node;
+        n.angle += n.speed;
+        
+        const x = n.radius * Math.cos(n.angle);
+        const z = n.radius * Math.sin(n.angle) * 0.9;
+        const y = n.initialY + Math.sin(time * 0.002 + index) * 0.2; // delicate float bump
+        
+        n.mesh.position.set(x, y, z);
+        
+        // Slightly rotate each satellite mesh
+        n.mesh.rotation.x += 0.01;
+        n.mesh.rotation.y += 0.02;
+      });
+
+      // Animate particle flow
+      const positions = particles.geometry.attributes.position.array as Float32Array;
+      for (let i = 0; i < particleCount; i++) {
+        // Simple rotation calculations around the Y axis
+        const xIdx = i * 3;
+        const zIdx = i * 3 + 2;
+        const x = positions[xIdx];
+        const z = positions[zIdx];
+        const sp = particleSpeeds[i];
+
+        // Orbit rotational formulas
+        positions[xIdx] = x * Math.cos(sp) - z * Math.sin(sp);
+        positions[zIdx] = x * Math.sin(sp) + z * Math.cos(sp);
+      }
+      particles.geometry.attributes.position.needsUpdate = true;
+
+      // Raycast test to identify closest orbit nodes (showing titles in UI)
+      // Check node heights to show subtle active feedback in overlay lists
+      const currentHighest = nodesData.reduce((prev, curr) => {
+        return curr.node.mesh.position.z > prev.node.mesh.position.z ? curr : prev;
+      });
+      if (currentHighest.node.mesh.position.z > 2) {
+        setActiveNode(currentHighest.id);
+      } else {
+        setActiveNode(null);
+      }
+
+      renderer.render(scene, camera);
+    };
+
+    animationFrameId = requestAnimationFrame(animate);
+
+    // RESIZE HANDLING
+    const handleResize = () => {
+      if (!container) return;
+      const w = container.clientWidth;
+      const h = container.clientHeight;
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    // CLEANUP
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+      window.removeEventListener('mousemove', onMouseMove);
+      window.removeEventListener('touchmove', onTouchMove);
+      window.removeEventListener('resize', handleResize);
+      if (renderer.domElement && container.contains(renderer.domElement)) {
+        container.removeChild(renderer.domElement);
+      }
+      renderer.dispose();
+    };
+  }, [webGlSupported, isMobile]);
+
+  return (
+    <div className="relative w-full flex flex-col items-center justify-center select-none font-sans">
+      {/* 3D Render viewport box */}
+      <div className="relative w-full h-[360px] md:h-[480px] lg:h-full lg:min-h-[620px] flex items-center justify-center">
+        {/* Background Decorative Auras - Tailwind CSS glow */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[70%] h-[70%] bg-gradient-to-tr from-orange-300/10 to-transparent opacity-25 blur-3xl rounded-full" />
+        <div className="absolute top-[40%] left-[60%] w-[50%] h-[50%] bg-gradient-to-tr from-rose-300/10 to-transparent opacity-20 blur-3xl rounded-full" />
+
+        {/* THREEJS CANVAS MOUNT */}
+        {webGlSupported ? (
+          <div ref={containerRef} className="w-full h-full cursor-grab active:cursor-grabbing transition-opacity duration-700" id="threejs-canvas-hub" />
+        ) : (
+          /* ELEGANT CSS INTERACTIVE FALLBACK FOR LOW-END DEVICES / WITHOUT WEBGL SUPPORT */
+          <div className="w-full h-full flex flex-col items-center justify-center relative p-6 animate-pulse" id="threejs-fallback-hub">
+            <div className="relative w-48 h-48 bg-orange-50/50 border border-orange-100/50 rounded-full flex items-center justify-center shadow-lg shadow-orange-50/20">
+              <div className="absolute inset-2 border-2 border-dashed border-orange-200/50 rounded-full animate-spin [animation-duration:15s]" />
+              <div className="absolute inset-8 border border-rose-100/30 rounded-full animate-reverse-spin [animation-duration:8s]" />
+              <div className="w-16 h-16 bg-gradient-to-tr from-orange-500 to-rose-500 opacity-80 rounded-full flex items-center justify-center text-white font-bold select-none text-xl shadow-md">
+                OP
+              </div>
+            </div>
+            <p className="mt-6 text-xs text-gray-400 text-center uppercase tracking-widest font-mono">Interactive Hub Simulator Active</p>
+          </div>
+        )}
+
+        {/* OVERLAY DYNAMIC NODE HIGHLIGHT SIGNALS (DESKTOP & TABLET ONLY) */}
+        <div className="hidden sm:flex absolute left-4 bottom-4 flex-col gap-2 pointer-events-none md:left-6 md:bottom-6 lg:left-[16%] xl:left-[22%] lg:bottom-12 xl:bottom-14">
+          <div className="flex items-center gap-2 transition-all duration-300">
+            <span className={`w-2.5 h-2.5 rounded-full transition-colors ${activeNode === 'web' ? 'bg-orange-500 animate-pulse' : 'bg-gray-200'}`} />
+            <span className={`font-mono text-[10px] tracking-wider uppercase font-bold transition-opacity ${activeNode === 'web' ? 'text-gray-900' : 'text-gray-400'}`}>Website Hub</span>
+          </div>
+          <div className="flex items-center gap-2 transition-all duration-300">
+            <span className={`w-2.5 h-2.5 rounded-full transition-colors ${activeNode === 'chat' ? 'bg-rose-500 animate-pulse' : 'bg-gray-200'}`} />
+            <span className={`font-mono text-[10px] tracking-wider uppercase font-bold transition-opacity ${activeNode === 'chat' ? 'text-gray-900' : 'text-gray-400'}`}>Chatbot Engine</span>
+          </div>
+          <div className="flex items-center gap-2 transition-all duration-300">
+            <span className={`w-2.5 h-2.5 rounded-full transition-colors ${activeNode === 'auto' ? 'bg-amber-500 animate-pulse' : 'bg-gray-200'}`} />
+            <span className={`font-mono text-[10px] tracking-wider uppercase font-bold transition-opacity ${activeNode === 'auto' ? 'text-gray-900' : 'text-gray-400'}`}>Workflow Relay</span>
+          </div>
+        </div>
+
+        {/* HELPFUL INTERACTION HINT (DESKTOP & TABLET ONLY) */}
+        <div className="hidden sm:block absolute right-4 bottom-4 md:right-6 md:bottom-6 bg-[#F0EEEA]/90 backdrop-blur-xs px-3.5 py-2 border border-black/5 rounded-full text-[9px] text-gray-500 uppercase tracking-widest font-mono pointer-events-none font-bold">
+          Move mouse to orbit
+        </div>
+      </div>
+
+      {/* MOBILE ONLY OVERLAY LAYOUT UNDER LAYOUT (PREVENTS COLLISION ON TIGHT RESPONSIVE VIEWS) */}
+      <div className="sm:hidden flex flex-col items-center gap-3 w-full px-4 pt-4 border-t border-black/5 mt-2">
+        <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-1.5">
+          <div className="flex items-center gap-1.5">
+            <span className={`w-2 h-2 rounded-full transition-colors ${activeNode === 'web' ? 'bg-orange-500 animate-pulse' : 'bg-gray-250'}`} />
+            <span className={`font-mono text-[9px] tracking-wider uppercase font-bold ${activeNode === 'web' ? 'text-gray-900' : 'text-gray-400'}`}>Website Hub</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <span className={`w-2 h-2 rounded-full transition-colors ${activeNode === 'chat' ? 'bg-rose-500 animate-pulse' : 'bg-gray-250'}`} />
+            <span className={`font-mono text-[9px] tracking-wider uppercase font-bold ${activeNode === 'chat' ? 'text-gray-900' : 'text-gray-400'}`}>Chatbot Engine</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <span className={`w-2 h-2 rounded-full transition-colors ${activeNode === 'auto' ? 'bg-amber-500 animate-pulse' : 'bg-gray-250'}`} />
+            <span className={`font-mono text-[9px] tracking-wider uppercase font-bold ${activeNode === 'auto' ? 'text-gray-900' : 'text-gray-400'}`}>Workflow Relay</span>
+          </div>
+        </div>
+        <div className="bg-[#F0EEEA] px-3 py-1.5 border border-black/5 rounded-full text-[8px] text-gray-500 uppercase tracking-widest font-mono pointer-events-none font-bold">
+          Move mouse to orbit
+        </div>
+      </div>
+    </div>
+  );
+}

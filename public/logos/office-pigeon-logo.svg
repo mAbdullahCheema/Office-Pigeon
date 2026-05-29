@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 200" width="1920" height="1080">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:ital,wght@1,900&amp;family=JetBrains+Mono:wght@700&amp;display=swap');
+      
+      .brand-title {
+        font-family: 'Inter', -apple-system, sans-serif;
+        font-weight: 900;
+        font-style: italic;
+        text-transform: uppercase;
+        fill: #111827; /* Gray 900 */
+        font-size: 40px;
+        letter-spacing: -0.05em;
+      }
+      
+      .brand-slogan {
+        font-family: 'JetBrains Mono', monospace;
+        font-weight: 700;
+        text-transform: uppercase;
+        fill: #f97316; /* Orange 500 */
+        font-size: 21px;
+        letter-spacing: 0.12em;
+      }
+    </style>
+
+    <!-- Exact navbar bottom-left to top-right gradient matching (bg-gradient-to-tr from-orange-500 via-rose-500 to-amber-500) -->
+    <linearGradient id="brand-grad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f97316" />   <!-- orange-500 -->
+      <stop offset="50%" stop-color="#f43f5e" />  <!-- rose-500 -->
+      <stop offset="100%" stop-color="#f59e0b" /> <!-- amber-500 -->
+    </linearGradient>
+  </defs>
+
+  <!-- Left Side: Circle with diameter 80 (centered at cy=100, cx=60, radius=40) -->
+  <g transform="translate(20, 60)">
+    <circle cx="40" cy="40" r="40" fill="url(#brand-grad)" />
+    
+  <g transform="translate(20, 20) scale(1.66667)" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M16 7h.01" />
+    <path d="M3.4 18H12a8 8 0 0 0 8-8V7a4 4 0 0 0-7.28-2.3L2 20" />
+    <path d="m20 7 2 .5-2 .5" />
+    <path d="M10 18v3" />
+    <path d="M14 17.75V21" />
+    <path d="M7 18a6 6 0 0 0 3.84-10.61" />
+  </g>
+
+  </g>
+
+  <!-- Right Side: Spacing matches 12px gap-3 (at 2x scale = 24px) starting precisely at X=124 -->
+  <text x="124" y="106" class="brand-title">Office Pigeon</text>
+  <text x="126" y="139" class="brand-slogan">We Automate Your Success</text>
+</svg>
