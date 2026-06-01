@@ -54,7 +54,15 @@ interface PreviewStatusRow {
 
 const SLUG_REGEX = /^[a-z0-9-]+$/;
 const VALID_STATUSES: PreviewStatus[] = ['live', 'expired', 'sold', 'draft', 'archived'];
-const PREVIEWS_DIR = path.join(process.cwd(), 'previews');
+const SERVER_ENTRY_DIR = process.argv[1] ? path.dirname(path.resolve(process.argv[1])) : process.cwd();
+const PREVIEW_DIR_CANDIDATES = Array.from(
+  new Set([
+    path.join(process.cwd(), 'previews'),
+    path.join(process.cwd(), 'dist', 'previews'),
+    path.join(SERVER_ENTRY_DIR, 'previews'),
+    path.join(SERVER_ENTRY_DIR, '..', 'previews')
+  ].map((previewPath) => path.resolve(previewPath)))
+);
 const OFFICE_PIGEON_PHONE = '+1 917 672 6764';
 const isBundledServer = /dist[\\/]+server\.cjs$/.test(process.argv[1] || '') || /server\.cjs$/.test(process.argv[1] || '');
 const isProductionServer = process.env.NODE_ENV === 'production' || isBundledServer;
@@ -149,28 +157,40 @@ const previewPublicUrl = () => getEnv('OFFICE_PIGEON_PUBLIC_URL', 'APP_URL', 'NE
 const whatsappNumber = () => getEnv('OFFICE_PIGEON_WHATSAPP_NUMBER', 'NEXT_PUBLIC_WHATSAPP_NUMBER') || '19176726764';
 
 const scanPreviewFolders = async (): Promise<PreviewFolder[]> => {
-  const entries = await fs.readdir(PREVIEWS_DIR, { withFileTypes: true }).catch(() => []);
-  const folders = await Promise.all(
-    entries
-      .filter((entry) => entry.isDirectory() && isValidSlug(entry.name))
-      .map(async (entry) => {
-        const indexPath = path.join(PREVIEWS_DIR, entry.name, 'index.html');
-        const hasIndex = await fs
-          .access(indexPath)
-          .then(() => true)
-          .catch(() => false);
+  const folderMap = new Map<string, PreviewFolder>();
 
-        return {
-          slug: entry.name,
-          business_name: titleCaseSlug(entry.name),
-          url: `/previews/${entry.name}`,
-          exists_on_disk: true,
-          has_index: hasIndex
-        };
-      })
-  );
+  for (const previewsDir of PREVIEW_DIR_CANDIDATES) {
+    const entries = await fs.readdir(previewsDir, { withFileTypes: true }).catch(() => []);
+    const folders = await Promise.all(
+      entries
+        .filter((entry) => entry.isDirectory() && isValidSlug(entry.name))
+        .map(async (entry) => {
+          const indexPath = path.join(previewsDir, entry.name, 'index.html');
+          const hasIndex = await fs
+            .access(indexPath)
+            .then(() => true)
+            .catch(() => false);
 
-  return folders.sort((a, b) => a.slug.localeCompare(b.slug));
+          return {
+            slug: entry.name,
+            business_name: titleCaseSlug(entry.name),
+            url: `/previews/${entry.name}`,
+            exists_on_disk: true,
+            has_index: hasIndex
+          };
+        })
+    );
+
+    for (const folder of folders) {
+      const existing = folderMap.get(folder.slug);
+      folderMap.set(folder.slug, {
+        ...folder,
+        has_index: Boolean(existing?.has_index || folder.has_index)
+      });
+    }
+  }
+
+  return Array.from(folderMap.values()).sort((a, b) => a.slug.localeCompare(b.slug));
 };
 
 const fetchPreviewStatuses = async (slugs?: string[]) => {
@@ -320,10 +340,24 @@ const injectPreviewHtml = (html: string, slug: string) => {
   return `${html}\n${injection}`;
 };
 
-const previewPathForRequest = (slug: string, rest = '') => {
+const previewPathForRequest = async (slug: string, rest = '') => {
   if (!isValidSlug(slug)) return null;
   const safeRest = path.normalize(rest || 'index.html').replace(/^(\.\.[/\\])+/, '');
-  const baseDir = path.join(PREVIEWS_DIR, slug);
+
+  for (const previewsDir of PREVIEW_DIR_CANDIDATES) {
+    const baseDir = path.join(previewsDir, slug);
+    const targetPath = path.join(baseDir, safeRest);
+    const relative = path.relative(baseDir, targetPath);
+    if (relative.startsWith('..') || path.isAbsolute(relative)) return null;
+
+    const hasIndex = await fs
+      .access(path.join(baseDir, 'index.html'))
+      .then(() => true)
+      .catch(() => false);
+    if (hasIndex) return { baseDir, targetPath };
+  }
+
+  const baseDir = path.join(PREVIEW_DIR_CANDIDATES[0], slug);
   const targetPath = path.join(baseDir, safeRest);
   const relative = path.relative(baseDir, targetPath);
   if (relative.startsWith('..') || path.isAbsolute(relative)) return null;
@@ -748,7 +782,7 @@ async function startServer() {
       return;
     }
 
-    const paths = previewPathForRequest(slug, rest.endsWith('/') ? `${rest}index.html` : rest || 'index.html');
+    const paths = await previewPathForRequest(slug, rest.endsWith('/') ? `${rest}index.html` : rest || 'index.html');
     if (!paths) {
       setPreviewHeaders(res, true);
       res.status(404).send(buildExpiredPreviewPage(slug, 'missing'));
