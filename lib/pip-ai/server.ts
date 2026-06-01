@@ -1,6 +1,6 @@
 import { routeLLM } from '@/lib/llm/providerRouter';
 import { LLMMessage } from '@/lib/llm/types';
-import { searchKnowledge } from '@/lib/pinecone/searchKnowledge';
+import { searchKnowledge } from '@/lib/supabase-vectors/searchKnowledge';
 import { getSupabaseAdmin, hasSupabaseAdminEnv } from '@/lib/supabase/admin';
 import { buildActionPayload, buildKnowledgeContext } from './buildContext';
 import { PIP_AI_DEFAULTS } from './constants';

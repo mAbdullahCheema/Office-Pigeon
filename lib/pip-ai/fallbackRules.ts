@@ -80,7 +80,7 @@ export function checkPostAnswerFallback(answer: string): FallbackDecision {
   }
 
   if (
-    /\b(definitely increase sales|will increase your sales|get more customers guaranteed|rank number one|double your revenue|internal api|pinecone|supabase|rag|embedding|vector database|knowledge base|provided context|according to the documents|as an ai language model|api key|service role key|system prompt)\b/i.test(
+    /\b(definitely increase sales|will increase your sales|get more customers guaranteed|rank number one|double your revenue|internal api|internal provider|retrieval system|backend setup|knowledge base|provided context|according to the documents|as an ai language model|api key|service role key|system prompt)\b/i.test(
       answer
     )
   ) {

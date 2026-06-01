@@ -18,29 +18,33 @@ RLS is enabled and anon/authenticated access is revoked. Server routes must use 
 Copy `.env.example` to `.env` and fill in:
 - Supabase URL and service role key
 - LLM provider keys and model names
-- Pinecone key/index details
+- Supabase Vector Bucket and embedding settings
 - public Cal.com and WhatsApp values
 - optional email provider values
 - `ADMIN_REINDEX_SECRET`
 
-Never expose service role, LLM, Pinecone, or email keys with `NEXT_PUBLIC_`.
+Never expose service role, LLM, embedding, or email keys with `NEXT_PUBLIC_`.
 
-## 3. Create Pinecone Index
+## 3. Configure Supabase Vector Buckets
 
-Create a Pinecone index that supports integrated embedding if `PINECONE_USE_INTEGRATED_EMBEDDING=true`.
+Pip AI uses Supabase Vector Buckets for Office Pigeon retrieval.
 
 Set:
-- `PINECONE_API_KEY`
-- `PINECONE_INDEX_NAME`
-- `PINECONE_NAMESPACE`
-- `PINECONE_INDEX_HOST` if your project requires direct host addressing
+- `SUPABASE_VECTOR_BUCKET=officepigeon`
+- `SUPABASE_VECTOR_INDEX=officepigeon-knowledge`
+- `EMBEDDING_MODEL=gemini-embedding-001`
+- `EMBEDDING_API_KEY` only if you want a dedicated embedding key. Otherwise the server uses `GEMINI_API_KEY` or `GOOGLE_AI_API_KEY`.
 
-## 4. Run Knowledge Indexing
+The indexing script creates the `officepigeon-knowledge` index when the `officepigeon` bucket is available.
+
+## 4. Generate and Index Knowledge
 
 Update Markdown files in `knowledge/`, then run:
 
 ```bash
+npm run pip:generate-knowledge
 npm run pip:index-knowledge
+npm run pip:test-vectors
 ```
 
 In a Next.js deployment, you can also call:
@@ -56,7 +60,7 @@ Use the checklist in `docs/pip-ai-testing.md`.
 
 ## 6. Change Office Pigeon Knowledge
 
-Edit files in `knowledge/`, then re-run the knowledge indexing command.
+Edit files in `knowledge/`, then re-run the generate and indexing commands.
 
 ## 7. Change Provider Order
 

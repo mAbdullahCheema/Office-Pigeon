@@ -8,12 +8,13 @@
     "build": "vite build && node scripts/copyPreviews.mjs && esbuild server.ts --bundle --platform=node --format=cjs --packages=external --sourcemap --outfile=dist/server.cjs",
     "postinstall": "npm run build",
     "start": "node dist/server.cjs",
-    "pip:index-knowledge": "tsx scripts/indexKnowledge.ts",
+    "pip:generate-knowledge": "node office-pigeon-supabase-knowledge-base/scripts/generate-office-pigeon-knowledge-base.js",
+    "pip:index-knowledge": "node office-pigeon-supabase-knowledge-base/scripts/upload-office-pigeon-vectors-to-supabase.js",
+    "pip:test-vectors": "node office-pigeon-supabase-knowledge-base/scripts/test-supabase-vector-search.js",
     "lint": "tsc --noEmit"
   },
   "dependencies": {
     "@google/genai": "^2.4.0",
-    "@pinecone-database/pinecone": "^7.2.0",
     "@supabase/supabase-js": "^2.106.2",
     "@tailwindcss/vite": "^4.1.14",
     "@vitejs/plugin-react": "^5.0.4",

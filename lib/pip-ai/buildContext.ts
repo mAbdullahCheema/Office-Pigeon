@@ -1,4 +1,4 @@
-import { KnowledgeMatch } from '@/lib/pinecone/searchKnowledge';
+import { KnowledgeMatch } from '@/lib/supabase-vectors/searchKnowledge';
 
 export function buildKnowledgeContext(matches: KnowledgeMatch[]) {
   if (matches.length === 0) {
