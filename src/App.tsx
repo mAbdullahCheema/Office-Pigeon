@@ -21,13 +21,14 @@ import About from './pages/About';
 import Contact from './pages/Contact';
 import FAQ from './pages/FAQ';
 import Legal from './pages/Legal';
+import Admin from './pages/Admin';
 
 const PAGE_TITLES: Record<PageId, string> = {
   home: 'Office Pigeon | AI Websites, Chatbots & Automations',
   websites: 'Website Development for Growing Businesses | Office Pigeon',
   chatbots: 'Smart Chatbots for Websites & WhatsApp | Office Pigeon',
   automations: 'Workflow Automation for Growing Businesses | Office Pigeon',
-  examples: 'Examples & Demos | Office Pigeon',
+  examples: 'Previews and Case Studies | Office Pigeon',
   about: 'About Office Pigeon | AI Business Systems',
   contact: 'Contact Office Pigeon | Free AI Consultation',
   faq: 'FAQ | Office Pigeon',
@@ -38,13 +39,18 @@ const PAGE_TITLES: Record<PageId, string> = {
 };
 
 export default function App() {
+  const isAdminRoute = window.location.pathname.startsWith('/admin');
   const [currentPage, setCurrentPage] = useState<PageId>('home');
   const [activePackage, setActivePackage] = useState<Package | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
+    if (isAdminRoute) {
+      document.title = 'Preview Admin | Office Pigeon';
+      return;
+    }
     document.title = PAGE_TITLES[currentPage];
-  }, [currentPage]);
+  }, [currentPage, isAdminRoute]);
 
   const handleOpenLaunchModal = (pkg: Package) => {
     setActivePackage(pkg);
@@ -122,6 +128,8 @@ export default function App() {
 
   return (
     <div className="bg-[#FAF9F6] text-[#1A1A1A] min-h-screen relative selection:bg-orange-500 selection:text-white font-sans overflow-x-hidden">
+      {isAdminRoute ? <Admin /> : (
+        <>
       
       {/* Decorative 3D Ambient Elements (Simulated) */}
       <div className="absolute top-[-120px] right-[-120px] w-[600px] h-[600px] rounded-full bg-gradient-to-br from-orange-200/40 via-orange-100/20 to-transparent blur-3xl opacity-60 pointer-events-none z-0"></div>
@@ -149,7 +157,7 @@ export default function App() {
       </SmoothScroll>
 
       {/* FLOATING CHAT ASSISTANT - OVERLAY */}
-      <PipAIWidget />
+      <PipAIWidget onPageChange={setCurrentPage} />
 
       {/* REUSABLE PACKAGES / GENERAL INTAKE FORM MODAL */}
       <PackageModal
@@ -157,6 +165,8 @@ export default function App() {
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
       />
+        </>
+      )}
     </div>
   );
 }

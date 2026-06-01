@@ -31,7 +31,7 @@ export default function Navbar({ currentPage, onPageChange, onOpenConsultationMo
     { label: 'Websites', page: 'websites' as PageId },
     { label: 'Smart Chatbots', page: 'chatbots' as PageId },
     { label: 'Workflow Automations', page: 'automations' as PageId },
-    { label: 'Examples', page: 'examples' as PageId },
+    { label: 'Previews', page: 'examples' as PageId },
     { label: 'FAQ', page: 'faq' as PageId },
     { label: 'Contact', page: 'contact' as PageId }
   ];
