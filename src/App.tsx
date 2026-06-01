@@ -15,6 +15,7 @@ import PackageModal from './components/PackageModal';
 import Home from './pages/Home';
 import Websites from './pages/Websites';
 import Chatbots from './pages/Chatbots';
+import CallingAgents from './pages/CallingAgents';
 import Automations from './pages/Automations';
 import Examples from './pages/Examples';
 import About from './pages/About';
@@ -24,9 +25,10 @@ import Legal from './pages/Legal';
 import Admin from './pages/Admin';
 
 const PAGE_TITLES: Record<PageId, string> = {
-  home: 'Office Pigeon | AI Websites, Chatbots & Automations',
+  home: 'Office Pigeon | AI Websites, Chatbots, Calling Agents & Automations',
   websites: 'Website Development for Growing Businesses | Office Pigeon',
   chatbots: 'Smart Chatbots for Websites & WhatsApp | Office Pigeon',
+  'calling-agents': 'AI Calling Agents for Businesses | Office Pigeon',
   automations: 'Workflow Automation for Growing Businesses | Office Pigeon',
   examples: 'Previews and Case Studies | Office Pigeon',
   about: 'About Office Pigeon | AI Business Systems',
@@ -88,6 +90,8 @@ export default function App() {
         return <Websites onOpenPackageModal={handleOpenLaunchModal} />;
       case 'chatbots':
         return <Chatbots onOpenPackageModal={handleOpenLaunchModal} />;
+      case 'calling-agents':
+        return <CallingAgents onOpenPackageModal={handleOpenLaunchModal} />;
       case 'automations':
         return <Automations onOpenPackageModal={handleOpenLaunchModal} />;
       case 'examples':

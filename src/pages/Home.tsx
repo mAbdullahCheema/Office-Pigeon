@@ -7,7 +7,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { ArrowRight, HelpCircle, Check, Play, UserCheck, Smartphone, Settings, Zap, ArrowUpRight, MessageSquare, Flame, Sparkles, Volume2 } from 'lucide-react';
 import { PageId, Package } from '../types';
-import { BRAND, WEBSITE_PACKAGES, CHATBOT_PACKAGES, AUTOMATION_EXAMPLES } from '../config';
+import { BRAND, WEBSITE_PACKAGES, CHATBOT_PACKAGES, CALLING_AGENT_PACKAGES, AUTOMATION_EXAMPLES } from '../config';
 import ThreeHub from '../components/ThreeHub';
 
 function TypewriterWord() {
@@ -92,7 +92,7 @@ export default function Home({ onPageChange, onOpenPackageModal, onOpenConsultat
           <div className="lg:col-span-7 space-y-7 z-20 relative">
             <div className="inline-flex items-center gap-2.5 bg-orange-500/10 border border-orange-500/25 px-5 py-3 rounded-full text-xs sm:text-sm font-sans font-black uppercase tracking-wider text-orange-600 shadow-sm shadow-orange-500/5 hover:scale-[1.01] transition-transform duration-300">
               <Sparkles size={14} className="text-orange-500 animate-pulse stroke-[2.5]" />
-              AI-POWERED WEBSITES, CHATBOTS & WORKFLOWS FOR GROWING BUSINESSES
+              AI-POWERED WEBSITES, CHATBOTS, CALLING AGENTS & WORKFLOWS
             </div>
             
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-[68px] font-black text-gray-900 leading-[1.05] tracking-tighter uppercase mb-4">
@@ -100,7 +100,7 @@ export default function Home({ onPageChange, onOpenPackageModal, onOpenConsultat
             </h1>
             
             <p className="text-sm sm:text-base text-gray-500 max-w-xl leading-relaxed font-sans font-medium">
-              We build premium websites, smart chatbots, and connected workflows that make your business look professional, respond faster, and turn more visitors into real leads — without you handling the tech.
+              We build premium websites, smart chatbots, AI Calling Agents, and connected workflows that make your business look professional, respond faster, and turn more visitors or callers into real leads without you handling the tech.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center gap-4 pt-3">
@@ -200,15 +200,15 @@ export default function Home({ onPageChange, onOpenPackageModal, onOpenConsultat
             OUR CAPABILITIES
           </span>
           <h2 className="text-3xl sm:text-5xl font-black tracking-tighter uppercase text-gray-900 leading-[1.0]">
-            Three ways Office Pigeon helps your business grow smarter
+            Four ways Office Pigeon helps your business grow smarter
           </h2>
           <p className="text-xs sm:text-sm text-gray-400 font-medium font-sans">
-            Start with a beautiful website, add a smart chatbot, then automate the repetitive work behind the scenes.
+            Start with a beautiful website, add smart chat or calling agents, then automate the repetitive work behind the scenes.
           </p>
         </div>
 
         {/* INTERACTIVE CARDS */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           
           {/* SERVICE CLIENT 1 */}
           <div className="bg-white border border-black/5 p-8 rounded-[40px] shadow-[0_45px_90px_rgba(0,0,0,0.035)] hover:-rotate-1 hover:shadow-lg transition-all duration-300 flex flex-col justify-between group">
@@ -264,6 +264,25 @@ export default function Home({ onPageChange, onOpenPackageModal, onOpenConsultat
               className="mt-8 text-xs font-mono font-bold uppercase tracking-wider text-amber-600  flex items-center gap-1.5 bg-amber-50 hover:bg-amber-500 hover:text-white w-full justify-center py-4 rounded-full transition-all cursor-pointer"
             >
               Explore Automations <ArrowRight size={13} />
+            </button>
+          </div>
+
+          {/* SERVICE CLIENT 4 */}
+          <div className="bg-white border border-black/5 p-8 rounded-[40px] shadow-[0_45px_90px_rgba(0,0,0,0.035)] hover:rotate-1 hover:shadow-lg transition-all duration-300 flex flex-col justify-between group">
+            <div className="space-y-4">
+              <div className="w-12 h-12 bg-orange-50 text-orange-500 rounded-full flex items-center justify-center shadow-xs">
+                <Volume2 size={20} />
+              </div>
+              <h3 className="font-serif italic text-3xl text-gray-900 leading-tight">AI Calling Agents</h3>
+              <p className="text-xs text-gray-500 leading-relaxed font-sans">
+                Answer calls, capture lead details, support booking requests, and follow up through managed AI phone and WhatsApp workflows.
+              </p>
+            </div>
+            <button
+              onClick={() => onPageChange('calling-agents')}
+              className="mt-8 text-xs font-mono font-bold uppercase tracking-wider text-orange-600 flex items-center gap-1.5 bg-orange-50 hover:bg-orange-500 hover:text-white w-full justify-center py-4 rounded-full transition-all cursor-pointer"
+            >
+              Explore Calling Agents <ArrowRight size={13} />
             </button>
           </div>
         </div>
@@ -453,35 +472,69 @@ export default function Home({ onPageChange, onOpenPackageModal, onOpenConsultat
         </div>
       </section>
 
-      {/* 7. REVOLVING CALLING COMING SOON */}
-      <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center select-none relative">
-        <div className="relative border border-amber-200 bg-[#FAF9F6] p-10 sm:p-14 rounded-[40px] shadow-lg shadow-amber-500/5 space-y-6">
+      {/* 7. AI CALLING AGENTS LIVE SERVICE */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center select-none relative">
+        <div className="relative border border-amber-200 bg-[#FAF9F6] p-8 sm:p-10 rounded-[40px] shadow-lg shadow-amber-500/5 space-y-8">
           <span className="inline-flex items-center gap-1.5 text-[9px] font-mono tracking-widest uppercase text-amber-600 bg-amber-50 border border-amber-100 px-4 py-1.5 rounded-full font-bold">
-            <Volume2 size={11} className="animate-bounce" /> Smart Calling Agents — COMING SOON
+            <Volume2 size={11} /> AI Calling Agents
           </span>
-          <h2 className="text-3xl sm:text-4xl font-serif italic text-gray-900 leading-tight">Voice agents that answer calls flawlessly</h2>
+          <h2 className="text-3xl sm:text-4xl font-serif italic text-gray-900 leading-tight">Answer calls, capture leads, and book customers automatically</h2>
           <p className="text-xs sm:text-sm text-gray-400 max-w-xl mx-auto leading-relaxed font-sans font-medium">
-            Natural voice AI agents that can help businesses answer calls, qualify leads, book appointments, handle complaints, and follow up with customers, even outside working hours.
+            Office Pigeon builds AI phone and WhatsApp agents that answer customer questions, collect lead details, handle booking requests, send follow-ups, and notify your team under clear monthly usage limits.
           </p>
           <div className="pt-2">
             <button
               onClick={() => {
-                const specInquiry: Package = {
-                  id: 'calling-interest',
-                  name: 'Calling Agent Interest List',
-                  price: 'Priority Reservation',
-                  timeline: 'Beta Access',
-                  revision: 'Standard notifications',
-                  bestFor: 'Add your coordinates to the caller waiting list.',
-                  includes: ['Early alpha testing access', 'Custom voice templates']
-                };
-                onOpenPackageModal(specInquiry);
+                onOpenPackageModal(CALLING_AGENT_PACKAGES[1]);
               }}
               className="px-8 py-4 bg-orange-500 text-white font-mono text-[10px] uppercase font-bold tracking-widest rounded-full hover:bg-orange-600 transition-all cursor-pointer inline-flex items-center gap-1.5 shadow-lg shadow-orange-100 focus:outline-none"
             >
-              Join Call Queue Waiting List <ArrowRight size={13} />
+              Configure Calling Agent <ArrowRight size={13} />
             </button>
           </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left pt-4">
+            {CALLING_AGENT_PACKAGES.map((pkg) => (
+              <div
+                key={pkg.id}
+                className={`bg-white border p-6 rounded-[28px] shadow-xs flex flex-col justify-between relative transition-all hover:translate-y-[-3px] ${
+                  pkg.badge ? 'border-orange-200 ring-4 ring-orange-50/50' : 'border-black/5'
+                }`}
+              >
+                {pkg.badge && (
+                  <span className="absolute top-0 right-5 -translate-y-1/2 bg-orange-600 text-white text-[8px] font-mono font-bold uppercase tracking-widest px-3 py-1 rounded-full shadow-md">
+                    {pkg.badge}
+                  </span>
+                )}
+                <div>
+                  <h4 className="font-serif italic text-2xl text-gray-900 leading-tight">{pkg.name}</h4>
+                  <p className="mt-3 text-xl font-black text-gray-900">{pkg.price}</p>
+                  <p className="text-[11px] text-gray-400 mt-2 leading-relaxed">{pkg.bestFor}</p>
+                  <ul className="mt-5 space-y-2.5">
+                    {pkg.includes.slice(-2).map((inc) => (
+                      <li key={inc} className="flex items-start gap-2 text-[11px] text-gray-500">
+                        <Check size={13} className="text-orange-500 shrink-0 mt-0.5" />
+                        <span>{inc}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <button
+                  onClick={() => onOpenPackageModal(pkg)}
+                  className={`mt-6 w-full py-3.5 text-[10px] font-mono font-bold uppercase tracking-wider rounded-full transition-all cursor-pointer ${
+                    pkg.badge ? 'bg-orange-500 hover:bg-orange-600 text-white' : 'bg-[#F0EEEA] hover:bg-black/5 text-gray-800'
+                  }`}
+                >
+                  Configure {pkg.name}
+                </button>
+              </div>
+            ))}
+          </div>
+          <button
+            onClick={() => onPageChange('calling-agents')}
+            className="px-8 py-4 bg-black hover:bg-orange-500 text-white font-mono text-[10px] uppercase font-bold tracking-widest rounded-full transition-all cursor-pointer inline-flex items-center gap-1.5 shadow-lg shadow-black/10 focus:outline-none"
+          >
+            Explore AI Calling Agents <ArrowRight size={13} />
+          </button>
         </div>
       </section>
 
@@ -512,7 +565,7 @@ export default function Home({ onPageChange, onOpenPackageModal, onOpenConsultat
               </div>
               <h4 className="font-serif italic text-xl text-gray-900 leading-tight">We Plan the Solution</h4>
               <p className="text-[11px] text-gray-400 leading-normal font-sans font-medium">
-                We recommend the right website, chatbot, automation, or combination based on your goals.
+                We recommend the right website, chatbot, calling agent, automation, or combination based on your goals.
               </p>
             </div>
 
@@ -532,7 +585,7 @@ export default function Home({ onPageChange, onOpenPackageModal, onOpenConsultat
               </div>
               <h4 className="font-serif italic text-xl text-gray-900 leading-tight">Your Business Runs</h4>
               <p className="text-[11px] text-gray-400 leading-normal font-sans font-medium">
-                Your new website, chatbot, or automation starts helping your business save time and opportunities.
+                Your new website, chatbot, calling agent, or automation starts helping your business save time and opportunities.
               </p>
             </div>
           </div>

@@ -70,7 +70,7 @@ export default function About({ onPageChange }: AboutProps) {
             Practical systems formulated for real results
           </h2>
           <p className="text-xs text-gray-400 leading-relaxed max-w-lg mx-auto mt-2">
-            We focus on tools that business owners can actually use. That means websites that build trust, chatbots that answer customers, and automations that remove repetitive work. We do not build AI for show.
+            We focus on tools that business owners can actually use. That means websites that build trust, chatbots and AI Calling Agents that answer customers, and automations that remove repetitive work. We do not build AI for show.
           </p>
         </div>
 
@@ -108,7 +108,7 @@ export default function About({ onPageChange }: AboutProps) {
         <div className="border border-cyan-100 bg-white p-10 rounded-3xl shadow-xs space-y-4">
           <h2 className="text-2xl sm:text-3xl font-black text-gray-900 leading-tight">Ready to see our systems in action?</h2>
           <p className="text-xs sm:text-sm text-gray-400 max-w-sm mx-auto leading-relaxed">
-            Let's discuss how customized web templates or chatbots can help save hours for your crew.
+            Let's discuss how customized websites, chatbots, AI Calling Agents, or automations can help save hours for your crew.
           </p>
           <div className="pt-2">
             <button

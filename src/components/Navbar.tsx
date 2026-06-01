@@ -4,9 +4,8 @@
  */
 
 import { useState, useEffect } from 'react';
-import { Menu, X, ArrowUpRight, HelpCircle, Bird } from 'lucide-react';
+import { Menu, X, ArrowUpRight, Bird } from 'lucide-react';
 import { PageId } from '../types';
-import { BRAND } from '../config';
 
 interface NavbarProps {
   currentPage: PageId;
@@ -30,6 +29,7 @@ export default function Navbar({ currentPage, onPageChange, onOpenConsultationMo
     { label: 'Home', page: 'home' as PageId },
     { label: 'Websites', page: 'websites' as PageId },
     { label: 'Smart Chatbots', page: 'chatbots' as PageId },
+    { label: 'Calling Agents', page: 'calling-agents' as PageId },
     { label: 'Workflow Automations', page: 'automations' as PageId },
     { label: 'Previews', page: 'examples' as PageId },
     { label: 'FAQ', page: 'faq' as PageId },
@@ -51,11 +51,11 @@ export default function Navbar({ currentPage, onPageChange, onOpenConsultationMo
       }`}
       id="main-app-header"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex items-center justify-between">
+      <div className="max-w-[92rem] mx-auto px-3 sm:px-4 lg:px-5 xl:px-7 py-4.5 flex items-center justify-between gap-4">
         {/* programmatically constructed professional logo */}
         <button
           onClick={() => handleNavClick('home')}
-          className="flex items-center gap-3 px-1 focus:outline-none cursor-pointer group text-left"
+          className="flex items-center gap-3 px-1 py-1 rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/30 cursor-pointer group text-left shrink-0"
         >
           <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-orange-500 via-rose-500 to-amber-500 flex items-center justify-center text-white shadow-lg shadow-orange-500/10 group-hover:scale-105 transition-transform group-hover:rotate-12 duration-500">
             <Bird size={20} className="stroke-[2.5]" />
@@ -71,12 +71,12 @@ export default function Navbar({ currentPage, onPageChange, onOpenConsultationMo
         </button>
 
         {/* DESKTOP LINKS */}
-        <nav className="hidden lg:flex items-center gap-1.5 bg-[#F0EEEA]/80 border border-black/5 px-2.5 py-1.5 rounded-full">
+        <nav className="hidden lg:flex items-center justify-center gap-2 bg-[#F0EEEA]/80 border border-black/5 px-2 py-2 rounded-full min-w-0">
           {menuItems.map((item) => (
             <button
               key={item.page}
               onClick={() => handleNavClick(item.page)}
-              className={`px-4.5 py-2 rounded-full text-[10px] font-sans font-black uppercase tracking-wider transition-all focus:outline-none cursor-pointer whitespace-nowrap ${
+              className={`px-3 py-2.5 xl:px-4 rounded-full text-[9px] xl:text-[10px] font-sans font-black uppercase tracking-wider transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/25 cursor-pointer whitespace-nowrap ${
                 currentPage === item.page
                   ? 'bg-black text-white shadow-sm'
                   : 'text-gray-500 hover:text-gray-900 hover:bg-black/5'
@@ -88,10 +88,10 @@ export default function Navbar({ currentPage, onPageChange, onOpenConsultationMo
         </nav>
 
         {/* DESKTOP CTAS */}
-        <div className="hidden lg:flex items-center gap-3">
+        <div className="hidden lg:flex items-center gap-3 shrink-0">
           <button
             onClick={onOpenConsultationModal}
-            className="px-6 py-3 bg-black hover:bg-orange-500 hover:scale-105 text-white font-sans text-xs font-black uppercase tracking-wider rounded-full transition-all shadow-md active:scale-95 cursor-pointer flex items-center gap-1.5 focus:outline-none"
+            className="px-5 py-3 xl:px-6 bg-black hover:bg-orange-500 hover:scale-105 text-white font-sans text-[11px] xl:text-xs font-black uppercase tracking-wider rounded-full transition-all shadow-md active:scale-95 cursor-pointer flex items-center gap-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/30 whitespace-nowrap"
           >
             Get Free Consultation
             <ArrowUpRight size={13} className="stroke-[2.5]" />
@@ -101,7 +101,8 @@ export default function Navbar({ currentPage, onPageChange, onOpenConsultationMo
         {/* MOBILE MENU TRIGGER */}
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="lg:hidden p-2.5 rounded-full hover:bg-black/5 text-gray-700 focus:outline-none cursor-pointer"
+          className="lg:hidden p-3 rounded-full hover:bg-black/5 text-gray-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/30 cursor-pointer"
+          aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
         >
           {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
         </button>
@@ -113,12 +114,12 @@ export default function Navbar({ currentPage, onPageChange, onOpenConsultationMo
           mobileMenuOpen ? 'max-h-screen py-6 px-4 border-t border-gray-100' : 'max-h-0 py-0 px-4'
         }`}
       >
-        <div className="flex flex-col gap-2.5">
+        <div className="flex flex-col gap-3">
           {menuItems.map((item) => (
             <button
               key={item.page}
               onClick={() => handleNavClick(item.page)}
-              className={`w-full text-left px-5 py-3 rounded-2xl text-xs font-sans font-black uppercase tracking-wider transition-all ${
+              className={`w-full text-left px-5 py-3.5 rounded-2xl text-xs font-sans font-black uppercase tracking-wider transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/25 ${
                 currentPage === item.page
                   ? 'bg-orange-500/10 text-orange-600 border border-orange-500/20'
                   : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
@@ -133,7 +134,7 @@ export default function Navbar({ currentPage, onPageChange, onOpenConsultationMo
               setMobileMenuOpen(false);
               onOpenConsultationModal();
             }}
-            className="w-full py-4 bg-black hover:bg-orange-500 text-white rounded-2xl text-xs font-bold uppercase tracking-wide transition-all shadow-md text-center cursor-pointer block"
+            className="w-full py-4 bg-black hover:bg-orange-500 text-white rounded-2xl text-xs font-bold uppercase tracking-wide transition-all shadow-md text-center cursor-pointer block focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/30"
           >
             Get Free CRM Consultation
           </button>

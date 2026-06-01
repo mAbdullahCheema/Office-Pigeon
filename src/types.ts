@@ -7,6 +7,7 @@ export type PageId =
   | 'home'
   | 'websites'
   | 'chatbots'
+  | 'calling-agents'
   | 'automations'
   | 'examples'
   | 'about'

@@ -34,7 +34,7 @@ function isGreetingOnly(text: string) {
   );
 }
 
-export default function PipAIChatWindow({ onClose }: { onClose: () => void }) {
+export default function PipAIChatWindow({ onClose, onPageChange }: { onClose: () => void; onPageChange?: (page: string) => void }) {
   const [lead, setLead] = useState<PipLead | null>(null);
   const [conversationId, setConversationId] = useState<string | undefined>();
   const [messages, setMessages] = useState<PipMessage[]>([]);
@@ -80,7 +80,7 @@ export default function PipAIChatWindow({ onClose }: { onClose: () => void }) {
           id: makeId(),
           role: 'assistant',
           content:
-            "Hi, I'm Pip AI. I can help with Office Pigeon websites, smart chatbots, workflow automations, pricing, packages, booking, or WhatsApp handoff. What would you like to know?",
+            "Hi, I'm Pip AI. I can help with Office Pigeon websites, smart chatbots, AI Calling Agents, workflow automations, pricing, packages, booking, or WhatsApp handoff. What would you like to know?",
           actions: [
             { type: 'recommend_service', label: 'Recommend a Service' },
             { type: 'book_call', label: 'Book Free Consultation' },
@@ -150,6 +150,24 @@ export default function PipAIChatWindow({ onClose }: { onClose: () => void }) {
       }).catch(() => null);
       const data = response ? await response.json().catch(() => ({})) : {};
       window.open(data.url || 'https://wa.me/19176726764?text=Hi%20Office%20Pigeon%2C%20I%20want%20help%20from%20your%20team.', '_blank', 'noreferrer,noopener');
+      return;
+    }
+    if (action.type === 'view_website_packages') {
+      onClose();
+      onPageChange?.('websites');
+      setTimeout(() => {
+        const el = document.getElementById('website-pricing');
+        if (el) window.scrollTo({ top: el.offsetTop });
+      }, 100);
+      return;
+    }
+    if (action.type === 'view_chatbot_packages') {
+      onClose();
+      onPageChange?.('chatbots');
+      setTimeout(() => {
+        const el = document.getElementById('chatbot-pricing');
+        if (el) window.scrollTo({ top: el.offsetTop });
+      }, 100);
       return;
     }
     await sendMessage(actionPrompt(action));

@@ -14,7 +14,7 @@ export const BRAND = {
   whatsappUrl: 'https://wa.me/19176726764',
   calComUrl: 'https://cal.com/office-pigeon/demo-call',
   workingHours: 'Mon–Fri, 8:00 AM – 4:00 PM Eastern Time',
-  footerWording: 'Serving businesses worldwide with AI-powered websites, chatbots, and automations.'
+  footerWording: 'Serving businesses worldwide with AI-powered websites, chatbots, AI Calling Agents, and automations.'
 };
 
 export const WEBSITE_PACKAGES: Package[] = [
@@ -99,6 +99,7 @@ export const CHATBOT_PACKAGES: Package[] = [
       'Resolves 80%+ recurring customer questions',
       'Interactive floating web visual chat widget',
       'Direct WhatsApp chat support routing',
+      'Multilingual customer conversations where supported',
       'Intuitive automatic contact info collection',
       'Clear human delegation transfer handoff options',
       'Comprehensive error fixes and active upkeep'
@@ -120,7 +121,8 @@ export const CHATBOT_PACKAGES: Package[] = [
       'Saves records straight to Google Sheets or CRMs',
       'Interactive target screening and client qualification',
       'Live email/Slack instant lead alerts',
-      'Multi-channel: Website, WhatsApp & choice of IG/Facebook'
+      'Multi-channel: Website, WhatsApp & choice of IG/Facebook',
+      'Setup starts in English with multilingual customer conversations where supported'
     ],
     note: 'Includes up to 20,000 messages/month. Tailored for continuous automated sales engagement.'
   },
@@ -137,10 +139,90 @@ export const CHATBOT_PACKAGES: Package[] = [
       'Highly advanced custom intelligence training systems',
       'Reads/writes records in active databases',
       'Executes workflow automations through custom triggers',
+      'Multilingual customer conversations where supported',
       'Intelligent regular customer followups',
       'Full monthly service oversight and regular optimization updates'
     ],
     note: 'Includes up to 40,000 messages/month. Built to serve as a logical digital expansion of your team.'
+  }
+];
+
+export const CALLING_AGENT_PACKAGES: Package[] = [
+  {
+    id: 'smart-call-starter',
+    name: 'Smart Call Starter',
+    price: '$600 setup + $199/mo',
+    timeline: 'Setup timeline reviewed during consultation',
+    revision: 'Managed calling setup',
+    bestFor: 'Businesses that want a simple AI phone assistant to answer common customer calls and capture messages.',
+    includes: [
+      'Inbound AI phone agent',
+      'Business FAQs, hours, services, and location answers',
+      'Basic customer question handling',
+      'Message-taking and basic lead capture',
+      'Email or WhatsApp lead alerts',
+      'Call summaries where supported',
+      'Starts in your chosen setup language',
+      'Can respond in other supported languages based on the customer language',
+      'Office Pigeon-managed calling infrastructure',
+      'Twilio-powered number option',
+      'WhatsApp support where available',
+      'Includes up to 300 call minutes/month',
+      'Extra minutes billed at $0.35/min'
+    ],
+    note: 'Automatic booking confirmation, advanced outbound workflows, CRM integration, complex automations, and live human transfer are not included by default.'
+  },
+  {
+    id: 'lead-booking-caller',
+    name: 'Lead & Booking Caller',
+    price: '$1,200 setup + $449/mo',
+    badge: 'Most Popular',
+    timeline: 'Setup timeline reviewed during consultation',
+    revision: 'Managed calling and booking request setup',
+    bestFor: 'Service businesses that want to turn missed calls, form leads, and customer inquiries into qualified leads or booking requests.',
+    includes: [
+      'Everything in Smart Call Starter',
+      'Inbound and approved outbound calling',
+      'Missed-call callbacks',
+      'Lead follow-up after website form submissions',
+      'Appointment reminders',
+      'Booking request collection',
+      'Human approval before final booking confirmation',
+      'Lead logs',
+      'Detailed call summaries and transcripts where supported',
+      'Google Sheets or calendar workflow',
+      'WhatsApp support where available',
+      'Live call transfer where technically supported',
+      'Includes up to 900 call minutes/month',
+      'Extra minutes billed at $0.35/min'
+    ],
+    note: 'The agent collects booking requests, checks required details, and notifies the business for approval.'
+  },
+  {
+    id: 'ai-voice-operations-agent',
+    name: 'AI Voice Operations Agent',
+    price: '$2,500 setup + $999/mo',
+    timeline: 'Setup timeline reviewed during consultation',
+    revision: 'Advanced managed voice operations',
+    bestFor: 'Businesses that want a full AI voice assistant connected to operations, follow-ups, booking systems, and workflows.',
+    includes: [
+      'Everything in Lead & Booking Caller',
+      'Advanced inbound and outbound workflows',
+      'Direct booking confirmation when calendar rules are clearly configured',
+      'Customer qualification flows',
+      'CRM, Google Sheets, calendar, email, or custom workflow integrations',
+      'WhatsApp follow-up flows where available',
+      'Review request calls',
+      'Payment reminder calls where appropriate',
+      'Re-engagement calls to old leads where appropriate',
+      'Priority optimization',
+      'Monthly performance report where supported',
+      'Advanced lead logs and transcripts where supported',
+      'Custom workflow planning',
+      'Includes up to 2,500 call minutes/month',
+      'Extra minutes billed at $0.35/min'
+    ],
+    note: 'Direct booking confirmation requires clean calendar rules, clear availability, and approved booking logic.'
   }
 ];
 
@@ -248,7 +330,7 @@ export const EXAMPLE_BUILDS: ExampleBuild[] = [
 export const GENERAL_FAQS: FAQItem[] = [
   {
     question: 'What does Office Pigeon do?',
-    answer: 'Office Pigeon designs beautiful, modern websites, trains intelligent chatbots, and structures connected workflow automations. Our systems help businesses look credible, reply to prospects instantly, follow up on leads, and run with less manual effort.',
+    answer: 'Office Pigeon designs beautiful, modern websites, trains intelligent chatbots, builds AI Calling Agents, and structures connected workflow automations. Our systems help businesses look credible, reply faster, follow up on leads, and run with less manual effort.',
     category: 'general'
   },
   {
@@ -283,7 +365,7 @@ export const GENERAL_FAQS: FAQItem[] = [
   },
   {
     question: 'How do chatbot message limits work?',
-    answer: 'Each chatbot tier includes a distinct monthly message budget (e.g., 10k messages for FAQ Bot, 20k for Lead Bot, 40k for AI Assistant). These limits reset monthly. Extra volume is easily acquired in packages of $20 per 1,000 extra interactions.',
+    answer: 'Each chatbot tier includes a distinct monthly message budget (e.g., 10k messages for FAQ Bot, 20k for Lead Bot, 40k for AI Assistant). These limits reset monthly. Extra volume is available in packages of $20 per 1,000 extra interactions.',
     category: 'chatbots'
   },
   {
@@ -293,7 +375,7 @@ export const GENERAL_FAQS: FAQItem[] = [
   },
   {
     question: 'Are third-party platform fees included?',
-    answer: 'Some complex integrations (such as Twilio SMS numbers, Stripe percentage processing, customized CRM seats, or premium social channel connections) may draw minor standard native software fees. We keep these fully transparent and outline them clearly.',
+    answer: 'Some complex integrations such as Twilio-powered numbers, Stripe processing, customized CRM seats, premium social channel connections, WhatsApp approval needs, unusual international routing, or custom carrier setups may require separate review or additional third-party fees. We keep these transparent and outline them clearly.',
     category: 'general'
   },
   {
@@ -332,8 +414,48 @@ export const GENERAL_FAQS: FAQItem[] = [
     category: 'general'
   },
   {
-    question: 'Are Smart Calling Agents available?',
-    answer: 'They are coming very soon! These voice-based agents will answer line rings, evaluate incoming leads, confirm appointment slots, and make courtesy reminders in pleasant natural voices.',
+    question: 'What are AI Calling Agents?',
+    answer: 'AI Calling Agents are phone and WhatsApp-based assistants that can answer customer questions, collect lead details, handle booking requests, send follow-ups, and notify your team based on your business setup.',
+    category: 'calling'
+  },
+  {
+    question: 'Can the AI answer calls in different languages?',
+    answer: 'Yes, Office Pigeon agents can start in the language chosen during setup and can respond in other supported languages based on the customer language where supported. English is the primary setup language.',
+    category: 'calling'
+  },
+  {
+    question: 'Can the AI make outbound calls?',
+    answer: 'Yes, approved outbound use cases can include missed-call callbacks, lead follow-ups, appointment reminders, booking confirmations, review request calls, and payment reminders where appropriate. Cold calling is not included in standard packages and may require separate review.',
+    category: 'calling'
+  },
+  {
+    question: 'Can I use my own phone number?',
+    answer: 'Yes, clients may request setup with their own existing number, but this can require extra steps from their phone provider, Twilio, WhatsApp, or verification systems. Issues caused by the client existing number, carrier restrictions, provider delays, or third-party approval problems are not covered under standard Office Pigeon support.',
+    category: 'calling'
+  },
+  {
+    question: 'Is WhatsApp included?',
+    answer: 'WhatsApp support is available where supported by provider rules, business verification, and regional availability. WhatsApp setup may require approval from third-party platforms. Extra usage may be billed separately if fair usage is exceeded.',
+    category: 'calling'
+  },
+  {
+    question: 'Can the AI confirm bookings automatically?',
+    answer: 'It depends on the package and business setup. The Lead & Booking Caller usually collects booking requests and notifies the business for approval. The AI Voice Operations Agent can confirm bookings directly when calendar rules, availability, and booking logic are clearly configured.',
+    category: 'calling'
+  },
+  {
+    question: 'Are call recordings included?',
+    answer: 'Call recordings are not included as a standard advertised feature. Call summaries, lead logs, transcripts, and reports may be available depending on the package and provider support.',
+    category: 'calling'
+  },
+  {
+    question: 'What happens if I exceed my included minutes?',
+    answer: 'Extra minutes are billed at a fixed rate of $0.35/min across all AI Calling Agent packages.',
+    category: 'calling'
+  },
+  {
+    question: 'Do AI Calling Agents guarantee more sales?',
+    answer: 'No. Office Pigeon does not guarantee sales, revenue, lead volume, or exact business results. AI Calling Agents are designed to help businesses respond faster, reduce missed inquiries, capture lead details more clearly, and improve customer experience.',
     category: 'calling'
   }
 ];

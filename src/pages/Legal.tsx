@@ -116,6 +116,10 @@ export default function Legal({ initialTab = 'privacy', onTabChange }: LegalProp
             <p>
               Office Pigeon does not guarantee specific ranking benchmarks, conversion traffic, revenue metrics, or client volumes. Total liability is limited strictly to funds captured for that specific product line.
             </p>
+            <p className="font-semibold text-gray-700">AI Calling Agents</p>
+            <p>
+              AI Calling Agents may collect call summaries, transcripts, lead details, and conversation data for service quality, follow-up, and business operations where supported. Availability of call handling, outbound calling, WhatsApp features, transcripts, and integrations may depend on local laws, customer consent requirements, provider approval, regional availability, and third-party platform rules. Office Pigeon does not guarantee sales, revenue, lead volume, platform approval, or legal compliance for a client specific industry or location. Businesses are responsible for using AI Calling Agents in a compliant and appropriate way.
+            </p>
           </div>
         )}
 
@@ -137,7 +141,7 @@ export default function Legal({ initialTab = 'privacy', onTabChange }: LegalProp
         {activeTab === 'fair-usage' && (
           <div className="space-y-4">
             <h3 className="font-bold text-lg text-gray-900 flex items-center gap-2">
-              <ShieldAlert size={20} className="text-amber-500" /> Chatbot Fair Usage Policy (FUP)
+              <ShieldAlert size={20} className="text-amber-500" /> AI Fair Usage Policy (FUP)
             </h3>
             <p className="font-semibold text-gray-700">Monthly Allotted Limits</p>
             <ul className="list-disc pl-5 space-y-1 text-gray-600 font-medium">
@@ -147,6 +151,15 @@ export default function Legal({ initialTab = 'privacy', onTabChange }: LegalProp
             </ul>
             <p className="mt-2 text-gray-500">
               Extra usage quantities are bought in standard blocs of $20 per 1,000 additional processed answers.
+            </p>
+            <p className="font-semibold text-gray-700 pt-2">AI Calling Agent Limits</p>
+            <ul className="list-disc pl-5 space-y-1 text-gray-600 font-medium">
+              <li>Smart Call Starter: 300 call minutes/month</li>
+              <li>Lead & Booking Caller: 900 call minutes/month</li>
+              <li>AI Voice Operations Agent: 2,500 call minutes/month</li>
+            </ul>
+            <p className="mt-2 text-gray-500">
+              Extra AI Calling Agent minutes are billed at a fixed rate of $0.35/min across all packages. Unusual international routing, premium-rate numbers, high-volume WhatsApp messaging, special provider requirements, or custom carrier setups may require separate review or additional charges.
             </p>
             <p className="font-semibold text-gray-700 pt-2">Acceptable Use Limits</p>
             <p>

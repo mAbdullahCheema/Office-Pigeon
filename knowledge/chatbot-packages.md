@@ -13,3 +13,5 @@ The Lead & Booking Bot is $700 setup plus $149/month. It includes 20,000 message
 The AI Business Assistant is $1,500 setup plus $299/month. It includes 40,000 messages/month. It supports website, WhatsApp, Instagram, and Facebook. It is best for multi-channel support, workflow triggers, and connected assistant behavior.
 
 Extra chatbot usage is $20 per 1,000 additional messages.
+
+Office Pigeon agents can start in the language chosen during setup and can respond in other supported languages based on the customer language. English is the primary setup language, with multilingual customer conversations available where supported.

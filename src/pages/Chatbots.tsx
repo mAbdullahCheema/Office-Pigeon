@@ -66,7 +66,7 @@ export default function Chatbots({ onOpenPackageModal }: ChatbotsProps) {
             <button
               onClick={() => {
                 const el = document.getElementById('chatbot-pricing');
-                el?.scrollIntoView({ behavior: 'smooth' });
+                if (el) window.scrollTo({ top: el.offsetTop });
               }}
               className="px-6 py-3.5 bg-white border border-gray-200 text-gray-700 font-sans text-xs font-semibold rounded-2xl animate-pulse"
             >
@@ -117,6 +117,12 @@ export default function Chatbots({ onOpenPackageModal }: ChatbotsProps) {
               <h4 className="font-bold text-sm text-gray-900 pt-1">Active Beyond Hours</h4>
               <p className="text-[11px] text-gray-400 leading-normal font-medium">Keep capturing bookings at midnight. Direct prospects to make deposits while you sleep.</p>
             </div>
+          </div>
+
+          <div className="lg:col-span-12 bg-emerald-50/50 border border-emerald-100 p-5 rounded-3xl">
+            <p className="text-xs text-emerald-800 leading-relaxed font-medium">
+              Office Pigeon agents can start in the language chosen during setup and can respond in other supported languages based on the customer's language. English is the primary setup language, with multilingual customer conversations available where supported.
+            </p>
           </div>
 
         </div>

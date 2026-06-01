@@ -43,6 +43,8 @@ export function buildGeneralWhatsAppMessage(type: string, packageName?: string) 
       return 'Hi Office Pigeon, I want help choosing the right website package for my business.';
     case 'chatbot':
       return 'Hi Office Pigeon, I want help choosing the right chatbot package for my business.';
+    case 'calling_agent':
+      return 'Hi Office Pigeon, I want help choosing the right AI Calling Agent package for my business.';
     case 'package':
       return `Hi Office Pigeon, I am interested in ${packageName || 'one of your packages'} and would like help.`;
     case 'human_fallback':

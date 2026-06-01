@@ -39,7 +39,7 @@ export const recommendRequestSchema = z.object({
 });
 
 export const whatsappRequestSchema = z.object({
-  type: z.enum(['general', 'package', 'human_fallback', 'workflow_audit', 'website', 'chatbot']).default('general'),
+  type: z.enum(['general', 'package', 'human_fallback', 'workflow_audit', 'website', 'chatbot', 'calling_agent']).default('general'),
   name: z.string().trim().max(200).optional(),
   businessName: z.string().trim().max(200).optional(),
   email: z.string().trim().email().optional(),

@@ -72,7 +72,7 @@ export default function Contact() {
             Tell us what you want to improve
           </h1>
           <p className="text-sm sm:text-base text-gray-500 max-w-xl mx-auto leading-relaxed">
-            Whether you need a better website, faster replies, or fewer manual tasks, we can help you choose the smartest next step.
+            Whether you need a better website, faster replies, AI call handling, or fewer manual tasks, we can help you choose the smartest next step.
           </p>
         </div>
       </section>
@@ -214,6 +214,7 @@ export default function Contact() {
                   <option value="commerce-website">Commerce Shop ($1,000+)</option>
                   <option value="faq-bot">Smart FAQ Bot ($49/mo)</option>
                   <option value="booking-bot">Lead & Booking Bot ($149/mo)</option>
+                  <option value="calling-agent">AI Calling Agent ($199/mo+)</option>
                   <option value="automation">Workflow Automations</option>
                   <option value="consultation">General Consultation</option>
                 </select>

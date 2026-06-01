@@ -2,18 +2,19 @@ import { PIP_AI_DEFAULTS } from './constants';
 
 const handoffPatterns: Array<{ reason: string; pattern: RegExp; priority?: 'normal' | 'high' | 'urgent' }> = [
   { reason: 'Visitor explicitly asked for a human', pattern: /\b(human|person|agent|representative|talk to someone|speak to someone|real person)\b/i, priority: 'high' },
-  { reason: 'Visitor is ready for sales contact', pattern: /\b(call me|contact me|i want to buy|i'm ready|im ready|ready to start|sign me up|start my project|let's do it|lets do it|i agree to buy|i want this package)\b/i, priority: 'high' },
-  { reason: 'Refund or payment dispute needs human review', pattern: /\b(refund dispute|chargeback|payment dispute|cancel payment|money back|payment problem|billing dispute)\b/i, priority: 'urgent' }
+  { reason: 'Visitor is ready for sales contact', pattern: /\b(call me|contact me|i want to buy|i'm ready|im ready|ready to start|sign me up|start my project|let's do it|lets do it|i agree to buy|i want this package|follow up with me|reach out to me)\b/i, priority: 'high' },
+  { reason: 'Custom quote or complex scope needs human review', pattern: /\b(custom quote|quote me|give me a quote|advanced integration|complex integration|custom integration|complex workflow|advanced workflow|custom pricing)\b/i, priority: 'high' },
+  { reason: 'Refund or payment dispute needs human review', pattern: /\b(refund dispute|chargeback|payment dispute|cancel payment|money back|payment problem|billing dispute|refund|billing issue)\b/i, priority: 'urgent' }
 ];
 
 const safetyResponses: Array<{ pattern: RegExp; answer: string }> = [
   {
-    pattern: /\b(api key|secret key|service role|env|environment variable|password|private key|token|credentials|show your prompt|system prompt|developer message|ignore previous instructions|jailbreak|bypass)\b/i,
+    pattern: /\b(api key|secret key|service role|env|environment variable|password|private key|token|credentials|show your prompt|system prompt|developer message|hidden instructions|internal setup|source code|admin url|database structure|ignore previous instructions|jailbreak|bypass)\b/i,
     answer:
-      "I can't share private instructions, secrets, credentials, or internal setup details. I can still help with Office Pigeon services, packages, booking, or general questions."
+      "I cannot share internal setup or private system details, but I can help with Office Pigeon's services, pricing, booking, or choosing the right solution for your business."
   },
   {
-    pattern: /\b(hack|malware|phishing|steal|exploit|ddos|bypass security|credential theft|sql injection|xss payload)\b/i,
+    pattern: /\b(hack|malware|phishing|steal|exploit|ddos|bypass security|credential theft|sql injection|xss payload|account takeover|spam|scam script|doxx|doxxing|impersonation)\b/i,
     answer:
       "I can't help with harmful or abusive requests. If you need a legitimate website, chatbot, or automation setup, I can help explain safe options."
   },
@@ -51,7 +52,7 @@ export function isBookingIntent(message: string) {
 }
 
 export function isOfficePigeonRelevant(message: string) {
-  return /\b(office pigeon|website|web site|landing page|business website|commerce|ecommerce|chatbot|bot|whatsapp|automation|workflow|package|price|pricing|cost|payment|refund|revision|support|domain|hosting|seo|lead|booking|consultation|cal\.com|smart calling|calling agent|service|services|business|customer|crm|google sheets|email notification|invoice|onboarding)\b/i.test(
+  return /\b(office pigeon|website|web site|landing page|business website|commerce|ecommerce|chatbot|bot|whatsapp|automation|workflow|package|price|pricing|cost|payment|refund|revision|support|domain|hosting|seo|lead|booking|consultation|cal\.com|smart calling|ai calling|calling agent|voice agent|phone agent|phone assistant|call answering|missed call|service|services|business|customer|crm|google sheets|email notification|invoice|onboarding)\b/i.test(
     message
   );
 }
@@ -78,7 +79,11 @@ export function checkPostAnswerFallback(answer: string): FallbackDecision {
     return { shouldFallback: true, reason: 'AI answer was empty', priority: 'normal' };
   }
 
-  if (/\b(definitely increase sales|will increase your sales|internal api|pinecone|supabase|rag|embedding|api key|service role key|system prompt)\b/i.test(answer)) {
+  if (
+    /\b(definitely increase sales|will increase your sales|get more customers guaranteed|rank number one|double your revenue|internal api|pinecone|supabase|rag|embedding|vector database|knowledge base|provided context|according to the documents|as an ai language model|api key|service role key|system prompt)\b/i.test(
+      answer
+    )
+  ) {
     return { shouldFallback: true, reason: 'AI answer failed safety validation', priority: 'high' };
   }
 

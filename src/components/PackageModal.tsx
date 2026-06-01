@@ -41,6 +41,13 @@ export default function PackageModal({ packageData, isOpen, onClose }: PackageMo
   const [botTone, setBotTone] = useState('Friendly and Simple');
   const [monthlyMessages, setMonthlyMessages] = useState('I’m not sure yet');
 
+  // Calling agent specific
+  const [callUseCase, setCallUseCase] = useState('Answer inbound calls');
+  const [monthlyCallMinutes, setMonthlyCallMinutes] = useState('I am not sure yet');
+  const [phoneNumberSetup, setPhoneNumberSetup] = useState('New Office Pigeon-managed Twilio-powered number');
+  const [callingChannels, setCallingChannels] = useState('Phone calls');
+  const [bookingFlow, setBookingFlow] = useState('Collect requests for human approval');
+
   // Automation specific
   const [manualTask, setManualTask] = useState('');
   const [dataSource, setDataSource] = useState('');
@@ -63,6 +70,7 @@ export default function PackageModal({ packageData, isOpen, onClose }: PackageMo
   const isGeneral = packageData.id === 'general';
   const isWebsite = ['landing-page', 'business-website', 'commerce-website'].includes(packageData.id);
   const isChatbot = ['faq-bot', 'booking-bot', 'business-assistant'].includes(packageData.id);
+  const isCalling = ['smart-call-starter', 'lead-booking-caller', 'ai-voice-operations-agent'].includes(packageData.id);
   const isAutomation = packageData.id === 'automation-audit' || packageData.id === 'automation';
 
   const handleNext = () => {
@@ -104,6 +112,15 @@ export default function PackageModal({ packageData, isOpen, onClose }: PackageMo
       msg += `Human Handoff Needed: ${humanHandoff}\n`;
       msg += `Preferred Tone: ${botTone}\n`;
       msg += `Approx Monthly Messages: ${monthlyMessages}\n`;
+    } else if (isCalling) {
+      msg += `AI Calling Agent Request Details:\n`;
+      msg += `Main call use case: ${callUseCase}\n`;
+      msg += `Expected monthly call minutes: ${monthlyCallMinutes}\n`;
+      msg += `Phone number setup: ${phoneNumberSetup}\n`;
+      msg += `Channels wanted: ${callingChannels}\n`;
+      msg += `Booking behavior: ${bookingFlow}\n`;
+      msg += `Business Type: ${businessType}\n`;
+      msg += `Timeline: ${timeline}\n`;
     } else if (isAutomation) {
       msg += `Workflow Automation Request details:\n`;
       msg += `Task taking too much time: ${manualTask || 'Not sure yet'}\n`;
@@ -136,7 +153,7 @@ export default function PackageModal({ packageData, isOpen, onClose }: PackageMo
       packageId: packageData.id,
       packageName: packageData.name,
       price: packageData.price,
-      packageType: isWebsite ? 'website' : isChatbot ? 'chatbot' : isAutomation ? 'automation' : 'general',
+      packageType: isWebsite ? 'website' : isChatbot ? 'chatbot' : isCalling ? 'calling_agent' : isAutomation ? 'automation' : 'general',
       name,
       businessName,
       email,
@@ -155,6 +172,11 @@ export default function PackageModal({ packageData, isOpen, onClose }: PackageMo
         humanHandoff,
         botTone,
         monthlyMessages,
+        callUseCase,
+        monthlyCallMinutes,
+        phoneNumberSetup,
+        callingChannels,
+        bookingFlow,
         manualTask,
         dataSource,
         dataDestination,
@@ -605,6 +627,116 @@ export default function PackageModal({ packageData, isOpen, onClose }: PackageMo
                             <option value="High">High (ASAP)</option>
                             <option value="Medium">Medium</option>
                             <option value="Low">Low</option>
+                          </select>
+                        </div>
+                      </div>
+                    </>
+                  )}
+
+                  {/* CALLING AGENT SPECIFIC */}
+                  {isCalling && (
+                    <>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1.5">Business Type</label>
+                          <select
+                            value={businessType}
+                            onChange={(e) => setBusinessType(e.target.value)}
+                            className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl text-sm focus:bg-white focus:outline-none"
+                          >
+                            <option value="I am not sure yet">I am not sure yet</option>
+                            <option value="Home service business">Home service business</option>
+                            <option value="Clinic / dental / healthcare">Clinic / dental / healthcare</option>
+                            <option value="Auto repair / mechanic">Auto repair / mechanic</option>
+                            <option value="Beauty / salon / spa">Beauty / salon / spa</option>
+                            <option value="Restaurant / hospitality">Restaurant / hospitality</option>
+                            <option value="Professional service">Professional service</option>
+                            <option value="Other">Other</option>
+                          </select>
+                        </div>
+                        <div>
+                          <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1.5">Monthly Call Minutes</label>
+                          <select
+                            value={monthlyCallMinutes}
+                            onChange={(e) => setMonthlyCallMinutes(e.target.value)}
+                            className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl text-sm focus:bg-white"
+                          >
+                            <option value="I am not sure yet">I am not sure yet</option>
+                            <option value="Under 300 minutes/month">Under 300 minutes/month</option>
+                            <option value="300 - 900 minutes/month">300 - 900 minutes/month</option>
+                            <option value="900 - 2,500 minutes/month">900 - 2,500 minutes/month</option>
+                            <option value="2,500+ minutes/month">2,500+ minutes/month</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1.5">Main calling goal</label>
+                        <select
+                          value={callUseCase}
+                          onChange={(e) => setCallUseCase(e.target.value)}
+                          className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl text-sm focus:bg-white"
+                        >
+                          <option value="Answer inbound calls">Answer inbound calls</option>
+                          <option value="Missed-call callbacks">Missed-call callbacks</option>
+                          <option value="Lead follow-up after forms">Lead follow-up after forms</option>
+                          <option value="Appointment reminders">Appointment reminders</option>
+                          <option value="Booking request collection">Booking request collection</option>
+                          <option value="Full voice operations workflow">Full voice operations workflow</option>
+                        </select>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1.5">Phone Number Setup</label>
+                          <select
+                            value={phoneNumberSetup}
+                            onChange={(e) => setPhoneNumberSetup(e.target.value)}
+                            className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl text-sm focus:bg-white"
+                          >
+                            <option value="New Office Pigeon-managed Twilio-powered number">New Office Pigeon-managed Twilio-powered number</option>
+                            <option value="Connect my existing number if possible">Connect my existing number if possible</option>
+                            <option value="I am not sure yet">I am not sure yet</option>
+                          </select>
+                        </div>
+                        <div>
+                          <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1.5">Channels</label>
+                          <select
+                            value={callingChannels}
+                            onChange={(e) => setCallingChannels(e.target.value)}
+                            className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl text-sm focus:bg-white"
+                          >
+                            <option value="Phone calls">Phone calls</option>
+                            <option value="Phone calls + WhatsApp where available">Phone calls + WhatsApp where available</option>
+                            <option value="Phone calls + calendar workflow">Phone calls + calendar workflow</option>
+                            <option value="Phone calls + CRM workflow">Phone calls + CRM workflow</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1.5">Booking Behavior</label>
+                          <select
+                            value={bookingFlow}
+                            onChange={(e) => setBookingFlow(e.target.value)}
+                            className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl text-sm focus:bg-white"
+                          >
+                            <option value="Collect requests for human approval">Collect requests for human approval</option>
+                            <option value="Direct booking if rules are clearly configured">Direct booking if rules are clearly configured</option>
+                            <option value="No booking flow needed">No booking flow needed</option>
+                          </select>
+                        </div>
+                        <div>
+                          <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1.5">Timeline goal</label>
+                          <select
+                            value={timeline}
+                            onChange={(e) => setTimeline(e.target.value)}
+                            className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-2xl text-sm focus:bg-white"
+                          >
+                            <option value="Not sure yet">Not sure yet</option>
+                            <option value="Within 1-2 weeks">Within 1-2 weeks</option>
+                            <option value="Flexible after consultation">Flexible after consultation</option>
                           </select>
                         </div>
                       </div>

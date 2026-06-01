@@ -42,7 +42,7 @@ export default function Footer({ onPageChange }: FooterProps) {
               </div>
             </button>
             <p className="text-xs text-gray-400 max-w-sm leading-relaxed mt-3 font-medium">
-              Serving businesses worldwide with AI-powered websites, chatbots, and automations.
+              {BRAND.footerWording}
             </p>
             <div className="pt-2 flex items-center gap-3">
               <a
@@ -93,17 +93,19 @@ export default function Footer({ onPageChange }: FooterProps) {
               </li>
               <li>
                 <button
+                  onClick={() => handleNavClick('calling-agents')}
+                  className="text-xs text-gray-500 hover:text-orange-500 font-bold transition-colors cursor-pointer text-left focus:outline-none"
+                >
+                  Calling Agents
+                </button>
+              </li>
+              <li>
+                <button
                   onClick={() => handleNavClick('automations')}
                   className="text-xs text-gray-500 hover:text-orange-500 font-bold transition-colors cursor-pointer text-left focus:outline-none"
                 >
                   Workflow Automations
                 </button>
-              </li>
-              <li className="flex items-center gap-1.5">
-                <span className="text-xs text-gray-400 font-semibold">Smart Voice Calling</span>
-                <span className="text-[8px] font-mono bg-orange-50 border border-orange-100 text-orange-600 rounded-full px-2 py-0.5 uppercase tracking-wider">
-                  Soon
-                </span>
               </li>
             </ul>
           </div>

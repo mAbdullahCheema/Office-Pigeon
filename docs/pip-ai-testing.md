@@ -16,7 +16,7 @@ Ask these questions:
 12. I want to talk to a human.
 13. I need a custom automation.
 14. I do not know what I need.
-15. Are Smart Calling Agents available?
+15. Are AI Calling Agents available?
 
 Expected:
 

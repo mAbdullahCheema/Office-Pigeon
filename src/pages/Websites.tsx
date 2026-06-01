@@ -38,7 +38,7 @@ export default function Websites({ onOpenPackageModal }: WebsitesProps) {
             <button
               onClick={() => {
                 const el = document.getElementById('website-pricing');
-                el?.scrollIntoView({ behavior: 'smooth' });
+                if (el) window.scrollTo({ top: el.offsetTop });
               }}
               className="px-6 py-3.5 bg-white border border-gray-200 text-gray-700 font-sans text-xs font-semibold rounded-2xl"
             >

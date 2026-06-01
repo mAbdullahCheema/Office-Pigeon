@@ -8,8 +8,8 @@ Slogan: We Automate Your Success.
 Core services:
 - Beautiful Web Development
 - Smart Chatbots
+- AI Calling Agents
 - Workflow Automations
-- Smart Calling Agents, coming soon only
 
 Office Pigeon explains technical work in simple language and offers fully managed systems for business owners who do not want to handle servers, forms, databases, integrations, or automation details themselves.
 

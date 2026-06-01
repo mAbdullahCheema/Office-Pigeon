@@ -35,6 +35,15 @@ export function recommendPackage(input: string): PackageRecommendation {
     };
   }
 
+  if (/(phone call|phone calls|calling agent|ai calling|voice agent|call answering|missed call|call back|callback|appointment reminder|voice assistant)/.test(text)) {
+    return {
+      recommendedService: 'AI Calling Agent',
+      reason: 'You want help answering calls, following up, or handling booking requests by phone, which fits the AI Calling Agent service.',
+      cta: 'Book Free Consultation',
+      secondaryCta: 'Continue on WhatsApp'
+    };
+  }
+
   if (/(lead capture|appointment|chat booking|qualify|booking bot)/.test(text)) {
     return {
       recommendedService: 'Lead & Booking Bot',

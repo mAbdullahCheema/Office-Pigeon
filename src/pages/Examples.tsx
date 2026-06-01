@@ -153,7 +153,7 @@ export default function Examples({ onPageChange, onOpenConsultationModal }: Exam
         <div className="border border-cyan-100 bg-white p-10 rounded-3xl shadow-xs space-y-4">
           <h2 className="text-2xl sm:text-3xl font-black text-gray-900 leading-tight">Want a custom business solution designed?</h2>
           <p className="text-xs sm:text-sm text-gray-400 max-w-sm mx-auto leading-relaxed">
-            Let's evaluate your goals and map the right preview, website, chatbot, or automation setup.
+            Let's evaluate your goals and map the right preview, website, chatbot, AI Calling Agent, or automation setup.
           </p>
           <div className="pt-2 flex flex-wrap justify-center gap-3">
             <button
