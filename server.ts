@@ -276,7 +276,8 @@ const buildExpiredPreviewPage = (slug: string, status: PreviewStatus | 'missing'
     :root { color-scheme: light; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
     body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #faf9f6; color: #1a1a1a; padding: 24px; }
     main { width: min(640px, 100%); background: #fff; border: 1px solid rgba(0,0,0,.07); border-radius: 24px; box-shadow: 0 24px 70px rgba(20,18,15,.08); padding: clamp(28px, 6vw, 56px); text-align: center; }
-    .mark { width: 56px; height: 56px; border-radius: 999px; display: grid; place-items: center; margin: 0 auto 22px; color: #fff; background: linear-gradient(135deg, #f97316, #f43f5e, #f59e0b); font-weight: 900; letter-spacing: -.08em; }
+    .mark { width: 56px; height: 56px; border-radius: 999px; display: grid; place-items: center; margin: 0 auto 22px; background: linear-gradient(135deg, #f97316, #f43f5e, #f59e0b); box-shadow: 0 14px 34px rgba(249, 115, 22, .18); padding: 10px; }
+    .mark img { width: 100%; height: 100%; display: block; }
     .eyebrow { margin: 0 0 10px; font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: #ea580c; font-weight: 800; }
     h1 { margin: 0; font-size: clamp(32px, 7vw, 54px); line-height: .98; letter-spacing: -.04em; }
     p { color: #68625a; line-height: 1.7; font-size: 15px; margin: 18px auto 0; max-width: 460px; }
@@ -289,7 +290,7 @@ const buildExpiredPreviewPage = (slug: string, status: PreviewStatus | 'missing'
 </head>
 <body>
   <main>
-    <div class="mark">OP</div>
+    <div class="mark"><img src="/logos/office-pigeon-icon.svg" alt="Office Pigeon" /></div>
     <p class="eyebrow">Office Pigeon Preview</p>
     <h1>This preview is expired.</h1>
     <p>Please contact +1 917 672 6764 for any questions or placing an order.</p>

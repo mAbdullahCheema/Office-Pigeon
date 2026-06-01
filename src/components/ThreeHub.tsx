@@ -329,8 +329,8 @@ export default function ThreeHub() {
             <div className="relative w-48 h-48 bg-orange-50/50 border border-orange-100/50 rounded-full flex items-center justify-center shadow-lg shadow-orange-50/20">
               <div className="absolute inset-2 border-2 border-dashed border-orange-200/50 rounded-full animate-spin [animation-duration:15s]" />
               <div className="absolute inset-8 border border-rose-100/30 rounded-full animate-reverse-spin [animation-duration:8s]" />
-              <div className="w-16 h-16 bg-gradient-to-tr from-orange-500 to-rose-500 opacity-80 rounded-full flex items-center justify-center text-white font-bold select-none text-xl shadow-md">
-                OP
+              <div className="w-16 h-16 bg-gradient-to-tr from-orange-500 to-rose-500 opacity-80 rounded-full flex items-center justify-center p-3 shadow-md">
+                <img src="/logos/office-pigeon-icon.svg" alt="Office Pigeon" className="h-full w-full" />
               </div>
             </div>
             <p className="mt-6 text-xs text-gray-400 text-center uppercase tracking-widest font-mono">Interactive Hub Simulator Active</p>
