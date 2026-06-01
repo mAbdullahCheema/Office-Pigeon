@@ -209,7 +209,7 @@ export default function Contact() {
                   onChange={(e) => setService(e.target.value)}
                   className="w-full px-3 py-3 bg-white border border-gray-200/60 rounded-xl text-xs"
                 >
-                  <option value="smart-landing">Smart Landing Page ($250)</option>
+                  <option value="starter-business-website">Starter Business Website ($500)</option>
                   <option value="business-website">Business Web app ($1,400+)</option>
                   <option value="commerce-website">Commerce Shop ($1,000+)</option>
                   <option value="faq-bot">Smart FAQ Bot ($49/mo)</option>
@@ -266,7 +266,7 @@ export default function Contact() {
                   className="w-full px-3 py-3 bg-white border border-gray-200/60 rounded-xl text-xs"
                 >
                   <option value="Not sure yet">Decide later / Not sure yet</option>
-                  <option value="$250 - $500">$250 – $500</option>
+                  <option value="$500 or less">$500 or less</option>
                   <option value="$500 - $1,000">$500 – $1,000</option>
                   <option value="$1,000 - $2,500">$1,000 – $2,500</option>
                   <option value="$2,500 - $5,000">$2,500 – $5,000</option>

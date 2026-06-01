@@ -1,16 +1,161 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
-  --font-serif: "Playfair Display", ui-serif, Georgia, serif;
-  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Manrope", ui-sans-serif, system-ui, sans-serif;
 }
 
-/* Base modifications for Bold Typography Theme */
+/* Base typography for a readable, consistent AI products website */
+html {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 body {
   background-color: #FAF9F6;
   color: #1A1A1A;
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-sans);
+  font-style: normal;
+  font-weight: 800;
+  letter-spacing: -0.018em;
+  line-height: 1.08;
+  text-wrap: balance;
+}
+
+p,
+li {
+  line-height: 1.7;
+  text-wrap: pretty;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+
+input,
+select,
+textarea {
+  font-size: 0.95rem;
+}
+
+::placeholder {
+  color: #667085;
+  opacity: 1;
+}
+
+.font-serif {
+  font-family: var(--font-sans) !important;
+  font-style: normal !important;
+}
+
+.font-mono {
+  font-family: var(--font-sans) !important;
+  font-variant-numeric: tabular-nums;
+}
+
+.italic {
+  font-style: normal !important;
+}
+
+.text-gray-400 {
+  color: #667085 !important;
+}
+
+.text-gray-500 {
+  color: #4b5563 !important;
+}
+
+.text-\[8px\],
+.text-\[9px\],
+.text-\[10px\],
+.text-\[11px\] {
+  font-size: 0.8125rem !important;
+  line-height: 1.5 !important;
+}
+
+.text-xs {
+  font-size: 0.875rem !important;
+  line-height: 1.55 !important;
+}
+
+.text-sm {
+  font-size: 1rem !important;
+  line-height: 1.65 !important;
+}
+
+.text-xl {
+  font-size: 1.25rem !important;
+  line-height: 1.25 !important;
+}
+
+.text-2xl {
+  font-size: clamp(1.35rem, 1.15rem + 0.5vw, 1.75rem) !important;
+  line-height: 1.18 !important;
+}
+
+.text-3xl {
+  font-size: clamp(1.65rem, 1.35rem + 0.9vw, 2.25rem) !important;
+  line-height: 1.14 !important;
+}
+
+.text-4xl {
+  font-size: clamp(2rem, 1.55rem + 1.6vw, 3rem) !important;
+  line-height: 1.1 !important;
+}
+
+.text-5xl {
+  font-size: clamp(2.35rem, 1.75rem + 2.1vw, 4rem) !important;
+  line-height: 1.08 !important;
+}
+
+.tracking-tighter {
+  letter-spacing: -0.018em !important;
+}
+
+.tracking-wider,
+.tracking-widest,
+[class*="tracking-[0."] {
+  letter-spacing: 0.025em !important;
+}
+
+.leading-none,
+.leading-\[1\.0\],
+.leading-\[1\.05\],
+.leading-\[1\.1\] {
+  line-height: 1.12 !important;
+}
+
+@media (max-width: 640px) {
+  body {
+    font-size: 15px;
+  }
+
+  h1,
+  .text-4xl,
+  .text-5xl,
+  .text-6xl,
+  .text-\[68px\] {
+    font-size: clamp(2rem, 1.45rem + 3vw, 2.85rem) !important;
+    line-height: 1.14 !important;
+    overflow-wrap: anywhere;
+  }
 }
 
 /* Custom fade animation support */

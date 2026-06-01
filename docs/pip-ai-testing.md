@@ -4,7 +4,7 @@ Ask these questions:
 
 1. What does Office Pigeon do?
 2. How much is the landing page?
-3. What is included in the $250 landing page?
+3. What is included in the $500 Starter Business Website?
 4. What happens after the first year?
 5. Can you build me a booking website?
 6. I want a website with login and payments.

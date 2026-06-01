@@ -632,7 +632,7 @@ export default function PackageModal({ packageData, isOpen, onClose }: PackageMo
                           className="w-full px-4 py-3.5 bg-gray-50 border border-gray-100 rounded-2xl text-sm focus:bg-white"
                         >
                           <option value="Not sure yet">Decide later / Not sure yet</option>
-                          <option value="$250 - $500">$250 – $500</option>
+                          <option value="$500 or less">$500 or less</option>
                           <option value="$500 - $1,000">$500 – $1,000</option>
                           <option value="$1,000 - $2,500">$1,000 – $2,500</option>
                           <option value="$2,500 - $5,000">$2,500 – $5,000</option>

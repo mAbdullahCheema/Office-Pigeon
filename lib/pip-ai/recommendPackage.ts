@@ -64,8 +64,8 @@ export function recommendPackage(input: string): PackageRecommendation {
 
   if (/(simple website|online presence|landing|look professional|credibility|one page|google maps)/.test(text)) {
     return {
-      recommendedService: 'Smart Landing Page',
-      reason: 'You need a clean online presence that builds trust quickly, so the $250 Smart Landing Page is the best starter option.',
+      recommendedService: 'Starter Business Website',
+      reason: 'You need a clean, professional online presence that builds trust quickly, so the $500 Starter Business Website is the best starter package.',
       cta: 'Book Free Consultation',
       secondaryCta: 'Continue on WhatsApp'
     };

@@ -20,8 +20,8 @@ export const BRAND = {
 export const WEBSITE_PACKAGES: Package[] = [
   {
     id: 'landing-page',
-    name: 'Smart Landing Page',
-    price: '$250',
+    name: 'Starter Business Website',
+    price: '$500',
     badge: 'Best Starter Offer',
     timeline: '1 working day',
     revision: '1 minor revision included',
@@ -257,13 +257,13 @@ export const GENERAL_FAQS: FAQItem[] = [
     category: 'general'
   },
   {
-    question: 'What is included in the $250 Smart Landing Page?',
+    question: 'What is included in the $500 Starter Business Website?',
     answer: 'It includes 1 beautiful responsive landing page, complete phone/desktop formatting, custom client intake forms, WhatsApp message links, social blocks, standard SEO setup, first-year .com domain registration (if available), and hosting setup with complete support.',
     category: 'websites'
   },
   {
-    question: 'Is the $250 landing page a one-time payment?',
-    answer: 'Yes, the initial build is a one-time $250 investment. After the first year, domain registration and hosting run at a tiny, cost-effective fee of just $20/year if kept under Office Pigeon management.',
+    question: 'Is the $500 Starter Business Website a one-time payment?',
+    answer: 'Yes, the initial build is a one-time $500 investment. After the first year, domain registration and hosting run at a tiny, cost-effective fee of just $20/year if kept under Office Pigeon management.',
     category: 'websites'
   },
   {
@@ -273,7 +273,7 @@ export const GENERAL_FAQS: FAQItem[] = [
   },
   {
     question: 'Do you offer revisions?',
-    answer: 'Yes, the Smart Landing Page package includes 1 minor design/copy revision. Additional minor maintenance or wording revisions can be bought for $50, and large functional revisions are provided via custom quotes. Our website templates and custom app packages include clear revision milestones.',
+    answer: 'Yes, the Starter Business Website package includes 1 minor design/copy revision. Additional minor maintenance or wording revisions can be bought for $50, and large functional revisions are provided via custom quotes. Our website templates and custom app packages include clear revision milestones.',
     category: 'general'
   },
   {
