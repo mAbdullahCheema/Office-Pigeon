@@ -216,12 +216,12 @@ export default function Admin() {
       <div className="min-h-screen bg-[#FAF9F6] grid place-items-center px-4 py-10">
         <form onSubmit={signIn} className="w-full max-w-md rounded-3xl border border-black/5 bg-white p-8 shadow-sm">
           <div className="text-center">
-            <div className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-gradient-to-tr from-orange-500 via-rose-500 to-amber-500 text-sm font-black text-white">
-              OP
+            <div className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-gradient-to-tr from-orange-500 via-rose-500 to-amber-500 p-2 shadow-lg shadow-orange-500/10">
+              <img src="/logos/office-pigeon-icon.svg" alt="Office Pigeon" className="h-full w-full" />
             </div>
             <p className="mt-5 text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-orange-600">Preview Admin</p>
             <h1 className="mt-2 text-3xl font-black tracking-tight text-gray-950">Office Pigeon</h1>
-            <p className="mt-3 text-sm leading-relaxed text-gray-500">Sign in with the authorized Supabase admin account.</p>
+            <p className="mt-3 text-sm leading-relaxed text-gray-500">Sign in with the authorized admin account.</p>
           </div>
 
           <div className="mt-8 space-y-3">
