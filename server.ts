@@ -11,6 +11,7 @@ import { GoogleGenAI } from '@google/genai';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { createServer as createViteServer } from 'vite';
 import { answerPipChat } from './lib/pip-ai/server';
+import { searchOfficePigeonKnowledgeForTool } from './lib/server/office-pigeon-vector-search';
 
 const SYSTEM_PROMPT =
   'You are Pip AI, the helpful, on-point, friendly, and fresh AI assistant for Office Pigeon. Keep responses brief, direct, and professional. Mention our Starter Business Website ($500), FAQ bots ($300), and custom onboarding workflows where appropriate.';
@@ -70,6 +71,7 @@ const isProductionServer = process.env.NODE_ENV === 'production' || isBundledSer
 let supabase: SupabaseClient | null = null;
 let supabaseAuthClient: SupabaseClient | null = null;
 const previewLeadAttempts = new Map<string, { count: number; resetAt: number }>();
+const elevenLabsToolAttempts = new Map<string, { count: number; resetAt: number }>();
 
 const getEnv = (...names: string[]) => {
   for (const name of names) {
@@ -407,6 +409,19 @@ const isPreviewLeadRateLimited = (ip: string) => {
 
   current.count += 1;
   return current.count > 20;
+};
+
+const isElevenLabsToolRateLimited = (ip: string) => {
+  const now = Date.now();
+  const windowMs = 60 * 1000;
+  const current = elevenLabsToolAttempts.get(ip);
+  if (!current || current.resetAt < now) {
+    elevenLabsToolAttempts.set(ip, { count: 1, resetAt: now + windowMs });
+    return false;
+  }
+
+  current.count += 1;
+  return current.count > 60;
 };
 
 const normalizeMessages = (messages: unknown): NormalizedChatMessage[] => {
@@ -1044,6 +1059,58 @@ async function startServer() {
         ? 'Hi Office Pigeon, I want to book a free workflow automation audit for my business.'
         : 'Hi Office Pigeon, I want to book a free consultation.';
     res.json({ message, url: `https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '19176726764'}?text=${encodeURIComponent(message)}` });
+  });
+
+  app.post('/api/elevenlabs/tools/search-office-pigeon-knowledge', async (req, res) => {
+    const configuredSecret = process.env.ELEVENLABS_TOOL_SECRET;
+    const suppliedSecret = req.headers['x-elevenlabs-tool-secret'];
+
+    if (!configuredSecret || suppliedSecret !== configuredSecret) {
+      res.status(401).json({ message: 'Unauthorized' });
+      return;
+    }
+
+    const ip = req.ip || req.socket.remoteAddress || 'elevenlabs';
+    if (isElevenLabsToolRateLimited(ip)) {
+      res.status(429).json({ message: 'Too many requests' });
+      return;
+    }
+
+    const query = nonEmptyString(req.body.query);
+    if (!query) {
+      res.status(400).json({ message: 'query is required.' });
+      return;
+    }
+
+    try {
+      const result = await searchOfficePigeonKnowledgeForTool({
+        query,
+        conversation_summary: nonEmptyString(req.body.conversation_summary),
+        caller_need: nonEmptyString(req.body.caller_need),
+        caller_business_type: nonEmptyString(req.body.caller_business_type),
+        caller_language: nonEmptyString(req.body.caller_language)
+      });
+
+      console.info('[ElevenLabs Tool] Office Pigeon knowledge search completed.', {
+        query_length: query.length,
+        caller_need_present: Boolean(nonEmptyString(req.body.caller_need)),
+        confidence: result.confidence
+      });
+
+      res.json(result);
+    } catch (error) {
+      console.warn('[ElevenLabs Tool] Office Pigeon knowledge search failed.', {
+        message: error instanceof Error ? error.message : 'Unknown error'
+      });
+      res.json({
+        answer:
+          'I do not want to guess the exact details, but Office Pigeon can usually help depending on the project scope. The best next step would be a quick free consultation so the team can recommend the right setup.',
+        facts: [],
+        confidence: 'low',
+        recommended_next_step: 'Offer a free consultation so the Office Pigeon team can recommend the right setup.',
+        missing_details: 'The request could not be answered safely from confirmed Office Pigeon knowledge.'
+      });
+    }
   });
 
   if (!isProductionServer) {
