@@ -729,7 +729,12 @@ async function startServer() {
     next();
   });
 
-  app.get('/previews/:slug', (req, res) => {
+  app.get('/previews/:slug', (req, res, next) => {
+    if (req.path.endsWith('/')) {
+      next();
+      return;
+    }
+
     res.redirect(302, `/previews/${req.params.slug}/`);
   });
 
