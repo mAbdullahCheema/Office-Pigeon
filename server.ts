@@ -56,6 +56,8 @@ const SLUG_REGEX = /^[a-z0-9-]+$/;
 const VALID_STATUSES: PreviewStatus[] = ['live', 'expired', 'sold', 'draft', 'archived'];
 const PREVIEWS_DIR = path.join(process.cwd(), 'previews');
 const OFFICE_PIGEON_PHONE = '+1 917 672 6764';
+const isBundledServer = /dist[\\/]+server\.cjs$/.test(process.argv[1] || '') || /server\.cjs$/.test(process.argv[1] || '');
+const isProductionServer = process.env.NODE_ENV === 'production' || isBundledServer;
 
 let supabase: SupabaseClient | null = null;
 let supabaseAuthClient: SupabaseClient | null = null;
@@ -1004,7 +1006,7 @@ async function startServer() {
     res.json({ message, url: `https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '19176726764'}?text=${encodeURIComponent(message)}` });
   });
 
-  if (process.env.NODE_ENV !== 'production') {
+  if (!isProductionServer) {
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: 'spa'
