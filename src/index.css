@@ -4,7 +4,7 @@
 @theme {
   --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
   --font-serif: "Manrope", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
 }
 
 /* Base typography for a readable, consistent AI products website */
@@ -65,15 +65,6 @@ textarea {
   font-style: normal !important;
 }
 
-.font-mono {
-  font-family: var(--font-sans) !important;
-  font-variant-numeric: tabular-nums;
-}
-
-.italic {
-  font-style: normal !important;
-}
-
 .text-gray-400 {
   color: #667085 !important;
 }
@@ -98,31 +89,6 @@ textarea {
 .text-sm {
   font-size: 1rem !important;
   line-height: 1.65 !important;
-}
-
-.text-xl {
-  font-size: 1.25rem !important;
-  line-height: 1.25 !important;
-}
-
-.text-2xl {
-  font-size: clamp(1.35rem, 1.15rem + 0.5vw, 1.75rem) !important;
-  line-height: 1.18 !important;
-}
-
-.text-3xl {
-  font-size: clamp(1.65rem, 1.35rem + 0.9vw, 2.25rem) !important;
-  line-height: 1.14 !important;
-}
-
-.text-4xl {
-  font-size: clamp(2rem, 1.55rem + 1.6vw, 3rem) !important;
-  line-height: 1.1 !important;
-}
-
-.text-5xl {
-  font-size: clamp(2.35rem, 1.75rem + 2.1vw, 4rem) !important;
-  line-height: 1.08 !important;
 }
 
 .tracking-tighter {
