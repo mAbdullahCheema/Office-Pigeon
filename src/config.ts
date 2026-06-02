@@ -12,6 +12,7 @@ export const BRAND = {
   supportEmail: 'help@officepigeon.com',
   phone: '+1 917 672 6764',
   whatsappUrl: 'https://wa.me/19176726764',
+  instagramUrl: 'https://www.instagram.com/office_pigeon/',
   calComUrl: 'https://cal.com/office-pigeon/demo-call',
   workingHours: 'Mon–Fri, 8:00 AM – 4:00 PM Eastern Time',
   footerWording: 'Serving businesses worldwide with AI-powered websites, chatbots, AI Calling Agents, and automations.'

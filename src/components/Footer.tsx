@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Mail, Phone, Clock, MessageCircle, Bird, Shield, Linkedin } from 'lucide-react';
+import { Mail, Phone, Clock, MessageCircle, Bird, Shield, Linkedin, Instagram } from 'lucide-react';
 import { PageId } from '../types';
 import { BRAND } from '../config';
 
@@ -67,6 +67,15 @@ export default function Footer({ onPageChange }: FooterProps) {
                 className="p-2.5 bg-white hover:bg-orange-500 hover:text-white text-[#1A1A1A] border border-black/5 rounded-full transition-all hover:scale-105 shadow-xs"
               >
                 <Linkedin size={15} />
+              </a>
+              <a
+                href={BRAND.instagramUrl}
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Office Pigeon on Instagram"
+                className="p-2.5 bg-white hover:bg-orange-500 hover:text-white text-[#1A1A1A] border border-black/5 rounded-full transition-all hover:scale-105 shadow-xs"
+              >
+                <Instagram size={15} />
               </a>
             </div>
           </div>
