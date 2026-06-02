@@ -10,8 +10,75 @@ import PipAIMessageBubble, { PipMessage } from './PipAIMessageBubble';
 import PipAIQuickActions, { PipAction } from './PipAIQuickActions';
 import PipAITypingIndicator from './PipAITypingIndicator';
 
+const STORAGE_KEY = 'office_pigeon_pip_ai_session';
+
+type PipAISession = {
+  lead: PipLead | null;
+  conversationId?: string;
+  messages: PipMessage[];
+  input: string;
+  handoffUrl?: string;
+};
+
 function makeId() {
   return typeof crypto !== 'undefined' && 'randomUUID' in crypto ? crypto.randomUUID() : Math.random().toString(36).slice(2);
+}
+
+function starterMessage(): PipMessage {
+  return {
+    id: makeId(),
+    role: 'assistant',
+    content: "Thanks. I'm Pip AI - Office Pigeon's AI assistant. What would you like help with today?"
+  };
+}
+
+function persistableLead(lead: PipLead | null): PipLead | null {
+  if (!lead) return null;
+
+  return {
+    id: lead.id,
+    name: '',
+    businessName: '',
+    email: '',
+    phone: '',
+    needHelpWith: lead.needHelpWith || 'Not sure yet'
+  };
+}
+
+function readStoredSession(): PipAISession {
+  if (typeof window === 'undefined') {
+    return { lead: null, messages: [], input: '' };
+  }
+
+  try {
+    const saved = window.localStorage.getItem(STORAGE_KEY);
+    const parsed = saved ? JSON.parse(saved) : {};
+    const storedLeadId = window.localStorage.getItem('pip_ai_lead_id') || undefined;
+    const lead =
+      parsed?.lead && typeof parsed.lead === 'object'
+        ? parsed.lead
+        : storedLeadId
+          ? {
+              id: storedLeadId,
+              name: '',
+              businessName: '',
+              email: '',
+              phone: '',
+              needHelpWith: 'Not sure yet'
+            }
+          : null;
+    const messages = Array.isArray(parsed?.messages) ? parsed.messages : [];
+
+    return {
+      lead,
+      conversationId: typeof parsed?.conversationId === 'string' ? parsed.conversationId : undefined,
+      messages: lead && messages.length === 0 ? [starterMessage()] : messages,
+      input: typeof parsed?.input === 'string' ? parsed.input : '',
+      handoffUrl: typeof parsed?.handoffUrl === 'string' ? parsed.handoffUrl : undefined
+    };
+  } catch {
+    return { lead: null, messages: [], input: '' };
+  }
 }
 
 function actionPrompt(action: PipAction) {
@@ -34,18 +101,34 @@ function isGreetingOnly(text: string) {
   );
 }
 
-export default function PipAIChatWindow({ onClose, onPageChange }: { onClose: () => void; onPageChange?: (page: string) => void }) {
-  const [lead, setLead] = useState<PipLead | null>(null);
-  const [conversationId, setConversationId] = useState<string | undefined>();
-  const [messages, setMessages] = useState<PipMessage[]>([]);
-  const [input, setInput] = useState('');
+export default function PipAIChatWindow({ isOpen, onClose, onPageChange }: { isOpen: boolean; onClose: () => void; onPageChange?: (page: string) => void }) {
+  const [session] = useState(readStoredSession);
+  const [lead, setLead] = useState<PipLead | null>(session.lead);
+  const [conversationId, setConversationId] = useState<string | undefined>(session.conversationId);
+  const [messages, setMessages] = useState<PipMessage[]>(session.messages);
+  const [input, setInput] = useState(session.input);
   const [thinking, setThinking] = useState(false);
-  const [handoffUrl, setHandoffUrl] = useState<string | undefined>();
+  const [handoffUrl, setHandoffUrl] = useState<string | undefined>(session.handoffUrl);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight });
   }, [messages, thinking, handoffUrl]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    window.localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        lead: persistableLead(lead),
+        conversationId,
+        messages,
+        input,
+        handoffUrl
+      })
+    );
+  }, [lead, conversationId, messages, input, handoffUrl]);
 
   const history = useMemo(
     () => messages.map((message) => ({ role: message.role, content: message.content })),
@@ -55,13 +138,7 @@ export default function PipAIChatWindow({ onClose, onPageChange }: { onClose: ()
   function onLeadSaved(savedLead: PipLead) {
     setLead(savedLead);
     setHandoffUrl(undefined);
-    setMessages([
-      {
-        id: makeId(),
-        role: 'assistant',
-        content: "Thanks. I'm Pip AI - Office Pigeon's AI assistant. What would you like help with today?"
-      }
-    ]);
+    setMessages([starterMessage()]);
   }
 
   async function sendMessage(text: string) {
@@ -181,9 +258,10 @@ export default function PipAIChatWindow({ onClose, onPageChange }: { onClose: ()
   return (
     <motion.div
       initial={{ opacity: 0, y: 28, scale: 0.96 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      exit={{ opacity: 0, y: 28, scale: 0.96 }}
-      className="fixed bottom-4 right-4 z-50 flex h-[min(680px,calc(100vh-2rem))] w-[calc(100vw-2rem)] max-w-[410px] flex-col overflow-hidden rounded-[28px] border border-cyan-100 bg-white/95 shadow-2xl shadow-cyan-950/15 backdrop-blur-xl max-[640px]:right-3 max-[640px]:bottom-24 max-[640px]:h-[min(620px,calc(100vh-7rem))] max-[640px]:w-[calc(100vw-1.5rem)] sm:bottom-6 sm:right-6"
+      animate={isOpen ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 28, scale: 0.96 }}
+      className={`fixed bottom-4 right-4 z-50 flex h-[min(680px,calc(100vh-2rem))] w-[calc(100vw-2rem)] max-w-[410px] flex-col overflow-hidden rounded-[28px] border border-cyan-100 bg-white/95 shadow-2xl shadow-cyan-950/15 backdrop-blur-xl max-[640px]:right-3 max-[640px]:bottom-24 max-[640px]:h-[min(620px,calc(100vh-7rem))] max-[640px]:w-[calc(100vw-1.5rem)] sm:bottom-6 sm:right-6 ${
+        isOpen ? 'pointer-events-auto' : 'pointer-events-none invisible'
+      }`}
       role="dialog"
       aria-label="Pip AI Assistant"
     >
