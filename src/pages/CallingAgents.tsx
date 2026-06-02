@@ -114,7 +114,7 @@ function findInteractiveControl(root: Document | ShadowRoot | Element): HTMLElem
 }
 
 export default function CallingAgents({ onOpenPackageModal }: CallingAgentsProps) {
-  const [voiceNotice, setVoiceNotice] = useState('Use the button below to open the live ElevenLabs Pip AI Caller widget.');
+  const [voiceNotice, setVoiceNotice] = useState('Use the button below to open the live Pip AI Caller widget.');
 
   const launchLiveAgent = () => {
     if (typeof document === 'undefined') return;
@@ -137,7 +137,7 @@ export default function CallingAgents({ onOpenPackageModal }: CallingAgentsProps
 
     widget.click();
     widget.dispatchEvent(new MouseEvent('click', { bubbles: true, composed: true }));
-    setVoiceNotice('Use the ElevenLabs voice widget on the page to start the live Pip AI Caller conversation.');
+    setVoiceNotice('Use the voice widget on the page to start the live Pip AI Caller conversation.');
   };
 
   return (
@@ -214,9 +214,9 @@ export default function CallingAgents({ onOpenPackageModal }: CallingAgentsProps
             <span className="text-[10px] font-mono tracking-widest uppercase text-orange-600 font-bold bg-white border border-orange-100 px-3.5 py-1.5 rounded-full">
               LIVE ELEVENLABS AGENT
             </span>
-            <h2 className="text-2xl sm:text-3xl font-black text-gray-900">Try Pip AI Caller with the real ElevenLabs voice agent</h2>
+            <h2 className="text-2xl sm:text-3xl font-black text-gray-900">Try Pip AI Caller with the real live voice agent</h2>
             <p className="text-xs sm:text-sm text-gray-500 max-w-2xl mx-auto leading-relaxed">
-              This section launches the same public Pip AI Caller widget on the website, using the natural ElevenLabs voices configured inside the agent.
+              This section launches the same public Pip AI Caller widget on the website, using the natural voices configured inside the agent.
             </p>
           </div>
 
@@ -240,7 +240,7 @@ export default function CallingAgents({ onOpenPackageModal }: CallingAgentsProps
                     Start a real voice chat with the Office Pigeon agent.
                   </h3>
                   <p className="text-sm text-gray-300 leading-relaxed">
-                    Click below to open the ElevenLabs voice widget, allow microphone access, and ask about pricing, missed calls, booking requests, languages, or using your own number.
+                    Click below to open the live voice widget, allow microphone access, and ask about pricing, missed calls, booking requests, languages, or using your own number.
                   </p>
                 </div>
 
@@ -259,7 +259,7 @@ export default function CallingAgents({ onOpenPackageModal }: CallingAgentsProps
                   className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-white px-5 py-4 text-xs font-black uppercase tracking-wide text-gray-950 shadow-lg transition hover:bg-orange-100 sm:w-auto"
                 >
                   <PhoneCall size={15} />
-                  Start live ElevenLabs voice chat
+                  Start live voice chat
                 </button>
                 <p className="text-[11px] text-gray-400 leading-relaxed">{voiceNotice}</p>
               </div>
@@ -273,7 +273,7 @@ export default function CallingAgents({ onOpenPackageModal }: CallingAgentsProps
                 </div>
                 <h3 className="text-2xl font-black text-gray-900">Configured to feel like a real multilingual caller experience</h3>
                 <p className="text-xs sm:text-sm text-gray-500 leading-relaxed">
-                  These voice personalities are handled inside the ElevenLabs agent configuration, not through browser text-to-speech. The website only launches the public agent widget.
+                  These voice personalities are handled inside the live agent configuration, not through browser text-to-speech. The website only launches the public agent widget.
                 </p>
               </div>
 

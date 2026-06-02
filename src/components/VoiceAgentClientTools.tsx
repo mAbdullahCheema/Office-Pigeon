@@ -22,7 +22,7 @@ type ConvaiCallEvent = Event & {
 
 declare global {
   interface Window {
-    OfficePigeonElevenLabsClientTools?: {
+    OfficePigeonVoiceAgentClientTools?: {
       open_consultation_page: () => ToolResult;
       open_whatsapp_contact: (params?: ToolParams) => ToolResult;
     };
@@ -50,7 +50,7 @@ function openClientUrl(url: string, successMessage: string): ToolResult {
   }
 }
 
-export function createOfficePigeonElevenLabsClientTools() {
+export function createOfficePigeonVoiceAgentClientTools() {
   return {
     open_consultation_page: () =>
       openClientUrl(BRAND.calComUrl, 'Consultation page opened.'),
@@ -62,12 +62,12 @@ export function createOfficePigeonElevenLabsClientTools() {
   };
 }
 
-export default function ElevenLabsClientTools() {
+export default function VoiceAgentClientTools() {
   useEffect(() => {
     if (typeof window === 'undefined' || typeof document === 'undefined') return;
 
-    const tools = createOfficePigeonElevenLabsClientTools();
-    window.OfficePigeonElevenLabsClientTools = tools;
+    const tools = createOfficePigeonVoiceAgentClientTools();
+    window.OfficePigeonVoiceAgentClientTools = tools;
 
     const attachToWidget = (widget: Element) => {
       if ((widget as HTMLElement).dataset.officePigeonClientTools === 'ready') return;
@@ -94,8 +94,8 @@ export default function ElevenLabsClientTools() {
 
     return () => {
       observer.disconnect();
-      if (window.OfficePigeonElevenLabsClientTools === tools) {
-        delete window.OfficePigeonElevenLabsClientTools;
+      if (window.OfficePigeonVoiceAgentClientTools === tools) {
+        delete window.OfficePigeonVoiceAgentClientTools;
       }
     };
   }, []);

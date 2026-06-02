@@ -74,7 +74,7 @@ const isProductionServer = process.env.NODE_ENV === 'production' || isBundledSer
 let supabase: SupabaseClient | null = null;
 let supabaseAuthClient: SupabaseClient | null = null;
 const previewLeadAttempts = new Map<string, { count: number; resetAt: number }>();
-const elevenLabsToolAttempts = new Map<string, { count: number; resetAt: number }>();
+const voiceToolAttempts = new Map<string, { count: number; resetAt: number }>();
 
 const getEnv = (...names: string[]) => {
   for (const name of names) {
@@ -427,12 +427,12 @@ const isPreviewLeadRateLimited = (ip: string) => {
   return current.count > 20;
 };
 
-const isElevenLabsToolRateLimited = (ip: string) => {
+const isVoiceToolRateLimited = (ip: string) => {
   const now = Date.now();
   const windowMs = 60 * 1000;
-  const current = elevenLabsToolAttempts.get(ip);
+  const current = voiceToolAttempts.get(ip);
   if (!current || current.resetAt < now) {
-    elevenLabsToolAttempts.set(ip, { count: 1, resetAt: now + windowMs });
+    voiceToolAttempts.set(ip, { count: 1, resetAt: now + windowMs });
     return false;
   }
 
@@ -1077,7 +1077,7 @@ async function startServer() {
     res.json({ message, url: `https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '19176726764'}?text=${encodeURIComponent(message)}` });
   });
 
-  const safeElevenLabsToolResponse = (
+  const safeVoiceToolResponse = (
     answer: string,
     missingDetails: string | null,
     recommendedNextStep = 'Offer a free consultation so the Office Pigeon team can recommend the right setup.'
@@ -1089,25 +1089,25 @@ async function startServer() {
     missing_details: missingDetails
   });
 
-  const handleElevenLabsKnowledgeSearch = async (req: express.Request, res: express.Response) => {
+  const handleVoiceKnowledgeSearch = async (req: express.Request, res: express.Response) => {
     const configuredSecret = process.env.ELEVENLABS_TOOL_SECRET;
     const suppliedSecret = req.headers['x-elevenlabs-tool-secret'];
 
     if (!configuredSecret || suppliedSecret !== configuredSecret) {
       res.status(401).json(
-        safeElevenLabsToolResponse(
+        safeVoiceToolResponse(
           'Unauthorized.',
-          'The ElevenLabs tool request was not authorized.',
-          'Check the ElevenLabs tool secret configuration.'
+          'The voice tool request was not authorized.',
+          'Check the voice tool secret configuration.'
         )
       );
       return;
     }
 
-    const ip = req.ip || req.socket.remoteAddress || 'elevenlabs';
-    if (isElevenLabsToolRateLimited(ip)) {
+    const ip = req.ip || req.socket.remoteAddress || 'voice-tool';
+    if (isVoiceToolRateLimited(ip)) {
       res.status(429).json(
-        safeElevenLabsToolResponse(
+        safeVoiceToolResponse(
           'I do not want to guess the exact details, but Office Pigeon can usually help depending on the project scope. The best next step would be a quick free consultation so the team can recommend the right setup.',
           'Too many tool requests were received in a short time.'
         )
@@ -1119,7 +1119,7 @@ async function startServer() {
     const query = nonEmptyString(source.query);
     if (!query) {
       res.status(400).json(
-        safeElevenLabsToolResponse(
+        safeVoiceToolResponse(
           'I do not want to guess the exact details, but Office Pigeon can usually help depending on the project scope. The best next step would be a quick free consultation so the team can recommend the right setup.',
           'A search query is required.'
         )
@@ -1136,7 +1136,7 @@ async function startServer() {
         caller_language: nonEmptyString(source.caller_language)
       });
 
-      console.info('[ElevenLabs Tool] Office Pigeon knowledge search completed.', {
+      console.info('[Voice Tool] Office Pigeon knowledge search completed.', {
         query_length: query.length,
         caller_need_present: Boolean(nonEmptyString(source.caller_need)),
         confidence: result.confidence
@@ -1144,7 +1144,7 @@ async function startServer() {
 
       res.json(result);
     } catch (error) {
-      console.warn('[ElevenLabs Tool] Office Pigeon knowledge search failed.', {
+      console.warn('[Voice Tool] Office Pigeon knowledge search failed.', {
         message: error instanceof Error ? error.message : 'Unknown error'
       });
       res.json({
@@ -1158,8 +1158,8 @@ async function startServer() {
     }
   };
 
-  app.get('/api/elevenlabs/tools/search-office-pigeon-knowledge', handleElevenLabsKnowledgeSearch);
-  app.post('/api/elevenlabs/tools/search-office-pigeon-knowledge', handleElevenLabsKnowledgeSearch);
+  app.get('/api/elevenlabs/tools/search-office-pigeon-knowledge', handleVoiceKnowledgeSearch);
+  app.post('/api/elevenlabs/tools/search-office-pigeon-knowledge', handleVoiceKnowledgeSearch);
 
   if (!isProductionServer) {
     const vite = await createViteServer({

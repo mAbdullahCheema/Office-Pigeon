@@ -28,7 +28,7 @@ function authorized(request: NextRequest) {
 }
 
 function rateLimited(request: NextRequest) {
-  const key = request.headers.get('x-forwarded-for') || 'elevenlabs-local';
+  const key = request.headers.get('x-forwarded-for') || 'voice-tool-local';
   const now = Date.now();
   const current = hits.get(key);
 
@@ -64,14 +64,14 @@ async function handleToolRequest(request: NextRequest, getPayload: () => Promise
   try {
     const input = requestSchema.parse(await getPayload());
     const result = await searchOfficePigeonKnowledgeForTool(input);
-    console.info('[ElevenLabs Tool] Office Pigeon knowledge search completed.', {
+    console.info('[Voice Tool] Office Pigeon knowledge search completed.', {
       query_length: input.query.length,
       caller_need_present: Boolean(input.caller_need),
       confidence: result.confidence
     });
     return NextResponse.json(result);
   } catch (error) {
-    console.warn('[ElevenLabs Tool] Office Pigeon knowledge search failed.', {
+    console.warn('[Voice Tool] Office Pigeon knowledge search failed.', {
       message: error instanceof Error ? error.message : 'Unknown error'
     });
     return NextResponse.json(safeFallback, { status: 200 });
