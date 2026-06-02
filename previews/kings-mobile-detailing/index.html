@@ -1,6 +1,17 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <script>
+      (function() {
+        const base = document.createElement('base');
+        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+          base.href = '/';
+        } else {
+          base.href = '/previews/kings-mobile-detailing/';
+        }
+        document.head.appendChild(base);
+      })();
+    </script>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/jpeg" href="./images/logo.jpg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
