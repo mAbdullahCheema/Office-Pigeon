@@ -319,20 +319,33 @@ const buildPreviewInjection = (slug: string) => {
   window.OFFICE_PIGEON_PREVIEW_API = "/api/preview-leads";
 </script>
 <style>
-  #office-pigeon-preview-banner { position: fixed; left: 50%; bottom: 14px; transform: translateX(-50%); z-index: 2147483647; max-width: min(720px, calc(100vw - 24px)); display: flex; align-items: center; gap: 12px; padding: 10px 12px 10px 16px; border: 1px solid rgba(0,0,0,.08); border-radius: 999px; background: rgba(255,255,255,.94); color: #171717; box-shadow: 0 16px 44px rgba(0,0,0,.14); backdrop-filter: blur(18px); font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; font-size: 12px; line-height: 1.35; }
+  #office-pigeon-preview-banner { position: fixed; left: 50%; bottom: 14px; transform: translateX(-50%); z-index: 2147483647; max-width: min(720px, calc(100vw - 24px)); display: flex; align-items: center; gap: 12px; padding: 10px 12px 10px 16px; border: 1px solid rgba(0,0,0,.08); border-radius: 999px; background: rgba(255,255,255,.94); color: #171717; box-shadow: 0 16px 44px rgba(0,0,0,.14); backdrop-filter: blur(18px); font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; font-size: 12px; line-height: 1.35; transition: width .2s ease, max-width .2s ease, padding .2s ease, border-radius .2s ease; }
   #office-pigeon-preview-banner a { color: #fff; background: #111; border-radius: 999px; padding: 8px 11px; text-decoration: none; font-weight: 800; white-space: nowrap; }
-  #office-pigeon-preview-banner button { border: 0; background: #f3f1ed; color: #555; width: 24px; height: 24px; border-radius: 999px; cursor: pointer; font-weight: 800; line-height: 1; }
-  @media (max-width: 560px) { #office-pigeon-preview-banner { border-radius: 18px; align-items: flex-start; flex-wrap: wrap; bottom: 10px; } #office-pigeon-preview-banner a { flex: 1; text-align: center; } }
+  #office-pigeon-preview-banner button { border: 0; background: #f3f1ed; color: #555; width: 26px; height: 26px; border-radius: 999px; cursor: pointer; font-weight: 900; line-height: 1; display: inline-flex; align-items: center; justify-content: center; }
+  #office-pigeon-preview-banner .office-pigeon-preview-icon { display: none; width: 52px; height: 52px; border: 0; padding: 0; background: linear-gradient(135deg, #f97316, #e11d48, #f59e0b); box-shadow: 0 16px 38px rgba(0,0,0,.18); }
+  #office-pigeon-preview-banner .office-pigeon-preview-icon img { width: 28px; height: 28px; display: block; }
+  #office-pigeon-preview-banner.is-minimized { left: auto; right: 16px; bottom: 16px; transform: none; width: 52px; height: 52px; max-width: 52px; padding: 0; border: 0; border-radius: 999px; background: transparent; box-shadow: none; backdrop-filter: none; }
+  #office-pigeon-preview-banner.is-minimized span,
+  #office-pigeon-preview-banner.is-minimized a,
+  #office-pigeon-preview-banner.is-minimized .office-pigeon-preview-minimize { display: none; }
+  #office-pigeon-preview-banner.is-minimized .office-pigeon-preview-icon { display: inline-flex; align-items: center; justify-content: center; }
+  @media (max-width: 560px) { #office-pigeon-preview-banner { border-radius: 18px; align-items: flex-start; flex-wrap: wrap; bottom: 10px; } #office-pigeon-preview-banner a { flex: 1; text-align: center; } #office-pigeon-preview-banner.is-minimized { right: 12px; bottom: 12px; } }
 </style>
 <script>
   window.addEventListener("DOMContentLoaded", function () {
-    if (sessionStorage.getItem("office-pigeon-preview-banner-dismissed") === "1") return;
     var banner = document.createElement("div");
     banner.id = "office-pigeon-preview-banner";
-    banner.innerHTML = '<span>Free preview by <strong>Office Pigeon</strong> - Like this website? Contact us to claim it.</span><a href="${whatsappUrl}" target="_blank" rel="noreferrer">WhatsApp +1 917 672 6764</a><button type="button" aria-label="Dismiss Office Pigeon preview banner">x</button>';
-    banner.querySelector("button").addEventListener("click", function () {
-      sessionStorage.setItem("office-pigeon-preview-banner-dismissed", "1");
-      banner.remove();
+    banner.innerHTML = '<span>Free preview by <strong>Office Pigeon</strong> - Like this website? Contact us to claim it.</span><a href="${whatsappUrl}" target="_blank" rel="noreferrer">WhatsApp +1 917 672 6764</a><button class="office-pigeon-preview-minimize" type="button" aria-label="Minimize Office Pigeon preview banner">-</button><button class="office-pigeon-preview-icon" type="button" aria-label="Open Office Pigeon preview banner"><img src="/logos/office-pigeon-icon.svg" alt="Office Pigeon" /></button>';
+    if (sessionStorage.getItem("office-pigeon-preview-banner-minimized") === "1") {
+      banner.classList.add("is-minimized");
+    }
+    banner.querySelector(".office-pigeon-preview-minimize").addEventListener("click", function () {
+      sessionStorage.setItem("office-pigeon-preview-banner-minimized", "1");
+      banner.classList.add("is-minimized");
+    });
+    banner.querySelector(".office-pigeon-preview-icon").addEventListener("click", function () {
+      sessionStorage.removeItem("office-pigeon-preview-banner-minimized");
+      banner.classList.remove("is-minimized");
     });
     document.body.appendChild(banner);
   });
