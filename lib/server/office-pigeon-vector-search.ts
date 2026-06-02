@@ -32,6 +32,8 @@ const SAFE_LOW_CONFIDENCE_ANSWER =
 
 const BUCKET_NAME = 'officepigeon';
 const INDEX_NAME = process.env.SUPABASE_VECTOR_INDEX || 'officepigeon-knowledge';
+const FORBIDDEN_VISITOR_TERMS =
+  /\b(Supabase|vector database|vectors?|embeddings?|chunks?|internal tools?|retrieval systems?|APIs?|system prompts?|provider fallback|model names?|backend tools?)\b/i;
 
 function normalizeVectorResult(data: any): any[] {
   if (Array.isArray(data)) return data;
@@ -43,6 +45,26 @@ function normalizeVectorResult(data: any): any[] {
 
 function cleanText(value: string) {
   return value.replace(/^#+\s*/gm, '').replace(/\s+/g, ' ').trim();
+}
+
+function sanitizeVisitorOutput(value: string) {
+  return cleanText(value)
+    .replace(/^([A-Z][A-Za-z0-9& -]{2,60})\s+The\s+\1\b/i, 'The $1')
+    .replace(/^([A-Z][A-Za-z0-9& -]{2,60})\s+\1\b/i, '$1')
+    .replace(/\bPip AI should\s+/gi, '')
+    .replace(/\bPip AI must\s+/gi, '')
+    .replace(/\bPip AI may\s+/gi, '')
+    .replace(/\bPip AI can\s+/gi, 'Pip AI can ')
+    .replace(new RegExp(FORBIDDEN_VISITOR_TERMS.source, 'gi'), 'service details')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function trimAtWord(value: string, maxLength = 420) {
+  const text = sanitizeVisitorOutput(value);
+  if (text.length <= maxLength) return text;
+  const trimmed = text.slice(0, maxLength).replace(/\s+\S*$/, '').trim();
+  return trimmed || text.slice(0, maxLength).trim();
 }
 
 function keywordSet(input: OfficePigeonVectorSearchInput) {
@@ -67,24 +89,24 @@ function compactFact(content: string, input: OfficePigeonVectorSearchInput) {
   const sentences = text.split(/(?<=[.!?])\s+(?=[A-Z0-9])/).filter(Boolean);
   if (/\b(language|languages|multilingual)\b/i.test(input.query)) {
     const languageSentence = sentences.find((sentence) => /\b(language|supported languages|multilingual|english)\b/i.test(sentence));
-    if (languageSentence) return languageSentence.trim().slice(0, 420);
+    if (languageSentence) return trimAtWord(languageSentence);
   }
 
   if (/\b(number|own number|existing number|twilio|carrier)\b/i.test(input.query)) {
     const numberSentence = sentences.find((sentence) => /\b(own existing number|twilio-powered number|carrier restrictions|phone provider)\b/i.test(sentence));
-    if (numberSentence) return numberSentence.trim().slice(0, 420);
+    if (numberSentence) return trimAtWord(numberSentence);
   }
 
   if (/\b(guarantee|sales|leads|revenue|results)\b/i.test(input.query)) {
     const guaranteeSentence = sentences.find((sentence) => /\b(does not guarantee|cannot guarantee|No\.|sales|leads|revenue|results)\b/i.test(sentence));
-    if (guaranteeSentence) return guaranteeSentence.trim().slice(0, 420);
+    if (guaranteeSentence) return trimAtWord(guaranteeSentence);
   }
 
   if (isPricingQuestion(input)) {
     const priceSentence = sentences.find((sentence) => /\b(price|starts at|fixed)\b/i.test(sentence) || /\$\d/.test(sentence));
     if (priceSentence) {
       const usageSentence = sentences.find((sentence) => /\b(includes up to|extra minutes|support:|timeline:|revision:)\b/i.test(sentence));
-      return [priceSentence, usageSentence].filter(Boolean).join(' ').trim().slice(0, 420);
+      return trimAtWord([priceSentence, usageSentence].filter(Boolean).join(' '));
     }
   }
 
@@ -107,7 +129,7 @@ function compactFact(content: string, input: OfficePigeonVectorSearchInput) {
     .sort((a, b) => a.index - b.index)
     .map((item) => item.sentence);
 
-  return best.join(' ').trim().slice(0, 420);
+  return trimAtWord(best.join(' '));
 }
 
 function isPricingQuestion(input: OfficePigeonVectorSearchInput) {
@@ -196,8 +218,8 @@ function recommendedNextStep(input: OfficePigeonVectorSearchInput, confidence: '
 function answerFromFacts(facts: string[], confidence: 'high' | 'medium' | 'low', input: OfficePigeonVectorSearchInput) {
   if (confidence === 'low' || facts.length === 0) return SAFE_LOW_CONFIDENCE_ANSWER;
   const prioritized = isPricingQuestion(input) ? facts.filter((fact) => /\$|price|setup|month|monthly|fixed|starts at/i.test(fact)) : facts;
-  if (isPricingQuestion(input) && prioritized.length) return prioritized[0];
-  return (prioritized.length ? prioritized : facts)[0];
+  if (isPricingQuestion(input) && prioritized.length) return sanitizeVisitorOutput(prioritized[0]);
+  return sanitizeVisitorOutput((prioritized.length ? prioritized : facts)[0]);
 }
 
 export function hasOfficePigeonVectorSearchEnv() {
@@ -256,7 +278,14 @@ export async function searchOfficePigeonKnowledgeForTool(input: OfficePigeonVect
   const chunks = await searchOfficePigeonVectorChunks(input);
   const selected = chunks.slice(0, 5);
   const confidence = confidenceFor(selected, input);
-  const facts = confidence === 'low' ? [] : selected.map((chunk) => compactFact(chunk.content, input)).filter(Boolean).slice(0, 5);
+  const facts =
+    confidence === 'low'
+      ? []
+      : selected
+          .map((chunk) => compactFact(chunk.content, input))
+          .filter(Boolean)
+          .filter((fact) => !FORBIDDEN_VISITOR_TERMS.test(fact))
+          .slice(0, 5);
 
   return {
     answer: answerFromFacts(facts, confidence, input),

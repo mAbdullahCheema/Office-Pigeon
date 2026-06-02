@@ -11,7 +11,10 @@ import { GoogleGenAI } from '@google/genai';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { createServer as createViteServer } from 'vite';
 import { answerPipChat } from './lib/pip-ai/server';
-import { searchOfficePigeonKnowledgeForTool } from './lib/server/office-pigeon-vector-search';
+import {
+  searchOfficePigeonKnowledgeForTool,
+  type OfficePigeonKnowledgeResponse
+} from './lib/server/office-pigeon-vector-search';
 
 const SYSTEM_PROMPT =
   'You are Pip AI, the helpful, on-point, friendly, and fresh AI assistant for Office Pigeon. Keep responses brief, direct, and professional. Mention our Starter Business Website ($500), FAQ bots ($300), and custom onboarding workflows where appropriate.';
@@ -1061,25 +1064,53 @@ async function startServer() {
     res.json({ message, url: `https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '19176726764'}?text=${encodeURIComponent(message)}` });
   });
 
+  const safeElevenLabsToolResponse = (
+    answer: string,
+    missingDetails: string | null,
+    recommendedNextStep = 'Offer a free consultation so the Office Pigeon team can recommend the right setup.'
+  ): OfficePigeonKnowledgeResponse => ({
+    answer,
+    facts: [],
+    confidence: 'low',
+    recommended_next_step: recommendedNextStep,
+    missing_details: missingDetails
+  });
+
   const handleElevenLabsKnowledgeSearch = async (req: express.Request, res: express.Response) => {
     const configuredSecret = process.env.ELEVENLABS_TOOL_SECRET;
     const suppliedSecret = req.headers['x-elevenlabs-tool-secret'];
 
     if (!configuredSecret || suppliedSecret !== configuredSecret) {
-      res.status(401).json({ message: 'Unauthorized' });
+      res.status(401).json(
+        safeElevenLabsToolResponse(
+          'Unauthorized.',
+          'The ElevenLabs tool request was not authorized.',
+          'Check the ElevenLabs tool secret configuration.'
+        )
+      );
       return;
     }
 
     const ip = req.ip || req.socket.remoteAddress || 'elevenlabs';
     if (isElevenLabsToolRateLimited(ip)) {
-      res.status(429).json({ message: 'Too many requests' });
+      res.status(429).json(
+        safeElevenLabsToolResponse(
+          'I do not want to guess the exact details, but Office Pigeon can usually help depending on the project scope. The best next step would be a quick free consultation so the team can recommend the right setup.',
+          'Too many tool requests were received in a short time.'
+        )
+      );
       return;
     }
 
-    const source = req.method === 'GET' ? req.query : req.body;
+    const source = req.method === 'GET' ? req.query : req.body || {};
     const query = nonEmptyString(source.query);
     if (!query) {
-      res.status(400).json({ message: 'query is required.' });
+      res.status(400).json(
+        safeElevenLabsToolResponse(
+          'I do not want to guess the exact details, but Office Pigeon can usually help depending on the project scope. The best next step would be a quick free consultation so the team can recommend the right setup.',
+          'A search query is required.'
+        )
+      );
       return;
     }
 
