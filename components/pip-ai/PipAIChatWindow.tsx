@@ -11,6 +11,7 @@ import PipAIQuickActions, { PipAction } from './PipAIQuickActions';
 import PipAITypingIndicator from './PipAITypingIndicator';
 
 const STORAGE_KEY = 'office_pigeon_pip_ai_session';
+const SESSION_TIMEOUT_MS = 30 * 60 * 1000;
 
 type PipAISession = {
   lead: PipLead | null;
@@ -18,6 +19,7 @@ type PipAISession = {
   messages: PipMessage[];
   input: string;
   handoffUrl?: string;
+  lastActiveAt: number;
 };
 
 function makeId() {
@@ -47,12 +49,20 @@ function persistableLead(lead: PipLead | null): PipLead | null {
 
 function readStoredSession(): PipAISession {
   if (typeof window === 'undefined') {
-    return { lead: null, messages: [], input: '' };
+    return { lead: null, messages: [], input: '', lastActiveAt: Date.now() };
   }
 
   try {
     const saved = window.localStorage.getItem(STORAGE_KEY);
     const parsed = saved ? JSON.parse(saved) : {};
+    const lastActiveAt = typeof parsed?.lastActiveAt === 'number' ? parsed.lastActiveAt : 0;
+
+    if (lastActiveAt && Date.now() - lastActiveAt > SESSION_TIMEOUT_MS) {
+      window.localStorage.removeItem(STORAGE_KEY);
+      window.localStorage.removeItem('pip_ai_lead_id');
+      return { lead: null, messages: [], input: '', lastActiveAt: Date.now() };
+    }
+
     const storedLeadId = window.localStorage.getItem('pip_ai_lead_id') || undefined;
     const lead =
       parsed?.lead && typeof parsed.lead === 'object'
@@ -74,10 +84,11 @@ function readStoredSession(): PipAISession {
       conversationId: typeof parsed?.conversationId === 'string' ? parsed.conversationId : undefined,
       messages: lead && messages.length === 0 ? [starterMessage()] : messages,
       input: typeof parsed?.input === 'string' ? parsed.input : '',
-      handoffUrl: typeof parsed?.handoffUrl === 'string' ? parsed.handoffUrl : undefined
+      handoffUrl: typeof parsed?.handoffUrl === 'string' ? parsed.handoffUrl : undefined,
+      lastActiveAt: lastActiveAt || Date.now()
     };
   } catch {
-    return { lead: null, messages: [], input: '' };
+    return { lead: null, messages: [], input: '', lastActiveAt: Date.now() };
   }
 }
 
@@ -109,11 +120,18 @@ export default function PipAIChatWindow({ isOpen, onClose, onPageChange }: { isO
   const [input, setInput] = useState(session.input);
   const [thinking, setThinking] = useState(false);
   const [handoffUrl, setHandoffUrl] = useState<string | undefined>(session.handoffUrl);
+  const [lastActiveAt, setLastActiveAt] = useState(session.lastActiveAt);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  const markActive = () => setLastActiveAt(Date.now());
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight });
   }, [messages, thinking, handoffUrl]);
+
+  useEffect(() => {
+    if (isOpen) markActive();
+  }, [isOpen]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -125,10 +143,11 @@ export default function PipAIChatWindow({ isOpen, onClose, onPageChange }: { isO
         conversationId,
         messages,
         input,
-        handoffUrl
+        handoffUrl,
+        lastActiveAt
       })
     );
-  }, [lead, conversationId, messages, input, handoffUrl]);
+  }, [lead, conversationId, messages, input, handoffUrl, lastActiveAt]);
 
   const history = useMemo(
     () => messages.map((message) => ({ role: message.role, content: message.content })),
@@ -136,6 +155,7 @@ export default function PipAIChatWindow({ isOpen, onClose, onPageChange }: { isO
   );
 
   function onLeadSaved(savedLead: PipLead) {
+    markActive();
     setLead(savedLead);
     setHandoffUrl(undefined);
     setMessages([starterMessage()]);
@@ -145,6 +165,7 @@ export default function PipAIChatWindow({ isOpen, onClose, onPageChange }: { isO
     const trimmed = text.trim();
     if (!trimmed || thinking) return;
 
+    markActive();
     const userMessage: PipMessage = { id: makeId(), role: 'user', content: trimmed };
     setInput('');
     setHandoffUrl(undefined);
@@ -215,6 +236,7 @@ export default function PipAIChatWindow({ isOpen, onClose, onPageChange }: { isO
   }
 
   async function onAction(action: PipAction) {
+    markActive();
     if (action.type === 'book_call') {
       setMessages((current) => [...current, { id: makeId(), role: 'assistant', content: 'Here is the best next step:' }]);
       return;
@@ -294,7 +316,10 @@ export default function PipAIChatWindow({ isOpen, onClose, onPageChange }: { isO
             <form onSubmit={submit} className="mt-3 flex items-center gap-2">
               <input
                 value={input}
-                onChange={(event) => setInput(event.target.value)}
+                onChange={(event) => {
+                  markActive();
+                  setInput(event.target.value);
+                }}
                 placeholder="Ask Pip anything..."
                 className="min-w-0 flex-1 rounded-2xl border border-gray-100 bg-gray-50 px-3.5 py-2.5 text-xs outline-none focus:border-cyan-300 focus:bg-white focus:ring-2 focus:ring-cyan-100"
               />
