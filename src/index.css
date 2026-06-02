@@ -158,17 +158,3 @@ textarea {
   }
 }
 
-elevenlabs-convai {
-  left: 16px !important;
-  right: auto !important;
-  bottom: 16px !important;
-  z-index: 49 !important;
-}
-
-@media (min-width: 640px) {
-  elevenlabs-convai {
-    left: 24px !important;
-    right: auto !important;
-    bottom: 24px !important;
-  }
-}
