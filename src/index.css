@@ -158,16 +158,17 @@ textarea {
   }
 }
 
-.elevenlabs-voice-widget {
-  position: fixed;
-  left: 16px;
-  bottom: 16px;
-  z-index: 49;
+elevenlabs-convai {
+  left: 16px !important;
+  right: auto !important;
+  bottom: 16px !important;
+  z-index: 49 !important;
 }
 
 @media (min-width: 640px) {
-  .elevenlabs-voice-widget {
-    left: 24px;
-    bottom: 24px;
+  elevenlabs-convai {
+    left: 24px !important;
+    right: auto !important;
+    bottom: 24px !important;
   }
 }

@@ -1,9 +1,5 @@
-import { createElement, useEffect } from 'react';
+import { useEffect } from 'react';
 import { BRAND } from '../config';
-
-const ELEVENLABS_AGENT_ID = 'agent_3401kt1vweh5efea1jxg1ecxz995';
-const ELEVENLABS_SCRIPT_ID = 'office-pigeon-elevenlabs-convai-widget';
-const ELEVENLABS_SCRIPT_SRC = 'https://unpkg.com/@elevenlabs/convai-widget-embed';
 
 type ToolResult = {
   success: boolean;
@@ -66,7 +62,7 @@ export function createOfficePigeonElevenLabsClientTools() {
   };
 }
 
-export default function ElevenLabsWidget() {
+export default function ElevenLabsClientTools() {
   useEffect(() => {
     if (typeof window === 'undefined' || typeof document === 'undefined') return;
 
@@ -96,15 +92,6 @@ export default function ElevenLabsWidget() {
     const observer = new MutationObserver(attachAllWidgets);
     observer.observe(document.body, { childList: true, subtree: true });
 
-    if (!document.getElementById(ELEVENLABS_SCRIPT_ID)) {
-      const script = document.createElement('script');
-      script.id = ELEVENLABS_SCRIPT_ID;
-      script.src = ELEVENLABS_SCRIPT_SRC;
-      script.async = true;
-      script.type = 'text/javascript';
-      document.body.appendChild(script);
-    }
-
     return () => {
       observer.disconnect();
       if (window.OfficePigeonElevenLabsClientTools === tools) {
@@ -113,9 +100,5 @@ export default function ElevenLabsWidget() {
     };
   }, []);
 
-  return (
-    <div className="elevenlabs-voice-widget" aria-label="Pip AI Caller voice assistant">
-      {createElement('elevenlabs-convai', { 'agent-id': ELEVENLABS_AGENT_ID })}
-    </div>
-  );
+  return null;
 }

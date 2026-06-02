@@ -9,7 +9,7 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import SmoothScroll from './components/SmoothScroll';
 import PipAIWidget from './components/PipAIWidget';
-import ElevenLabsWidget from './components/ElevenLabsClientTools';
+import ElevenLabsClientTools from './components/ElevenLabsClientTools';
 import PackageModal from './components/PackageModal';
 
 // Pages
@@ -162,7 +162,7 @@ export default function App() {
       </SmoothScroll>
 
       {/* FLOATING CHAT ASSISTANT - OVERLAY */}
-      <ElevenLabsWidget />
+      <ElevenLabsClientTools />
       <PipAIWidget onPageChange={setCurrentPage} />
 
       {/* REUSABLE PACKAGES / GENERAL INTAKE FORM MODAL */}
