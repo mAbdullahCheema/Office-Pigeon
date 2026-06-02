@@ -52,7 +52,7 @@ export function isBookingIntent(message: string) {
 }
 
 export function isOfficePigeonRelevant(message: string) {
-  return /\b(office pigeon|website|web site|landing page|business website|commerce|ecommerce|chatbot|bot|whatsapp|automation|workflow|package|price|pricing|cost|payment|refund|revision|support|domain|hosting|seo|lead|booking|consultation|cal\.com|smart calling|ai calling|calling agent|voice agent|phone agent|phone assistant|call answering|missed call|service|services|business|customer|crm|google sheets|email notification|invoice|onboarding)\b/i.test(
+  return /\b(office pigeon|website|web site|landing page|business website|commerce|ecommerce|chatbot|bot|whatsapp|automation|workflow|package|price|pricing|cost|payment|refund|revision|support|domain|hosting|seo|lead|booking|consultation|cal\.com|smart calling|ai calling|calling agent|voice agent|phone agent|phone assistant|call answering|missed call|missed calls|phone answering|appointment reminder|appointment reminders|voice follow-up|voice follow-ups|inbound call|inbound calls|outbound follow-up|outbound follow-ups|call volume|service|services|business|customer|crm|google sheets|email notification|invoice|onboarding)\b/i.test(
     message
   );
 }
