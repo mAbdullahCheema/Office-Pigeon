@@ -154,7 +154,10 @@ textarea {
 
 @media (max-width: 420px) {
   .navbar-kicker {
-    display: none;
+    display: block;
+    font-size: 0.5rem !important;
+    letter-spacing: 0.09em !important;
+    margin-top: 0.25rem !important;
   }
 }
 

@@ -3,7 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ArrowRight, Calendar, Check, FileText, Globe2, MessageSquare, PhoneCall, RefreshCw, ShieldCheck, SlidersHorizontal } from 'lucide-react';
+import { useState } from 'react';
+import { motion } from 'motion/react';
+import { ArrowRight, Calendar, Check, FileText, Globe2, MessageSquare, Mic, PhoneCall, Play, RefreshCw, ShieldCheck, SlidersHorizontal, Volume2 } from 'lucide-react';
 import { CALLING_AGENT_PACKAGES } from '../config';
 import { Package } from '../types';
 
@@ -78,7 +80,131 @@ const addOns = [
   'High-volume usage plans'
 ];
 
+type VoiceScenario = 'missed-call' | 'booking' | 'pricing' | 'own-number';
+
+interface VoiceTurn {
+  speaker: 'Caller' | 'Pip AI Caller';
+  text: string;
+}
+
+const voiceScenarios: Record<VoiceScenario, { label: string; callerNeed: string; transcript: VoiceTurn[]; result: string }> = {
+  'missed-call': {
+    label: 'Missed call callback',
+    callerNeed: 'Customer missed a service business call and wants help.',
+    transcript: [
+      { speaker: 'Caller', text: 'Hi, I missed a call from this business. Can someone help me book a service?' },
+      {
+        speaker: 'Pip AI Caller',
+        text:
+          'Absolutely. I can collect the service you need, your preferred time, and the best number to reach you. The team can then confirm the booking details.'
+      },
+      { speaker: 'Caller', text: 'Great, I need a quote for tomorrow afternoon.' },
+      {
+        speaker: 'Pip AI Caller',
+        text:
+          'Got it. I would collect your name, service area, service type, and preferred time, then send the request to the business for confirmation.'
+      }
+    ],
+    result: 'Lead captured, callback reason logged, and booking request prepared for human approval.'
+  },
+  booking: {
+    label: 'Booking request',
+    callerNeed: 'Customer wants an appointment and needs qualification.',
+    transcript: [
+      { speaker: 'Caller', text: 'Can I book an appointment for this week?' },
+      {
+        speaker: 'Pip AI Caller',
+        text:
+          'Yes. I can help collect the details first. What service do you need, what day works best, and should the team contact you by phone or WhatsApp?'
+      },
+      { speaker: 'Caller', text: 'Friday afternoon, WhatsApp is best.' },
+      {
+        speaker: 'Pip AI Caller',
+        text:
+          'Perfect. I would send the booking request with your preferred day, contact method, and service details so the business can confirm availability.'
+      }
+    ],
+    result: 'Booking request collected with preferred date, channel, and customer details.'
+  },
+  pricing: {
+    label: 'Pricing question',
+    callerNeed: 'Caller asks about AI Calling Agent pricing.',
+    transcript: [
+      { speaker: 'Caller', text: 'How much is the AI caller?' },
+      {
+        speaker: 'Pip AI Caller',
+        text:
+          'AI Calling Agents start with Smart Call Starter at $600 setup plus $199 per month. The most popular option is Lead & Booking Caller at $1,200 setup plus $449 per month.'
+      },
+      { speaker: 'Caller', text: 'Are extra minutes included?' },
+      {
+        speaker: 'Pip AI Caller',
+        text:
+          'Each package includes a monthly call-minute allowance. Extra minutes are billed at $0.35 per minute across all AI Calling Agent packages.'
+      }
+    ],
+    result: 'Confirmed package pricing explained without guessing custom scope.'
+  },
+  'own-number': {
+    label: 'Use existing number',
+    callerNeed: 'Client wants to use their current phone number.',
+    transcript: [
+      { speaker: 'Caller', text: 'Can I use my own number for the AI agent?' },
+      {
+        speaker: 'Pip AI Caller',
+        text:
+          'Yes, you can request setup with an existing number, but it may require extra steps from your phone provider, Twilio, WhatsApp, or verification systems.'
+      },
+      { speaker: 'Caller', text: 'What is the smoother option?' },
+      {
+        speaker: 'Pip AI Caller',
+        text:
+          'For many clients, the smoother option is an Office Pigeon-managed Twilio-powered number, because the setup is more predictable.'
+      }
+    ],
+    result: 'Caller informed about existing-number constraints and smoother managed-number option.'
+  }
+};
+
 export default function CallingAgents({ onOpenPackageModal }: CallingAgentsProps) {
+  const [activeScenario, setActiveScenario] = useState<VoiceScenario>('missed-call');
+  const [visibleTurns, setVisibleTurns] = useState(voiceScenarios['missed-call'].transcript.length);
+  const [spoken, setSpoken] = useState(false);
+  const [voiceNotice, setVoiceNotice] = useState('');
+
+  const scenario = voiceScenarios[activeScenario];
+
+  const selectScenario = (id: VoiceScenario) => {
+    setActiveScenario(id);
+    setVisibleTurns(voiceScenarios[id].transcript.length);
+    setSpoken(false);
+    setVoiceNotice('');
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+    }
+  };
+
+  const replayVoice = () => {
+    if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
+      setSpoken(false);
+      setVoiceNotice('Audio playback is not supported on this browser, but the live transcript demo still works.');
+      return;
+    }
+
+    window.speechSynthesis.cancel();
+    setVoiceNotice('');
+    const pipLines = scenario.transcript
+      .filter((turn) => turn.speaker === 'Pip AI Caller')
+      .map((turn) => turn.text)
+      .join(' ');
+    const utterance = new SpeechSynthesisUtterance(pipLines);
+    utterance.rate = 0.92;
+    utterance.pitch = 1;
+    utterance.onend = () => setSpoken(false);
+    setSpoken(true);
+    window.speechSynthesis.speak(utterance);
+  };
+
   return (
     <div className="space-y-24 pb-20 mt-16 font-sans overflow-hidden">
       <section className="bg-gradient-to-b from-orange-50/20 via-transparent to-transparent pt-12">
@@ -143,6 +269,128 @@ export default function CallingAgents({ onOpenPackageModal }: CallingAgentsProps
                 </article>
               );
             })}
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-orange-50/40 py-16">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+          <div className="text-center space-y-3">
+            <span className="text-[10px] font-mono tracking-widest uppercase text-orange-600 font-bold bg-white border border-orange-100 px-3.5 py-1.5 rounded-full">
+              TRY BEFORE YOU BUY
+            </span>
+            <h2 className="text-2xl sm:text-3xl font-black text-gray-900">See an AI Calling Agent in action</h2>
+            <p className="text-xs sm:text-sm text-gray-500 max-w-2xl mx-auto leading-relaxed">
+              Test realistic caller scenarios and watch how Pip AI Caller answers, collects details, and prepares the next step for your business.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-[0.85fr_1.15fr] gap-6 items-stretch">
+            <div className="bg-white border border-orange-100 rounded-3xl p-5 sm:p-6 shadow-xs space-y-4">
+              <div className="flex items-center gap-2 text-orange-600">
+                <Mic size={15} />
+                <span className="text-[10px] font-mono font-bold uppercase tracking-widest">Caller scenario</span>
+              </div>
+              <div className="grid grid-cols-1 gap-2">
+                {(Object.keys(voiceScenarios) as VoiceScenario[]).map((id) => (
+                  <button
+                    key={id}
+                    onClick={() => selectScenario(id)}
+                    className={`text-left rounded-2xl border px-4 py-3 transition ${
+                      activeScenario === id
+                        ? 'border-orange-200 bg-orange-50 text-orange-700'
+                        : 'border-gray-100 bg-white text-gray-600 hover:bg-gray-50'
+                    }`}
+                  >
+                    <span className="block text-xs font-black">{voiceScenarios[id].label}</span>
+                    <span className="mt-1 block text-[11px] leading-relaxed text-gray-400">{voiceScenarios[id].callerNeed}</span>
+                  </button>
+                ))}
+              </div>
+
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  onClick={() => setVisibleTurns(1)}
+                  className="rounded-2xl border border-gray-100 bg-white px-4 py-3 text-xs font-black text-gray-500 transition hover:bg-gray-50"
+                >
+                  Restart
+                </button>
+                <button
+                  onClick={() => setVisibleTurns((count) => Math.min(scenario.transcript.length, count + 1))}
+                  className="rounded-2xl bg-gray-950 px-4 py-3 text-xs font-black text-white transition hover:bg-orange-600"
+                >
+                  Next turn
+                </button>
+              </div>
+            </div>
+
+            <div className="bg-white border border-orange-100 rounded-3xl shadow-sm overflow-hidden min-h-[560px] flex flex-col">
+              <div className="bg-gray-950 text-white px-5 py-4 flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3 min-w-0">
+                  <span className="w-10 h-10 rounded-full bg-orange-500 text-white flex items-center justify-center shrink-0">
+                    <PhoneCall size={18} />
+                  </span>
+                  <div className="min-w-0">
+                    <span className="block text-sm font-black truncate">Pip AI Caller</span>
+                    <span className="block text-[10px] font-mono uppercase tracking-widest text-orange-200 truncate">
+                      Live service simulation
+                    </span>
+                  </div>
+                </div>
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/15 px-3 py-1 text-[10px] font-bold text-emerald-200">
+                  <span className="h-2 w-2 rounded-full bg-emerald-300 animate-pulse" />
+                  active
+                </span>
+              </div>
+
+              <div className="flex-1 bg-gray-50 p-4 sm:p-5 space-y-3 overflow-y-auto">
+                {scenario.transcript.slice(0, visibleTurns).map((turn, index) => (
+                  <motion.div
+                    key={`${activeScenario}-${index}-${turn.speaker}`}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className={`flex ${turn.speaker === 'Caller' ? 'justify-start' : 'justify-end'}`}
+                  >
+                    <div
+                      className={`max-w-[88%] rounded-2xl px-4 py-3 text-xs sm:text-sm leading-relaxed shadow-sm ${
+                        turn.speaker === 'Caller'
+                          ? 'rounded-tl-sm border border-gray-100 bg-white text-gray-700'
+                          : 'rounded-tr-sm bg-orange-600 text-white'
+                      }`}
+                    >
+                      <span className={`mb-1 block text-[9px] font-mono uppercase tracking-widest ${turn.speaker === 'Caller' ? 'text-gray-400' : 'text-orange-100'}`}>
+                        {turn.speaker}
+                      </span>
+                      {turn.text}
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+
+              <div className="border-t border-gray-100 bg-white p-4 sm:p-5 space-y-3">
+                <div className="rounded-2xl bg-orange-50 border border-orange-100 px-4 py-3">
+                  <span className="block text-[10px] font-mono font-bold uppercase tracking-widest text-orange-600">Outcome</span>
+                  <p className="mt-1 text-xs text-orange-800 leading-relaxed">{scenario.result}</p>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <button
+                    onClick={replayVoice}
+                    className="inline-flex items-center justify-center gap-2 rounded-2xl bg-orange-600 px-4 py-3 text-xs font-black text-white transition hover:bg-orange-700"
+                  >
+                    {spoken ? <Volume2 size={14} /> : <Play size={14} />}
+                    {spoken ? 'Playing sample' : 'Play AI voice sample'}
+                  </button>
+                  <button
+                    onClick={() => onOpenPackageModal(CALLING_AGENT_PACKAGES[1])}
+                    className="inline-flex items-center justify-center gap-2 rounded-2xl border border-gray-100 bg-white px-4 py-3 text-xs font-black text-gray-700 transition hover:bg-gray-50"
+                  >
+                    Configure this setup
+                    <ArrowRight size={14} />
+                  </button>
+                </div>
+                {voiceNotice ? <p className="text-[11px] text-gray-400 leading-relaxed">{voiceNotice}</p> : null}
+              </div>
+            </div>
           </div>
         </div>
       </section>

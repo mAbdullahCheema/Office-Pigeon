@@ -183,7 +183,7 @@ export default function PipAIChatWindow({ onClose, onPageChange }: { onClose: ()
       initial={{ opacity: 0, y: 28, scale: 0.96 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, y: 28, scale: 0.96 }}
-      className="fixed bottom-4 right-4 z-50 flex h-[min(680px,calc(100vh-2rem))] w-[calc(100vw-2rem)] max-w-[410px] flex-col overflow-hidden rounded-[28px] border border-cyan-100 bg-white/95 shadow-2xl shadow-cyan-950/15 backdrop-blur-xl sm:bottom-6 sm:right-6"
+      className="fixed bottom-4 right-4 z-50 flex h-[min(680px,calc(100vh-2rem))] w-[calc(100vw-2rem)] max-w-[410px] flex-col overflow-hidden rounded-[28px] border border-cyan-100 bg-white/95 shadow-2xl shadow-cyan-950/15 backdrop-blur-xl max-[640px]:right-3 max-[640px]:bottom-24 max-[640px]:h-[min(620px,calc(100vh-7rem))] max-[640px]:w-[calc(100vw-1.5rem)] sm:bottom-6 sm:right-6"
       role="dialog"
       aria-label="Pip AI Assistant"
     >
