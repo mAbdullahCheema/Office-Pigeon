@@ -10,7 +10,7 @@ export default function PipAIButton({ onClick }: { onClick: () => void }) {
       animate={{ opacity: 1, y: 0, scale: 1 }}
       type="button"
       onClick={onClick}
-      className="fixed bottom-5 right-5 z-50 flex items-center gap-2 rounded-full bg-cyan-600 px-4 py-3 text-sm font-black text-white shadow-2xl shadow-cyan-950/15 transition hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-300 max-[640px]:right-3 max-[640px]:bottom-24 max-[640px]:px-3.5 max-[640px]:py-2.5 max-[640px]:text-xs sm:bottom-6 sm:right-6"
+      className="fixed bottom-5 right-5 z-50 flex items-center gap-2 rounded-full bg-cyan-600 px-4 py-3 text-sm font-black text-white shadow-2xl shadow-cyan-950/15 transition hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-300 sm:bottom-6 sm:right-6"
       aria-label="Ask Pip AI"
     >
       <MessageCircle size={19} />
