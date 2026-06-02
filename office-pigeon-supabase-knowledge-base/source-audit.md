@@ -1,11 +1,11 @@
 # Office Pigeon Supabase Source Audit
 
-Generated at: 2026-06-01T17:54:29.458Z
+Generated at: 2026-06-02T19:11:30.142Z
 
 ## Summary
 
 - Source directory: `knowledge/`
-- Chunks generated: 33
+- Chunks generated: 34
 - Vector bucket target: `officepigeon`
 - Vector index target: `officepigeon-knowledge`
 - AI Calling Agents live-service wording present: yes
@@ -22,7 +22,7 @@ Generated at: 2026-06-01T17:54:29.458Z
 | `objection-handling.md` | 867 | 1 | 1 | Included |
 | `office-pigeon-overview.md` | 842 | 1 | 1 | Included |
 | `pip-ai-behavior.md` | 3937 | 4 | 6 | Included |
-| `pricing-payment-refunds.md` | 519 | 1 | 1 | Included |
+| `pricing-payment-refunds.md` | 1286 | 2 | 2 | Included |
 | `smart-calling-agents.md` | 5651 | 6 | 7 | Included |
 | `website-packages.md` | 1283 | 4 | 4 | Included |
 | `workflow-automation.md` | 508 | 1 | 1 | Included |

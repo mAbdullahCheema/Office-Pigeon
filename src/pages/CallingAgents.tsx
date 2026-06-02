@@ -83,6 +83,7 @@ const liveVoiceProfiles = [
   ['English', 'Adam', 'Engaging, Friendly and Bright'],
   ['Spanish', 'Juan', 'Friendly & Effortless'],
   ['Hindi / Hinglish', 'Bunty', 'Funny Best Friend'],
+  ['Urdu', 'Irina', 'Energetic E-commerce Girl'],
   ['Arabic', 'Abdullah', 'Professional and Energetic']
 ];
 
