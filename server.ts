@@ -1061,7 +1061,7 @@ async function startServer() {
     res.json({ message, url: `https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '19176726764'}?text=${encodeURIComponent(message)}` });
   });
 
-  app.post('/api/elevenlabs/tools/search-office-pigeon-knowledge', async (req, res) => {
+  const handleElevenLabsKnowledgeSearch = async (req: express.Request, res: express.Response) => {
     const configuredSecret = process.env.ELEVENLABS_TOOL_SECRET;
     const suppliedSecret = req.headers['x-elevenlabs-tool-secret'];
 
@@ -1076,7 +1076,8 @@ async function startServer() {
       return;
     }
 
-    const query = nonEmptyString(req.body.query);
+    const source = req.method === 'GET' ? req.query : req.body;
+    const query = nonEmptyString(source.query);
     if (!query) {
       res.status(400).json({ message: 'query is required.' });
       return;
@@ -1085,15 +1086,15 @@ async function startServer() {
     try {
       const result = await searchOfficePigeonKnowledgeForTool({
         query,
-        conversation_summary: nonEmptyString(req.body.conversation_summary),
-        caller_need: nonEmptyString(req.body.caller_need),
-        caller_business_type: nonEmptyString(req.body.caller_business_type),
-        caller_language: nonEmptyString(req.body.caller_language)
+        conversation_summary: nonEmptyString(source.conversation_summary),
+        caller_need: nonEmptyString(source.caller_need),
+        caller_business_type: nonEmptyString(source.caller_business_type),
+        caller_language: nonEmptyString(source.caller_language)
       });
 
       console.info('[ElevenLabs Tool] Office Pigeon knowledge search completed.', {
         query_length: query.length,
-        caller_need_present: Boolean(nonEmptyString(req.body.caller_need)),
+        caller_need_present: Boolean(nonEmptyString(source.caller_need)),
         confidence: result.confidence
       });
 
@@ -1108,10 +1109,13 @@ async function startServer() {
         facts: [],
         confidence: 'low',
         recommended_next_step: 'Offer a free consultation so the Office Pigeon team can recommend the right setup.',
-        missing_details: 'The request could not be answered safely from confirmed Office Pigeon knowledge.'
+        missing_details: 'The request could not be answered safely from confirmed Office Pigeon service details.'
       });
     }
-  });
+  };
+
+  app.get('/api/elevenlabs/tools/search-office-pigeon-knowledge', handleElevenLabsKnowledgeSearch);
+  app.post('/api/elevenlabs/tools/search-office-pigeon-knowledge', handleElevenLabsKnowledgeSearch);
 
   if (!isProductionServer) {
     const vite = await createViteServer({

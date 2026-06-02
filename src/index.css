@@ -157,3 +157,17 @@ textarea {
     display: none;
   }
 }
+
+.elevenlabs-voice-widget {
+  position: fixed;
+  left: 16px;
+  bottom: 16px;
+  z-index: 49;
+}
+
+@media (min-width: 640px) {
+  .elevenlabs-voice-widget {
+    left: 24px;
+    bottom: 24px;
+  }
+}

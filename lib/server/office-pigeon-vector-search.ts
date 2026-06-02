@@ -65,6 +65,21 @@ function keywordSet(input: OfficePigeonVectorSearchInput) {
 function compactFact(content: string, input: OfficePigeonVectorSearchInput) {
   const text = cleanText(content);
   const sentences = text.split(/(?<=[.!?])\s+(?=[A-Z0-9])/).filter(Boolean);
+  if (/\b(language|languages|multilingual)\b/i.test(input.query)) {
+    const languageSentence = sentences.find((sentence) => /\b(language|supported languages|multilingual|english)\b/i.test(sentence));
+    if (languageSentence) return languageSentence.trim().slice(0, 420);
+  }
+
+  if (/\b(number|own number|existing number|twilio|carrier)\b/i.test(input.query)) {
+    const numberSentence = sentences.find((sentence) => /\b(own existing number|twilio-powered number|carrier restrictions|phone provider)\b/i.test(sentence));
+    if (numberSentence) return numberSentence.trim().slice(0, 420);
+  }
+
+  if (/\b(guarantee|sales|leads|revenue|results)\b/i.test(input.query)) {
+    const guaranteeSentence = sentences.find((sentence) => /\b(does not guarantee|cannot guarantee|No\.|sales|leads|revenue|results)\b/i.test(sentence));
+    if (guaranteeSentence) return guaranteeSentence.trim().slice(0, 420);
+  }
+
   if (isPricingQuestion(input)) {
     const priceSentence = sentences.find((sentence) => /\b(price|starts at|fixed)\b/i.test(sentence) || /\$\d/.test(sentence));
     if (priceSentence) {
@@ -248,6 +263,6 @@ export async function searchOfficePigeonKnowledgeForTool(input: OfficePigeonVect
     facts,
     confidence,
     recommended_next_step: recommendedNextStep(input, confidence),
-    missing_details: confidence === 'low' ? 'Exact Office Pigeon details were not confirmed by the retrieved service knowledge.' : null
+    missing_details: confidence === 'low' ? 'Exact Office Pigeon details were not confirmed by available service details.' : null
   };
 }

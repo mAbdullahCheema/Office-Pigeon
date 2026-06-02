@@ -12,6 +12,15 @@ const requestSchema = z.object({
   caller_language: z.string().trim().max(100).optional()
 });
 
+const safeFallback = {
+  answer:
+    'I do not want to guess the exact details, but Office Pigeon can usually help depending on the project scope. The best next step would be a quick free consultation so the team can recommend the right setup.',
+  facts: [],
+  confidence: 'low' as const,
+  recommended_next_step: 'Offer a free consultation so the Office Pigeon team can recommend the right setup.',
+  missing_details: 'The request could not be answered safely from confirmed Office Pigeon service details.'
+};
+
 function authorized(request: NextRequest) {
   const secret = process.env.ELEVENLABS_TOOL_SECRET;
   const supplied = request.headers.get('x-elevenlabs-tool-secret');
@@ -32,7 +41,18 @@ function rateLimited(request: NextRequest) {
   return current.count > 60;
 }
 
-export async function POST(request: NextRequest) {
+function inputFromQuery(request: NextRequest) {
+  const params = request.nextUrl.searchParams;
+  return {
+    query: params.get('query') || '',
+    conversation_summary: params.get('conversation_summary') || undefined,
+    caller_need: params.get('caller_need') || undefined,
+    caller_business_type: params.get('caller_business_type') || undefined,
+    caller_language: params.get('caller_language') || undefined
+  };
+}
+
+async function handleToolRequest(request: NextRequest, getPayload: () => Promise<unknown> | unknown) {
   if (!authorized(request)) {
     return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
   }
@@ -42,7 +62,7 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const input = requestSchema.parse(await request.json());
+    const input = requestSchema.parse(await getPayload());
     const result = await searchOfficePigeonKnowledgeForTool(input);
     console.info('[ElevenLabs Tool] Office Pigeon knowledge search completed.', {
       query_length: input.query.length,
@@ -54,16 +74,14 @@ export async function POST(request: NextRequest) {
     console.warn('[ElevenLabs Tool] Office Pigeon knowledge search failed.', {
       message: error instanceof Error ? error.message : 'Unknown error'
     });
-    return NextResponse.json(
-      {
-        answer:
-          'I do not want to guess the exact details, but Office Pigeon can usually help depending on the project scope. The best next step would be a quick free consultation so the team can recommend the right setup.',
-        facts: [],
-        confidence: 'low',
-        recommended_next_step: 'Offer a free consultation so the Office Pigeon team can recommend the right setup.',
-        missing_details: 'The request could not be answered safely from confirmed Office Pigeon knowledge.'
-      },
-      { status: 200 }
-    );
+    return NextResponse.json(safeFallback, { status: 200 });
   }
+}
+
+export async function GET(request: NextRequest) {
+  return handleToolRequest(request, () => inputFromQuery(request));
+}
+
+export async function POST(request: NextRequest) {
+  return handleToolRequest(request, () => request.json());
 }
