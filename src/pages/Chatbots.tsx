@@ -103,10 +103,11 @@ export default function Chatbots({ onOpenPackageModal }: ChatbotsProps) {
   const [input, setInput] = useState('');
   const [thinking, setThinking] = useState(false);
   const [messagesByTab, setMessagesByTab] = useState<Record<ChatPlacement, DemoMessage[]>>(starterMessages);
+  const [conversationIds, setConversationIds] = useState<Partial<Record<ChatPlacement, string>>>({});
 
   const messages = messagesByTab[activeTab];
 
-  const pushDemoMessage = (text: string) => {
+  const pushPresetMessage = (text: string) => {
     const trimmed = text.trim();
     if (!trimmed || thinking) return;
 
@@ -127,15 +128,85 @@ export default function Chatbots({ onOpenPackageModal }: ChatbotsProps) {
     }, 520);
   };
 
+  const sendPipMessage = async (text: string) => {
+    const trimmed = text.trim();
+    if (!trimmed || thinking) return;
+
+    const placement = activeTab;
+    const history = messagesByTab[placement].map((message) => ({
+      role: message.role === 'bot' ? 'assistant' : 'user',
+      content: message.text
+    }));
+
+    setMessagesByTab((prev) => ({
+      ...prev,
+      [placement]: [...prev[placement], { role: 'user', text: trimmed }]
+    }));
+    setInput('');
+    setThinking(true);
+
+    try {
+      const response = await fetch('/api/pip/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          conversationId: conversationIds[placement],
+          message: trimmed,
+          history,
+          sourcePage: `/chatbots-${placement}-simulator`
+        })
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.message || 'Pip AI request failed.');
+
+      if (data.conversationId) {
+        setConversationIds((prev) => ({ ...prev, [placement]: data.conversationId }));
+      }
+
+      setMessagesByTab((prev) => ({
+        ...prev,
+        [placement]: [
+          ...prev[placement],
+          {
+            role: 'bot',
+            text:
+              typeof data.answer === 'string' && data.answer.trim()
+                ? data.answer.trim()
+                : 'I can help with Office Pigeon services, pricing, packages, booking, chatbots, calling agents, or automations. What would you like to test?'
+          }
+        ]
+      }));
+    } catch {
+      setMessagesByTab((prev) => ({
+        ...prev,
+        [placement]: [
+          ...prev[placement],
+          {
+            role: 'bot',
+            text:
+              'I could not reach Pip AI for that custom message right now. You can still try a preset prompt, open Ask Pip AI, or book a free consultation.'
+          }
+        ]
+      }));
+    } finally {
+      setThinking(false);
+    }
+  };
+
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
-    pushDemoMessage(input);
+    void sendPipMessage(input);
   };
 
   const resetDemo = () => {
     setInput('');
     setThinking(false);
     setMessagesByTab((prev) => ({ ...prev, [activeTab]: starterMessages[activeTab] }));
+    setConversationIds((prev) => {
+      const next = { ...prev };
+      delete next[activeTab];
+      return next;
+    });
   };
 
   return (
@@ -251,7 +322,7 @@ export default function Chatbots({ onOpenPackageModal }: ChatbotsProps) {
                 {quickPrompts[activeTab].map((prompt) => (
                   <button
                     key={prompt}
-                    onClick={() => pushDemoMessage(prompt)}
+                    onClick={() => pushPresetMessage(prompt)}
                     className="text-left rounded-2xl border border-emerald-100 bg-emerald-50/50 px-4 py-3 text-xs font-bold text-gray-700 transition hover:border-emerald-200 hover:bg-emerald-50"
                   >
                     {prompt}
