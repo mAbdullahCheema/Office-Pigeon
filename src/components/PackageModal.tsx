@@ -481,8 +481,8 @@ export default function PackageModal({ packageData, isOpen, onClose }: PackageMo
                             <option value="I’m not sure yet">I’m not sure yet</option>
                             <option value="Under 10,000 / month">Under 10,000 / month</option>
                             <option value="10,000 - 20,000 / month">10,000 - 20,000 / month</option>
-                            <option value="20,000 - 40,000 / month">20,000 - 40,000 / month</option>
-                            <option value="40,000+ messages">40,000+ messages</option>
+                            <option value="20,000 - 50,000 / month">20,000 - 50,000 / month</option>
+                            <option value="50,000+ messages">50,000+ messages</option>
                           </select>
                         </div>
                       </div>

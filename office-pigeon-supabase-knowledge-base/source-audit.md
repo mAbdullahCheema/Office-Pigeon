@@ -1,11 +1,11 @@
 # Office Pigeon Supabase Source Audit
 
-Generated at: 2026-06-03T06:41:15.012Z
+Generated at: 2026-06-03T07:21:19.645Z
 
 ## Summary
 
 - Source directory: `knowledge/`
-- Chunks generated: 34
+- Chunks generated: 35
 - Vector bucket target: `officepigeon`
 - Vector index target: `officepigeon-knowledge`
 - AI Calling Agents live-service wording present: yes
@@ -15,16 +15,16 @@ Generated at: 2026-06-03T06:41:15.012Z
 
 | File | Bytes | Sections | Chunks | Status |
 | --- | ---: | ---: | ---: | --- |
-| `chatbot-packages.md` | 1155 | 4 | 4 | Included |
+| `chatbot-packages.md` | 1171 | 4 | 4 | Included |
 | `contact-booking.md` | 353 | 1 | 1 | Included |
 | `faq.md` | 766 | 6 | 6 | Included |
 | `legal-policies.md` | 387 | 1 | 1 | Included |
 | `objection-handling.md` | 867 | 1 | 1 | Included |
 | `office-pigeon-overview.md` | 842 | 1 | 1 | Included |
 | `pip-ai-behavior.md` | 3937 | 4 | 6 | Included |
-| `pricing-payment-refunds.md` | 1667 | 2 | 2 | Included |
-| `smart-calling-agents.md` | 5680 | 6 | 7 | Included |
-| `website-packages.md` | 1497 | 4 | 4 | Included |
+| `pricing-payment-refunds.md` | 1734 | 2 | 3 | Included |
+| `smart-calling-agents.md` | 5741 | 6 | 7 | Included |
+| `website-packages.md` | 1502 | 4 | 4 | Included |
 | `workflow-automation.md` | 508 | 1 | 1 | Included |
 
 ## Notes

@@ -10,7 +10,7 @@ The Lead & Booking Bot is $700 setup plus $150/month maintenance. It includes 20
 
 ## AI Business Assistant
 
-The AI Business Assistant is $1,500 setup plus $300/month maintenance. It includes 40,000 messages/month. It supports website, WhatsApp, Instagram, and Facebook. It is best for multi-channel support, workflow triggers, and connected assistant behavior.
+The AI Business Assistant is $1,500 setup plus $300/month maintenance. It includes 50,000 messages/month. It supports website, WhatsApp, Instagram, and Facebook. It is best for multi-channel support, workflow triggers, and connected assistant behavior.
 
 Extra chatbot usage is $20 per 1,000 additional messages.
 

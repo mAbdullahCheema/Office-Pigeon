@@ -16,4 +16,4 @@ AI Calling Agent monthly retainers are: Smart Call Starter at $200/month, Lead &
 
 Setup fees are separate from monthly retainers. Confirmed setup fees are $300 for Smart FAQ Bot, $700 for Lead & Booking Bot, $1,500 for AI Business Assistant, $600 for Smart Call Starter, $1,200 for Lead & Booking Caller, and $2,500 for AI Voice Operations Agent.
 
-Website renewal and retainer pricing is: Starter Business Website renewal is $50/year after the first year if managed through Office Pigeon, Smart Business Website retainer is $600/year, and Smart Commerce Website retainer starts from $500/year. Any extra website charges are mentioned beforehand at the time of purchase depending on the user specific requirements.
+Website renewal and retainer pricing is: Starter Business Website renewal is $50/year after the first year if managed through Office Pigeon, Smart Business Website retainer is $600/year, and Smart Commerce Website retainer starts from $1,000/year. Smart Commerce Website setup starts at $2,000. Any extra website charges are mentioned beforehand at the time of purchase depending on the user specific requirements.

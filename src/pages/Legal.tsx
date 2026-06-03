@@ -147,7 +147,7 @@ export default function Legal({ initialTab = 'privacy', onTabChange }: LegalProp
             <ul className="list-disc pl-5 space-y-1 text-gray-600 font-medium">
               <li>Smart FAQ Bot: 10,000 processed messages/month</li>
               <li>Lead & Booking Bot: 20,000 processed messages/month</li>
-              <li>AI Business Assistant: 40,000 processed messages/month</li>
+              <li>AI Business Assistant: 50,000 processed messages/month</li>
             </ul>
             <p className="mt-2 text-gray-500">
               Extra usage quantities are bought in standard blocs of $20 per 1,000 additional processed answers.

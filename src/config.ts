@@ -67,10 +67,10 @@ export const WEBSITE_PACKAGES: Package[] = [
   {
     id: 'commerce-website',
     name: 'Smart Commerce Website',
-    price: 'Starting at $1,000',
+    price: 'Starting at $2,000',
     timeline: '2–10 working days',
     revision: '1 revision included',
-    support: 'From $500/year + disclosed requirement-based charges',
+    support: 'From $1,000/year + disclosed requirement-based charges',
     bestFor: 'Retail and services businesses aiming to sell physical or digital goods in a sleek, conversion-centric online shop.',
     includes: [
       'Stunning dynamic product lists',
@@ -83,7 +83,7 @@ export const WEBSITE_PACKAGES: Package[] = [
       'Discount, coupon, and sales rule calculators',
       'Product categorization and search systems'
     ],
-    note: 'Annual retainer starts from $500/year. Any extra charges are mentioned beforehand at the time of purchase depending on the user specific requirements.'
+    note: 'Annual retainer starts from $1,000/year. Any extra charges are mentioned beforehand at the time of purchase depending on the user specific requirements.'
   }
 ];
 
@@ -144,7 +144,7 @@ export const CHATBOT_PACKAGES: Package[] = [
       'Intelligent regular customer followups',
       'Full monthly service oversight and regular optimization updates'
     ],
-    note: 'Includes up to 40,000 messages/month. Built to serve as a logical digital expansion of your team.'
+    note: 'Includes up to 50,000 messages/month. Built to serve as a logical digital expansion of your team.'
   }
 ];
 
@@ -366,7 +366,7 @@ export const GENERAL_FAQS: FAQItem[] = [
   },
   {
     question: 'How do chatbot message limits work?',
-    answer: 'Each chatbot tier includes a distinct monthly message budget (e.g., 10k messages for FAQ Bot, 20k for Lead Bot, 40k for AI Assistant). These limits reset monthly. Extra volume is available in packages of $20 per 1,000 extra interactions.',
+    answer: 'Each chatbot tier includes a distinct monthly message budget (e.g., 10k messages for FAQ Bot, 20k for Lead Bot, 50k for AI Assistant). These limits reset monthly. Extra volume is available in packages of $20 per 1,000 extra interactions.',
     category: 'chatbots'
   },
   {

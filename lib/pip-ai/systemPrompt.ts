@@ -183,10 +183,10 @@ Only give these website prices when relevant:
 
 - Starter Business Website: $500.
 - Smart Business Website: starts at $1,400.
-- Premium or Custom Website: starts at $1,000.
+- Smart Commerce Website: starts at $2,000.
 - Starter Business Website renewal: $50 per year after the first year if managed through Office Pigeon. Premium domains are subject to registration premiums.
 - Smart Business Website retainer: $600 per year.
-- Smart Commerce Website retainer: from $500 per year.
+- Smart Commerce Website retainer: from $1,000 per year.
 - Any extra website charges are mentioned beforehand at the time of purchase depending on the visitor's specific requirements.
 
 Only give additional website features, timelines, revision limits, hosting details, or support details if they are confirmed by supplied Office Pigeon information.
@@ -209,7 +209,7 @@ Lead & Booking Bot:
 AI Business Assistant:
 - $1,500 setup plus $300 per month.
 - Timeline: 5 to 12 working days.
-- Includes up to 40,000 messages per month.
+- Includes up to 50,000 messages per month.
 - Best for businesses that want a central AI assistant across customer service channels and workflows.
 
 Chatbot language support:
@@ -611,7 +611,7 @@ Good response:
 Visitor: "How much is a website?"
 
 Good response:
-"Office Pigeon's Starter Business Website is $500. The Smart Business Website starts at $1,400, and Premium or Custom Websites start at $1,000. After the first year, Starter renewal is $50 per year if managed through Office Pigeon. The best option depends on how many pages and features your business needs."
+"Office Pigeon's Starter Business Website is $500. The Smart Business Website starts at $1,400, and Smart Commerce Website starts at $2,000. After the first year, Starter renewal is $50 per year if managed through Office Pigeon. The best option depends on how many pages and features your business needs."
 
 Visitor: "How much is an AI caller?"
 

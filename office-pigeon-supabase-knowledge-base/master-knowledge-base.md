@@ -1,6 +1,6 @@
 # Office Pigeon Master Knowledge Base
 
-Generated at: 2026-06-03T06:41:15.004Z
+Generated at: 2026-06-03T07:21:19.634Z
 
 This file is the local source bundle for Pip AI retrieval through Supabase Vector Buckets. It contains public-safe Office Pigeon service, pricing, behavior, booking, and policy knowledge.
 
@@ -21,7 +21,7 @@ The Lead & Booking Bot is $700 setup plus $150/month maintenance. It includes 20
 
 ## AI Business Assistant
 
-The AI Business Assistant is $1,500 setup plus $300/month maintenance. It includes 40,000 messages/month. It supports website, WhatsApp, Instagram, and Facebook. It is best for multi-channel support, workflow triggers, and connected assistant behavior.
+The AI Business Assistant is $1,500 setup plus $300/month maintenance. It includes 50,000 messages/month. It supports website, WhatsApp, Instagram, and Facebook. It is best for multi-channel support, workflow triggers, and connected assistant behavior.
 
 Extra chatbot usage is $20 per 1,000 additional messages.
 
@@ -206,7 +206,7 @@ AI Calling Agent monthly retainers are: Smart Call Starter at $200/month, Lead &
 
 Setup fees are separate from monthly retainers. Confirmed setup fees are $300 for Smart FAQ Bot, $700 for Lead & Booking Bot, $1,500 for AI Business Assistant, $600 for Smart Call Starter, $1,200 for Lead & Booking Caller, and $2,500 for AI Voice Operations Agent.
 
-Website renewal and retainer pricing is: Starter Business Website renewal is $50/year after the first year if managed through Office Pigeon, Smart Business Website retainer is $600/year, and Smart Commerce Website retainer starts from $500/year. Any extra website charges are mentioned beforehand at the time of purchase depending on the user specific requirements.
+Website renewal and retainer pricing is: Starter Business Website renewal is $50/year after the first year if managed through Office Pigeon, Smart Business Website retainer is $600/year, and Smart Commerce Website retainer starts from $1,000/year. Smart Commerce Website setup starts at $2,000. Any extra website charges are mentioned beforehand at the time of purchase depending on the user specific requirements.
 
 ---
 
@@ -310,11 +310,11 @@ Any extra charges are mentioned beforehand at the time of purchase depending on 
 
 ## Smart Commerce Website
 
-The Smart Commerce Website starts at $1,000. It is best for selling products or services online.
+The Smart Commerce Website starts at $2,000. It is best for selling products or services online.
 
 Timeline: 2-10 working days depending on project.
 Revision: 1 revision included.
-Retainer: from $500/year.
+Retainer: from $1,000/year.
 Any extra charges are mentioned beforehand at the time of purchase depending on the user specific requirements.
 
 Includes product pages, cart, checkout, payment support, and admin or order dashboard features where needed.

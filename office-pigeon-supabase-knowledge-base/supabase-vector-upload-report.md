@@ -2,14 +2,14 @@
 
 Status: success
 
-- Uploaded at: 2026-06-03T06:41:51.133Z
+- Uploaded at: 2026-06-03T07:21:48.793Z
 - Supabase project host: `kyiabpkcwqrgtxxjeqqe.supabase.co`
 - Vector bucket: `officepigeon`
 - Vector index: `officepigeon-knowledge`
 - Embedding model: `gemini-embedding-001`
 - Embedding dimension: 3072
-- Chunks read: 34
-- Vectors uploaded: 34
+- Chunks read: 35
+- Vectors uploaded: 35
 - Failed chunks: 0
 
 ## Failures
