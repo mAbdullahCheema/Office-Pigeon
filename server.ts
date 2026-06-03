@@ -316,7 +316,14 @@ const trustedCountryHeaderNames = [
   'x-nf-client-connection-ip-country'
 ];
 
+const visitorCountryCache = new Map<string, { country: string | null; expiresAt: number }>();
+
 const firstHeaderValue = (value: string | string[] | undefined) => Array.isArray(value) ? value[0] : value;
+
+const normalizeCountryCode = (value: unknown) => {
+  const country = typeof value === 'string' ? value.trim().toUpperCase() : '';
+  return /^[A-Z]{2}$/.test(country) ? country : null;
+};
 
 const isLocalRequest = (req: express.Request) => {
   const host = (req.hostname || '').toLowerCase();
@@ -329,22 +336,89 @@ const isLocalRequest = (req: express.Request) => {
     remoteAddress === '::ffff:127.0.0.1';
 };
 
-const getVisitorCountry = (req: express.Request): string | null => {
+const isPrivateOrLocalIp = (ip: string) => {
+  const normalized = ip.replace(/^::ffff:/, '').trim();
+  return !normalized ||
+    normalized === '127.0.0.1' ||
+    normalized === '::1' ||
+    normalized.startsWith('10.') ||
+    normalized.startsWith('192.168.') ||
+    /^172\.(1[6-9]|2\d|3[0-1])\./.test(normalized) ||
+    normalized.startsWith('169.254.') ||
+    normalized.startsWith('fc') ||
+    normalized.startsWith('fd');
+};
+
+const getClientIp = (req: express.Request) => {
+  const forwardedFor = firstHeaderValue(req.headers['x-forwarded-for']);
+  const forwardedIp = forwardedFor?.split(',').map((part) => part.trim()).find(Boolean);
+  const realIp = firstHeaderValue(req.headers['x-real-ip'])?.trim();
+  return forwardedIp || realIp || req.ip || req.socket.remoteAddress || '';
+};
+
+const getVisitorCountryFromHeaders = (req: express.Request): string | null => {
   if (!isProductionServer) {
     const simulatedCountry = typeof req.query.country === 'string' ? req.query.country.trim().toUpperCase() : '';
-    if (/^[A-Z]{2}$/.test(simulatedCountry)) return simulatedCountry;
+    const country = normalizeCountryCode(simulatedCountry);
+    if (country) return country;
   }
 
   for (const headerName of trustedCountryHeaderNames) {
-    const country = firstHeaderValue(req.headers[headerName])?.trim().toUpperCase();
-    if (country && /^[A-Z]{2}$/.test(country)) return country;
+    const country = normalizeCountryCode(firstHeaderValue(req.headers[headerName]));
+    if (country) return country;
   }
 
   return null;
 };
 
-const canAccessPakistanPage = (req: express.Request) => {
-  const country = getVisitorCountry(req);
+const lookupCountryByIp = async (ip: string): Promise<string | null> => {
+  const normalizedIp = ip.replace(/^::ffff:/, '').trim();
+  if (isPrivateOrLocalIp(normalizedIp)) return null;
+
+  const cached = visitorCountryCache.get(normalizedIp);
+  if (cached && cached.expiresAt > Date.now()) return cached.country;
+
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 1800);
+
+  try {
+    const response = await fetch(`https://api.country.is/${encodeURIComponent(normalizedIp)}`, {
+      signal: controller.signal
+    });
+    const data = await response.json().catch(() => ({}));
+    let country = normalizeCountryCode(data?.country);
+
+    if (!country) {
+      const fallbackResponse = await fetch(`https://ipinfo.io/${encodeURIComponent(normalizedIp)}/country`, {
+        signal: controller.signal
+      });
+      country = normalizeCountryCode(await fallbackResponse.text().catch(() => ''));
+    }
+
+    visitorCountryCache.set(normalizedIp, {
+      country,
+      expiresAt: Date.now() + 6 * 60 * 60 * 1000
+    });
+    return country;
+  } catch {
+    visitorCountryCache.set(normalizedIp, {
+      country: null,
+      expiresAt: Date.now() + 20 * 60 * 1000
+    });
+    return null;
+  } finally {
+    clearTimeout(timer);
+  }
+};
+
+const resolveVisitorCountry = async (req: express.Request): Promise<string | null> => {
+  const headerCountry = getVisitorCountryFromHeaders(req);
+  if (headerCountry) return headerCountry;
+  return lookupCountryByIp(getClientIp(req));
+};
+
+const canAccessPakistanPage = async (req: express.Request) => {
+  const country = await resolveVisitorCountry(req);
 
   if (country) return country === 'PK';
   if (!isProductionServer && (isLocalRequest(req) || process.env.ALLOW_PAKISTAN_PAGE_DEV === 'true')) return true;
@@ -707,6 +781,7 @@ async function startServer() {
   const app = express();
   const PORT = Number(process.env.PORT || 3000);
 
+  app.set('trust proxy', true);
   app.use(express.json({ limit: '1mb' }));
 
   app.get('/api/admin/config', (_req, res) => {
@@ -1245,8 +1320,8 @@ async function startServer() {
   app.get('/api/elevenlabs/tools/search-office-pigeon-knowledge', handleVoiceKnowledgeSearch);
   app.post('/api/elevenlabs/tools/search-office-pigeon-knowledge', handleVoiceKnowledgeSearch);
 
-  app.get('/api/region-offer', (req, res) => {
-    const country = getVisitorCountry(req);
+  app.get('/api/region-offer', async (req, res) => {
+    const country = await resolveVisitorCountry(req);
     const showPakistanOffer = country
       ? country === 'PK'
       : !isProductionServer && (isLocalRequest(req) || process.env.ALLOW_PAKISTAN_PAGE_DEV === 'true');
@@ -1258,8 +1333,8 @@ async function startServer() {
     });
   });
 
-  app.get(['/pakistan', '/pakistan/'], (req, res, next) => {
-    if (canAccessPakistanPage(req)) {
+  app.get(['/pakistan', '/pakistan/'], async (req, res, next) => {
+    if (await canAccessPakistanPage(req)) {
       next();
       return;
     }
