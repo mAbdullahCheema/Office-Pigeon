@@ -11,7 +11,7 @@ import { BRAND, WEBSITE_PACKAGES, CHATBOT_PACKAGES, CALLING_AGENT_PACKAGES, AUTO
 import ThreeHub from '../components/ThreeHub';
 
 function TypewriterWord() {
-  const word = "TRUST YOU";
+  const word = "LOSING CUSTOMERS";
   const [displayedText, setDisplayedText] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -108,7 +108,7 @@ export default function Home({ onPageChange, onOpenPackageModal, onOpenConsultat
             </div>
             
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-[68px] font-black text-gray-900 leading-[1.05] tracking-tighter uppercase mb-4 max-w-4xl">
-              Your Business Shouldn't Be Losing Customers While You're Busy.
+              Your Business Shouldn't Be <TypewriterWord /> While You're Busy.
             </h1>
             
             <p className="text-sm sm:text-base text-gray-500 max-w-xl leading-relaxed font-sans font-medium">
