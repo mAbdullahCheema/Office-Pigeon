@@ -11,6 +11,7 @@ import SmoothScroll from './components/SmoothScroll';
 import PipAIWidget from './components/PipAIWidget';
 import VoiceAgentClientTools from './components/VoiceAgentClientTools';
 import PackageModal from './components/PackageModal';
+import PakistanOfferCurtain from './components/PakistanOfferCurtain';
 
 // Pages
 import Home from './pages/Home';
@@ -24,6 +25,7 @@ import Contact from './pages/Contact';
 import FAQ from './pages/FAQ';
 import Legal from './pages/Legal';
 import Admin from './pages/Admin';
+import Pakistan from './pages/Pakistan';
 
 const PAGE_TITLES: Record<PageId, string> = {
   home: 'Office Pigeon | AI Websites, Chatbots, Calling Agents & Automations',
@@ -31,6 +33,7 @@ const PAGE_TITLES: Record<PageId, string> = {
   chatbots: 'Smart Chatbots for Websites & WhatsApp | Office Pigeon',
   'calling-agents': 'AI Calling Agents for Businesses | Office Pigeon',
   automations: 'Workflow Automation for Growing Businesses | Office Pigeon',
+  pakistan: 'Office Pigeon Pakistan | Websites, Chatbots & AI Calling Agents',
   examples: 'Previews and Case Studies | Office Pigeon',
   about: 'About Office Pigeon | AI Business Systems',
   contact: 'Contact Office Pigeon | Free AI Consultation',
@@ -41,9 +44,45 @@ const PAGE_TITLES: Record<PageId, string> = {
   'fair-usage': 'Fair Usage Policy | Office Pigeon'
 };
 
+const PAGE_DESCRIPTIONS: Partial<Record<PageId, string>> = {
+  pakistan:
+    'Office Pigeon Pakistan helps growing businesses build professional websites, smart chatbots, WhatsApp-friendly inquiry systems, and AI calling agents for faster customer response and better lead capture.'
+};
+
+const PAGE_OG: Partial<Record<PageId, { title: string; description: string }>> = {
+  pakistan: {
+    title: 'Office Pigeon Pakistan',
+    description:
+      'Professional websites, smart chatbots, AI calling agents, and growth systems for growing Pakistani businesses.'
+  }
+};
+
+const PAGE_PATHS: Record<PageId, string> = {
+  home: '/',
+  websites: '/websites',
+  chatbots: '/chatbots',
+  'calling-agents': '/calling-agents',
+  automations: '/automations',
+  pakistan: '/pakistan',
+  examples: '/examples',
+  about: '/about',
+  contact: '/contact',
+  faq: '/faq',
+  privacy: '/privacy',
+  terms: '/terms',
+  refund: '/refund',
+  'fair-usage': '/fair-usage'
+};
+
+const pageFromPath = (pathname: string): PageId => {
+  const normalized = pathname.replace(/\/+$/, '') || '/';
+  const match = (Object.entries(PAGE_PATHS) as [PageId, string][]).find(([, path]) => path === normalized);
+  return match?.[0] || 'home';
+};
+
 export default function App() {
   const isAdminRoute = window.location.pathname.startsWith('/admin');
-  const [currentPage, setCurrentPage] = useState<PageId>('home');
+  const [currentPage, setCurrentPage] = useState<PageId>(() => pageFromPath(window.location.pathname));
   const [activePackage, setActivePackage] = useState<Package | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -53,7 +92,42 @@ export default function App() {
       return;
     }
     document.title = PAGE_TITLES[currentPage];
+    const description = PAGE_DESCRIPTIONS[currentPage];
+    if (description) {
+      const meta =
+        document.querySelector<HTMLMetaElement>('meta[name="description"]') ||
+        document.head.appendChild(document.createElement('meta'));
+      meta.setAttribute('name', 'description');
+      meta.setAttribute('content', description);
+    }
+    const og = PAGE_OG[currentPage];
+    if (og) {
+      ([
+        ['og:title', og.title],
+        ['og:description', og.description]
+      ] as const).forEach(([property, content]) => {
+        const meta =
+          document.querySelector<HTMLMetaElement>(`meta[property="${property}"]`) ||
+          document.head.appendChild(document.createElement('meta'));
+        meta.setAttribute('property', property);
+        meta.setAttribute('content', content);
+      });
+    }
   }, [currentPage, isAdminRoute]);
+
+  useEffect(() => {
+    const handlePopState = () => setCurrentPage(pageFromPath(window.location.pathname));
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  const handlePageChange = (page: PageId) => {
+    setCurrentPage(page);
+    const path = PAGE_PATHS[page];
+    if (path && window.location.pathname !== path) {
+      window.history.pushState({}, '', path);
+    }
+  };
 
   const handleOpenLaunchModal = (pkg: Package) => {
     setActivePackage(pkg);
@@ -82,7 +156,7 @@ export default function App() {
       case 'home':
         return (
           <Home
-            onPageChange={setCurrentPage}
+            onPageChange={handlePageChange}
             onOpenPackageModal={handleOpenLaunchModal}
             onOpenConsultationModal={handleOpenGeneralConsultation}
           />
@@ -95,15 +169,23 @@ export default function App() {
         return <CallingAgents onOpenPackageModal={handleOpenLaunchModal} />;
       case 'automations':
         return <Automations onOpenPackageModal={handleOpenLaunchModal} />;
+      case 'pakistan':
+        return (
+          <Pakistan
+            onPageChange={handlePageChange}
+            onOpenPackageModal={handleOpenLaunchModal}
+            onOpenConsultationModal={handleOpenGeneralConsultation}
+          />
+        );
       case 'examples':
         return (
           <Examples
-            onPageChange={setCurrentPage}
+            onPageChange={handlePageChange}
             onOpenConsultationModal={handleOpenGeneralConsultation}
           />
         );
       case 'about':
-        return <About onPageChange={setCurrentPage} />;
+        return <About onPageChange={handlePageChange} />;
       case 'contact':
         return <Contact />;
       case 'faq':
@@ -116,14 +198,14 @@ export default function App() {
           <div key={currentPage}>
             <Legal
               initialTab={currentPage}
-              onTabChange={setCurrentPage}
+              onTabChange={handlePageChange}
             />
           </div>
         );
       default:
         return (
           <Home
-            onPageChange={setCurrentPage}
+            onPageChange={handlePageChange}
             onOpenPackageModal={handleOpenLaunchModal}
             onOpenConsultationModal={handleOpenGeneralConsultation}
           />
@@ -144,8 +226,13 @@ export default function App() {
       {/* NAVBAR */}
       <Navbar
         currentPage={currentPage}
-        onPageChange={setCurrentPage}
+        onPageChange={handlePageChange}
         onOpenConsultationModal={handleOpenGeneralConsultation}
+      />
+
+      <PakistanOfferCurtain
+        currentPage={currentPage}
+        onPageChange={handlePageChange}
       />
 
       {/* PHYSICS-BASED INERTIAL SMOOTH SCROLLER WITH MOBILE MOMENTUM FALLBACK */}
@@ -157,13 +244,13 @@ export default function App() {
           </main>
 
           {/* FOOTER */}
-          <Footer onPageChange={setCurrentPage} />
+          <Footer onPageChange={handlePageChange} />
         </div>
       </SmoothScroll>
 
       {/* FLOATING CHAT ASSISTANT - OVERLAY */}
       <VoiceAgentClientTools />
-      <PipAIWidget onPageChange={setCurrentPage} />
+      <PipAIWidget onPageChange={handlePageChange} />
 
       {/* REUSABLE PACKAGES / GENERAL INTAKE FORM MODAL */}
       <PackageModal

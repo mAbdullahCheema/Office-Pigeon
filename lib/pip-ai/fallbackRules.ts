@@ -4,6 +4,7 @@ const handoffPatterns: Array<{ reason: string; pattern: RegExp; priority?: 'norm
   { reason: 'Visitor explicitly asked for a human', pattern: /\b(human|person|agent|representative|talk to someone|speak to someone|real person)\b/i, priority: 'high' },
   { reason: 'Visitor is ready for sales contact', pattern: /\b(call me|contact me|i want to buy|i'm ready|im ready|ready to start|sign me up|start my project|let's do it|lets do it|i agree to buy|i want this package|follow up with me|reach out to me)\b/i, priority: 'high' },
   { reason: 'Custom quote or complex scope needs human review', pattern: /\b(custom quote|quote me|give me a quote|advanced integration|complex integration|custom integration|complex workflow|advanced workflow|custom pricing)\b/i, priority: 'high' },
+  { reason: 'Region-specific offer details should be shared on WhatsApp', pattern: /\b(region specific|regional offer|regional discount|country specific|local offer|local discount|pakistan offer|pakistani offer|pakistan discount|pakistani discount|discount in pakistan|pricing in pakistan|pakistan pricing|pk pricing|pk discount)\b/i, priority: 'high' },
   { reason: 'Refund or payment dispute needs human review', pattern: /\b(refund dispute|chargeback|payment dispute|cancel payment|money back|payment problem|billing dispute|refund|billing issue)\b/i, priority: 'urgent' }
 ];
 

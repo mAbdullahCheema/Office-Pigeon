@@ -9,6 +9,7 @@ export type PageId =
   | 'chatbots'
   | 'calling-agents'
   | 'automations'
+  | 'pakistan'
   | 'examples'
   | 'about'
   | 'contact'

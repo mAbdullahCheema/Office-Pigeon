@@ -1,6 +1,6 @@
 # Office Pigeon Supabase Source Audit
 
-Generated at: 2026-06-03T07:21:19.645Z
+Generated at: 2026-06-03T09:09:38.188Z
 
 ## Summary
 
@@ -21,7 +21,7 @@ Generated at: 2026-06-03T07:21:19.645Z
 | `legal-policies.md` | 387 | 1 | 1 | Included |
 | `objection-handling.md` | 867 | 1 | 1 | Included |
 | `office-pigeon-overview.md` | 842 | 1 | 1 | Included |
-| `pip-ai-behavior.md` | 3937 | 4 | 6 | Included |
+| `pip-ai-behavior.md` | 4631 | 4 | 6 | Included |
 | `pricing-payment-refunds.md` | 1734 | 2 | 3 | Included |
 | `smart-calling-agents.md` | 5741 | 6 | 7 | Included |
 | `website-packages.md` | 1502 | 4 | 4 | Included |

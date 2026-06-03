@@ -2,7 +2,7 @@
 
 Status: success
 
-- Uploaded at: 2026-06-03T07:21:48.793Z
+- Uploaded at: 2026-06-03T09:10:15.730Z
 - Supabase project host: `kyiabpkcwqrgtxxjeqqe.supabase.co`
 - Vector bucket: `officepigeon`
 - Vector index: `officepigeon-knowledge`
