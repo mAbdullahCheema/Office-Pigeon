@@ -377,6 +377,17 @@ function SectionHeader({ eyebrow, title, text }: { eyebrow: string; title: strin
   );
 }
 
+function scrollToSection(sectionId: string) {
+  const section = document.getElementById(sectionId);
+  if (!section) return;
+
+  const top = window.scrollY + section.getBoundingClientRect().top - 96;
+  window.scrollTo({
+    top: Math.max(top, 0),
+    behavior: 'smooth'
+  });
+}
+
 function PricingCard({ item, accent = 'orange', onOpen }: { item: PakistanPackage; accent?: 'orange' | 'rose' | 'amber'; onOpen: (pkg: Package) => void }) {
   const accentClasses = {
     orange: 'border-orange-500 ring-orange-100 text-orange-600 bg-orange-50',
@@ -615,7 +626,7 @@ export default function Pakistan({ onPageChange, onOpenPackageModal, onOpenConsu
                 Get Free Recommendation <ArrowRight size={13} />
               </button>
               <button
-                onClick={() => document.getElementById('pakistan-packages')?.scrollIntoView({ behavior: 'smooth' })}
+                onClick={() => scrollToSection('pakistan-packages')}
                 className="px-8 py-4 bg-white hover:bg-[#F0EEEA] text-gray-900 text-xs font-mono font-bold uppercase tracking-widest rounded-full border border-black/10 transition-all text-center cursor-pointer"
               >
                 View Pakistan Packages

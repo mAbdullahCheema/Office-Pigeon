@@ -60,6 +60,17 @@ function TypewriterWord() {
   );
 }
 
+function scrollToSection(sectionId: string) {
+  const section = document.getElementById(sectionId);
+  if (!section) return;
+
+  const top = window.scrollY + section.getBoundingClientRect().top - 96;
+  window.scrollTo({
+    top: Math.max(top, 0),
+    behavior: 'smooth'
+  });
+}
+
 interface HomeProps {
   onPageChange: (page: PageId) => void;
   onOpenPackageModal: (pkg: Package) => void;
@@ -96,12 +107,12 @@ export default function Home({ onPageChange, onOpenPackageModal, onOpenConsultat
               AI-POWERED WEBSITES, CHATBOTS, CALLING AGENTS & WORKFLOWS
             </div>
             
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-[68px] font-black text-gray-900 leading-[1.05] tracking-tighter uppercase mb-4">
-              HELP MORE CUSTOMERS FIND YOU, <TypewriterWord />, AND CONTACT YOU
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-[68px] font-black text-gray-900 leading-[1.05] tracking-tighter uppercase mb-4 max-w-4xl">
+              Your Business Shouldn't Be Losing Customers While You're Busy.
             </h1>
             
             <p className="text-sm sm:text-base text-gray-500 max-w-xl leading-relaxed font-sans font-medium">
-              We build premium websites, smart chatbots, AI Calling Agents, and connected workflows that make your business look professional, respond faster, and turn more visitors or callers into real leads without you handling the tech.
+              We build high-performing websites, smart chatbots, AI calling agents, and automation systems that help your business stay responsive, capture more leads, and turn customer interest into revenue.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center gap-4 pt-3">
@@ -109,14 +120,11 @@ export default function Home({ onPageChange, onOpenPackageModal, onOpenConsultat
                 onClick={onOpenConsultationModal}
                 className="w-full sm:w-auto px-8 py-4.5 bg-black hover:bg-orange-500 text-white text-xs font-mono font-bold uppercase tracking-widest rounded-full transition-all hover:scale-103 shadow-lg shadow-black/10 flex items-center justify-center gap-1.5 cursor-pointer focus:outline-none"
               >
-                GET FREE AI CONSULTATION
+                GET FREE CONSULTATION
                 <ArrowRight size={13} className="stroke-[2.5]" />
               </button>
               <button
-                onClick={() => {
-                  const el = document.getElementById('services-overview');
-                  el?.scrollIntoView({ behavior: 'smooth' });
-                }}
+                onClick={() => scrollToSection('services-overview')}
                 className="w-full sm:w-auto px-8 py-4.5 bg-[#FAF9F6] hover:bg-[#F0EEEA] text-gray-900 text-xs font-mono font-bold uppercase tracking-widest rounded-full border border-black/10 transition-all text-center cursor-pointer focus:outline-none"
               >
                 SEE HOW IT WORKS
