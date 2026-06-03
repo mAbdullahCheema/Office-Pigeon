@@ -66,7 +66,7 @@ function buildDemoReply(text: string, placement: ChatPlacement) {
   const input = text.toLowerCase();
 
   if (/\b(price|pricing|cost|how much|lead & booking|lead booking)\b/.test(input)) {
-    return 'The Lead & Booking Bot is $700 setup plus $149/month. It includes up to 20,000 messages/month and is best for collecting leads and booking requests through chat.';
+    return 'The Lead & Booking Bot is $700 setup plus $150/month. It includes up to 20,000 messages/month and is best for collecting leads and booking requests through chat.';
   }
 
   if (/\b(cleaning|website|site|landing|online presence)\b/.test(input)) {

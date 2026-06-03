@@ -26,7 +26,7 @@ export const WEBSITE_PACKAGES: Package[] = [
     badge: 'Best Starter Offer',
     timeline: '1 working day',
     revision: '1 minor revision included',
-    renewal: '$20/year after the first year if managed through Office Pigeon',
+    renewal: '$50/year after the first year if managed through Office Pigeon',
     bestFor: 'Growing businesses that want a professional online presence without long-term complexity.',
     includes: [
       '1 beautiful responsive landing page',
@@ -39,7 +39,7 @@ export const WEBSITE_PACKAGES: Package[] = [
       'Privacy and Terms footer pages setup',
       'Standard .com domain (where available)'
     ],
-    note: 'After the first year, renewal is only $20/year if managed through Office Pigeon. Premium domains subject to registration premiums.'
+    note: 'After the first year, renewal is only $50/year if managed through Office Pigeon. Premium domains subject to registration premiums.'
   },
   {
     id: 'business-website',
@@ -48,7 +48,7 @@ export const WEBSITE_PACKAGES: Package[] = [
     badge: 'Most Powerful',
     timeline: '2–10 working days',
     revision: '1 revision included',
-    support: 'Starting at $49/month + platform costs',
+    support: '$600/year retainer + disclosed requirement-based charges',
     bestFor: 'Businesses needing advanced systems like booking pipelines, custom accounts, administrative dashboards, or secure databases.',
     includes: [
       'Multi-page responsive structural layout',
@@ -62,7 +62,7 @@ export const WEBSITE_PACKAGES: Package[] = [
       'Third-party software data relays',
       'Performance analytics instrumentation'
     ],
-    note: 'Investment tiers depend on target features, volumes, database connections, and integrated third-party systems.'
+    note: 'Annual retainer is $600/year. Any extra charges are mentioned beforehand at the time of purchase depending on the user specific requirements.'
   },
   {
     id: 'commerce-website',
@@ -70,7 +70,7 @@ export const WEBSITE_PACKAGES: Package[] = [
     price: 'Starting at $1,000',
     timeline: '2–10 working days',
     revision: '1 revision included',
-    support: 'Starting at $99/month + hosting/payment fees',
+    support: 'From $500/year + disclosed requirement-based charges',
     bestFor: 'Retail and services businesses aiming to sell physical or digital goods in a sleek, conversion-centric online shop.',
     includes: [
       'Stunning dynamic product lists',
@@ -83,7 +83,7 @@ export const WEBSITE_PACKAGES: Package[] = [
       'Discount, coupon, and sales rule calculators',
       'Product categorization and search systems'
     ],
-    note: 'Final monthly overhead varies based on sku quantity, shipping APIs, inventory complexity, and gateway subscriptions.'
+    note: 'Annual retainer starts from $500/year. Any extra charges are mentioned beforehand at the time of purchase depending on the user specific requirements.'
   }
 ];
 
@@ -91,7 +91,7 @@ export const CHATBOT_PACKAGES: Package[] = [
   {
     id: 'faq-bot',
     name: 'Smart FAQ Bot',
-    price: '$300 setup + $49/mo',
+    price: '$300 setup + $50/mo',
     timeline: '2-4 working days',
     revision: 'Standard monitoring',
     bestFor: 'Businesses that receive identical support inquiries, seeking to save staff hours.',
@@ -110,7 +110,7 @@ export const CHATBOT_PACKAGES: Package[] = [
   {
     id: 'booking-bot',
     name: 'Lead & Booking Bot',
-    price: '$700 setup + $149/mo',
+    price: '$700 setup + $150/mo',
     badge: 'Most Popular',
     timeline: '3-7 working days',
     revision: 'Comprehensive support',
@@ -130,7 +130,7 @@ export const CHATBOT_PACKAGES: Package[] = [
   {
     id: 'business-assistant',
     name: 'AI Business Assistant',
-    price: '$1,500 setup + $299/mo',
+    price: '$1,500 setup + $300/mo',
     timeline: '5-12 working days',
     revision: 'VIP Priority response',
     bestFor: 'Enterprises wanting a central unified assistant running across all customer service channels and databases.',
@@ -152,7 +152,7 @@ export const CALLING_AGENT_PACKAGES: Package[] = [
   {
     id: 'smart-call-starter',
     name: 'Smart Call Starter',
-    price: '$600 setup + $199/mo',
+    price: '$600 setup + $200/mo',
     timeline: 'Setup timeline reviewed during consultation',
     revision: 'Managed calling setup',
     bestFor: 'Businesses that want a simple AI phone assistant to answer common customer calls and capture messages.',
@@ -176,7 +176,7 @@ export const CALLING_AGENT_PACKAGES: Package[] = [
   {
     id: 'lead-booking-caller',
     name: 'Lead & Booking Caller',
-    price: '$1,200 setup + $449/mo',
+    price: '$1,200 setup + $450/mo',
     badge: 'Most Popular',
     timeline: 'Setup timeline reviewed during consultation',
     revision: 'Managed calling and booking request setup',
@@ -202,7 +202,7 @@ export const CALLING_AGENT_PACKAGES: Package[] = [
   {
     id: 'ai-voice-operations-agent',
     name: 'AI Voice Operations Agent',
-    price: '$2,500 setup + $999/mo',
+    price: '$2,500 setup + $1,000/mo',
     timeline: 'Setup timeline reviewed during consultation',
     revision: 'Advanced managed voice operations',
     bestFor: 'Businesses that want a full AI voice assistant connected to operations, follow-ups, booking systems, and workflows.',
@@ -346,7 +346,7 @@ export const GENERAL_FAQS: FAQItem[] = [
   },
   {
     question: 'Is the $500 Starter Business Website a one-time payment?',
-    answer: 'Yes, the initial build is a one-time $500 investment. After the first year, domain registration and hosting run at a tiny, cost-effective fee of just $20/year if kept under Office Pigeon management.',
+    answer: 'Yes, the initial build is a one-time $500 investment. After the first year, renewal is $50/year if managed through Office Pigeon. Premium domains are subject to registration premiums.',
     category: 'websites'
   },
   {
@@ -381,7 +381,7 @@ export const GENERAL_FAQS: FAQItem[] = [
   },
   {
     question: 'Do chatbot plans include support?',
-    answer: 'Yes! Active monthly chatbot subscriptions contain integrated system monitoring, error troubleshooting, and response adjustment upkeep. Major feature expansions are priced individually.',
+    answer: 'Yes. Active chatbot maintenance retainers include integrated system monitoring, error troubleshooting, and response adjustment upkeep. Smart FAQ Bot maintenance is $50/month, Lead & Booking Bot is $150/month, and AI Business Assistant is $300/month. Major feature expansions are priced individually.',
     category: 'chatbots'
   },
   {

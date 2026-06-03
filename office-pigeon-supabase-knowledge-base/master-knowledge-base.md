@@ -1,6 +1,6 @@
 # Office Pigeon Master Knowledge Base
 
-Generated at: 2026-06-02T19:11:30.127Z
+Generated at: 2026-06-03T06:41:15.004Z
 
 This file is the local source bundle for Pip AI retrieval through Supabase Vector Buckets. It contains public-safe Office Pigeon service, pricing, behavior, booking, and policy knowledge.
 
@@ -13,15 +13,15 @@ This file is the local source bundle for Pip AI retrieval through Supabase Vecto
 
 ## Smart FAQ Bot
 
-The Smart FAQ Bot is $300 setup plus $49/month. It includes 10,000 messages/month. It can work on a website and WhatsApp. It is best for businesses that answer the same customer questions repeatedly and want basic lead collection.
+The Smart FAQ Bot is $300 setup plus $50/month maintenance. It includes 10,000 messages/month. It can work on a website and WhatsApp. It is best for businesses that answer the same customer questions repeatedly and want basic lead collection.
 
 ## Lead & Booking Bot
 
-The Lead & Booking Bot is $700 setup plus $149/month. It includes 20,000 messages/month. It can support website, WhatsApp, Instagram, or Facebook. It helps with lead capture, booking support, customer qualification, and integrations where needed.
+The Lead & Booking Bot is $700 setup plus $150/month maintenance. It includes 20,000 messages/month. It can support website, WhatsApp, Instagram, or Facebook. It helps with lead capture, booking support, customer qualification, and integrations where needed.
 
 ## AI Business Assistant
 
-The AI Business Assistant is $1,500 setup plus $299/month. It includes 40,000 messages/month. It supports website, WhatsApp, Instagram, and Facebook. It is best for multi-channel support, workflow triggers, and connected assistant behavior.
+The AI Business Assistant is $1,500 setup plus $300/month maintenance. It includes 40,000 messages/month. It supports website, WhatsApp, Instagram, and Facebook. It is best for multi-channel support, workflow triggers, and connected assistant behavior.
 
 Extra chatbot usage is $20 per 1,000 additional messages.
 
@@ -200,11 +200,13 @@ Third-party platform fees may apply for tools such as payment gateways, SMS, hos
 
 ## Confirmed Monthly Retainers and Overage Charges
 
-Smart Chatbot monthly retainers are: Smart FAQ Bot at $49/month, Lead & Booking Bot at $149/month, and AI Business Assistant at $299/month. Extra chatbot usage is $20 per 1,000 additional messages.
+Smart Chatbot monthly maintenance retainers are: Smart FAQ Bot at $50/month, Lead & Booking Bot at $150/month, and AI Business Assistant at $300/month. Extra chatbot usage is $20 per 1,000 additional messages.
 
-AI Calling Agent monthly retainers are: Smart Call Starter at $199/month, Lead & Booking Caller at $449/month, and AI Voice Operations Agent at $999/month. Extra AI Calling Agent minutes are billed at $0.35/min across all AI Calling Agent packages.
+AI Calling Agent monthly retainers are: Smart Call Starter at $200/month, Lead & Booking Caller at $450/month, and AI Voice Operations Agent at $1,000/month. Extra AI Calling Agent minutes are billed at $0.35/min across all AI Calling Agent packages.
 
 Setup fees are separate from monthly retainers. Confirmed setup fees are $300 for Smart FAQ Bot, $700 for Lead & Booking Bot, $1,500 for AI Business Assistant, $600 for Smart Call Starter, $1,200 for Lead & Booking Caller, and $2,500 for AI Voice Operations Agent.
+
+Website renewal and retainer pricing is: Starter Business Website renewal is $50/year after the first year if managed through Office Pigeon, Smart Business Website retainer is $600/year, and Smart Commerce Website retainer starts from $500/year. Any extra website charges are mentioned beforehand at the time of purchase depending on the user specific requirements.
 
 ---
 
@@ -224,7 +226,7 @@ AI Calling Agents support inbound and approved outbound use cases. Approved outb
 
 ### Smart Call Starter
 
-Price: $600 setup plus $199/month.
+Price: $600 setup plus $200/month retainer.
 
 Includes up to 300 call minutes/month. Extra minutes are billed at $0.35/min.
 
@@ -236,7 +238,7 @@ Limitations: automatic booking confirmation, advanced outbound workflows, CRM in
 
 ### Lead & Booking Caller
 
-Price: $1,200 setup plus $449/month. Most Popular.
+Price: $1,200 setup plus $450/month retainer. Most Popular.
 
 Includes up to 900 call minutes/month. Extra minutes are billed at $0.35/min.
 
@@ -248,7 +250,7 @@ Booking behavior: the agent collects booking requests, checks required details, 
 
 ### AI Voice Operations Agent
 
-Price: $2,500 setup plus $999/month.
+Price: $2,500 setup plus $1,000/month retainer.
 
 Includes up to 2,500 call minutes/month. Extra minutes are billed at $0.35/min.
 
@@ -284,7 +286,7 @@ The Starter Business Website is $500 fixed. It is best for a business that needs
 
 Timeline: 1 working day.
 Revision: 1 minor revision.
-Renewal: $20/year after the first year if managed through Office Pigeon.
+Renewal: $50/year after the first year if managed through Office Pigeon. Premium domains are subject to registration premiums.
 
 Includes:
 - 1 landing page
@@ -303,7 +305,8 @@ The Smart Business Website starts at $1,400. It is best for bookings, login, das
 
 Timeline: 2-10 working days depending on project.
 Revision: 1 revision included.
-Support: starting at $49/month plus third-party fees.
+Retainer: $600/year.
+Any extra charges are mentioned beforehand at the time of purchase depending on the user specific requirements.
 
 ## Smart Commerce Website
 
@@ -311,7 +314,8 @@ The Smart Commerce Website starts at $1,000. It is best for selling products or 
 
 Timeline: 2-10 working days depending on project.
 Revision: 1 revision included.
-Support: starting at $99/month plus third-party fees.
+Retainer: from $500/year.
+Any extra charges are mentioned beforehand at the time of purchase depending on the user specific requirements.
 
 Includes product pages, cart, checkout, payment support, and admin or order dashboard features where needed.
 

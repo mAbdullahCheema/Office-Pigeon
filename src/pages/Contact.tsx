@@ -212,9 +212,9 @@ export default function Contact() {
                   <option value="starter-business-website">Starter Business Website ($500)</option>
                   <option value="business-website">Business Web app ($1,400+)</option>
                   <option value="commerce-website">Commerce Shop ($1,000+)</option>
-                  <option value="faq-bot">Smart FAQ Bot ($49/mo)</option>
-                  <option value="booking-bot">Lead & Booking Bot ($149/mo)</option>
-                  <option value="calling-agent">AI Calling Agent ($199/mo+)</option>
+                  <option value="faq-bot">Smart FAQ Bot ($50/mo)</option>
+                  <option value="booking-bot">Lead & Booking Bot ($150/mo)</option>
+                  <option value="calling-agent">AI Calling Agent ($200/mo+)</option>
                   <option value="automation">Workflow Automations</option>
                   <option value="consultation">General Consultation</option>
                 </select>

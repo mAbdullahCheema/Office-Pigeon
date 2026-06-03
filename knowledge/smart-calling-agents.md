@@ -12,7 +12,7 @@ AI Calling Agents support inbound and approved outbound use cases. Approved outb
 
 ### Smart Call Starter
 
-Price: $600 setup plus $199/month.
+Price: $600 setup plus $200/month retainer.
 
 Includes up to 300 call minutes/month. Extra minutes are billed at $0.35/min.
 
@@ -24,7 +24,7 @@ Limitations: automatic booking confirmation, advanced outbound workflows, CRM in
 
 ### Lead & Booking Caller
 
-Price: $1,200 setup plus $449/month. Most Popular.
+Price: $1,200 setup plus $450/month retainer. Most Popular.
 
 Includes up to 900 call minutes/month. Extra minutes are billed at $0.35/min.
 
@@ -36,7 +36,7 @@ Booking behavior: the agent collects booking requests, checks required details, 
 
 ### AI Voice Operations Agent
 
-Price: $2,500 setup plus $999/month.
+Price: $2,500 setup plus $1,000/month retainer.
 
 Includes up to 2,500 call minutes/month. Extra minutes are billed at $0.35/min.
 
