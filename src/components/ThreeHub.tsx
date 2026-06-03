@@ -111,9 +111,9 @@ export default function ThreeHub() {
       mainGroup.add(ringMesh);
     };
 
-    createOrbitRing(3.2, 0xf97316, 0.2);
-    createOrbitRing(4.2, 0xec4899, -0.3);
-    createOrbitRing(5.0, 0xf59e0b, 0.5);
+    createOrbitRing(2.45, 0xf97316, 0.2);
+    createOrbitRing(3.15, 0xec4899, -0.3);
+    createOrbitRing(3.75, 0xf59e0b, 0.5);
 
     // SATELLITE NODES
     const nodeGroup = new THREE.Group();
@@ -144,9 +144,9 @@ export default function ThreeHub() {
     };
 
     const nodesData = [
-      { id: 'web', label: 'Websites', node: createNode(3.2, 0, 0xf97316, 0.008) },
-      { id: 'chat', label: 'Chatbots', node: createNode(4.2, Math.PI * 0.7, 0xec4899, 0.005) },
-      { id: 'auto', label: 'Automations', node: createNode(5.0, Math.PI * 1.4, 0xf59e0b, 0.003) }
+      { id: 'web', label: 'Websites', node: createNode(2.45, 0, 0xf97316, 0.008) },
+      { id: 'chat', label: 'Chatbots', node: createNode(3.15, Math.PI * 0.7, 0xec4899, 0.005) },
+      { id: 'auto', label: 'Automations', node: createNode(3.75, Math.PI * 1.4, 0xf59e0b, 0.003) }
     ];
 
     nodesData.forEach(item => {
@@ -161,7 +161,7 @@ export default function ThreeHub() {
 
     for (let i = 0; i < particleCount; i++) {
       // Randomly disperse particles inside sphere shell
-      const r = 2.0 + Math.random() * 3.5;
+      const r = 1.7 + Math.random() * 4.1;
       const u = Math.random();
       const v = Math.random();
       const theta = u * 2.0 * Math.PI;

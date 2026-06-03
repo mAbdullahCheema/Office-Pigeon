@@ -457,6 +457,140 @@ function CompactInfoSection({ title, items }: { title: string; items: { heading:
   );
 }
 
+function PakistanHeroVisual() {
+  return (
+    <div className="relative mx-auto w-full max-w-[620px] lg:max-w-none">
+      <div className="absolute -left-10 top-10 h-52 w-52 rounded-full bg-orange-200/35 blur-3xl" />
+      <div className="absolute -right-8 bottom-0 h-64 w-64 rounded-full bg-rose-200/25 blur-3xl" />
+
+      <div className="relative min-h-[520px] sm:min-h-[560px] lg:min-h-[610px]">
+        <motion.div
+          initial={{ opacity: 0, y: 18, rotate: -1 }}
+          whileInView={{ opacity: 1, y: 0, rotate: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.55, ease: 'easeOut' }}
+          className="absolute left-0 top-12 w-[88%] rounded-[28px] border border-black/10 bg-gray-950 p-3 shadow-[0_42px_110px_rgba(15,23,42,0.25)] sm:w-[82%] lg:left-2"
+        >
+          <div className="flex items-center gap-1.5 px-2 pb-2">
+            <span className="h-2.5 w-2.5 rounded-full bg-rose-400" />
+            <span className="h-2.5 w-2.5 rounded-full bg-amber-300" />
+            <span className="h-2.5 w-2.5 rounded-full bg-emerald-400" />
+            <span className="ml-3 text-[10px] font-mono font-bold uppercase tracking-wider text-white/45">officepigeon.pk preview</span>
+          </div>
+          <div className="overflow-hidden rounded-[20px] bg-[#FAF9F6]">
+            <div className="relative h-64 p-5 sm:h-72">
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_75%_15%,rgba(249,115,22,0.18),transparent_34%),radial-gradient(circle_at_10%_80%,rgba(251,191,36,0.16),transparent_38%)]" />
+              <div className="relative flex items-center justify-between">
+                <div>
+                  <p className="text-[10px] font-mono font-black uppercase tracking-wider text-orange-600">Premium Website</p>
+                  <h3 className="mt-2 max-w-[260px] text-3xl font-black uppercase leading-none tracking-tighter text-gray-950">
+                    Clean business presence
+                  </h3>
+                </div>
+                <div className="hidden rounded-full bg-black px-4 py-2 text-[10px] font-mono font-bold uppercase tracking-wider text-white sm:block">
+                  WhatsApp Ready
+                </div>
+              </div>
+              <div className="relative mt-7 grid grid-cols-3 gap-3">
+                {['Services', 'Reviews', 'Bookings'].map((label, index) => (
+                  <div key={label} className="rounded-2xl border border-black/5 bg-white p-3 shadow-sm">
+                    <div className={`mb-4 h-12 rounded-xl ${index === 0 ? 'bg-orange-100' : index === 1 ? 'bg-rose-100' : 'bg-amber-100'}`} />
+                    <p className="text-[10px] font-black text-gray-900">{label}</p>
+                    <div className="mt-2 h-1.5 rounded-full bg-gray-100" />
+                  </div>
+                ))}
+              </div>
+              <div className="relative mt-5 rounded-2xl bg-black p-4 text-white">
+                <p className="text-xs font-black">Customer inquiry captured</p>
+                <p className="mt-1 text-[11px] text-white/60">Name, phone, service, city, and next step saved.</p>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, x: 24, y: 14 }}
+          whileInView={{ opacity: 1, x: 0, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.12, duration: 0.5, ease: 'easeOut' }}
+          className="absolute right-0 top-4 w-[43%] min-w-[178px] max-w-[230px] rounded-[30px] border border-black/10 bg-gray-950 p-2 shadow-[0_28px_70px_rgba(15,23,42,0.28)]"
+        >
+          <div className="rounded-[24px] bg-[#EDE5DA] p-3">
+            <div className="flex items-center gap-2 rounded-2xl bg-emerald-600 px-3 py-2 text-white">
+              <MessageCircle size={14} />
+              <span className="text-[10px] font-black">WhatsApp Bot</span>
+            </div>
+            <div className="mt-3 space-y-2">
+              <div className="max-w-[88%] rounded-2xl rounded-tl-sm bg-white p-2.5 text-[10px] font-semibold text-gray-800 shadow-sm">
+                Assalamualaikum. Do you need prices, booking, or service details?
+              </div>
+              <div className="ml-auto max-w-[82%] rounded-2xl rounded-tr-sm bg-[#d9fdd3] p-2.5 text-[10px] font-semibold text-gray-900">
+                I need a website for my salon.
+              </div>
+              <div className="max-w-[92%] rounded-2xl rounded-tl-sm bg-white p-2.5 text-[10px] font-semibold text-gray-800 shadow-sm">
+                Great. I can collect your details and send them to the team.
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, x: -22, y: 20 }}
+          whileInView={{ opacity: 1, x: 0, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.2, duration: 0.5, ease: 'easeOut' }}
+          className="absolute bottom-12 left-5 w-[68%] rounded-[28px] border border-black/5 bg-white/95 p-4 shadow-[0_30px_80px_rgba(20,18,15,0.16)] backdrop-blur-xl sm:left-12 sm:w-[58%]"
+        >
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <span className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-tr from-orange-500 via-rose-500 to-amber-500 text-white shadow-lg shadow-orange-500/20">
+                <Bot size={22} />
+              </span>
+              <div>
+                <p className="text-sm font-black text-gray-950">AI calling agent</p>
+                <p className="text-[11px] font-semibold text-gray-500">Human-tone follow-up</p>
+              </div>
+            </div>
+            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-black text-white">
+              <Phone size={16} />
+            </span>
+          </div>
+          <div className="mt-4 rounded-2xl bg-[#F0EEEA] p-3">
+            <p className="text-[11px] font-bold text-gray-800">Calling customer about a missed inquiry...</p>
+            <div className="mt-3 flex items-end gap-1.5">
+              {[28, 18, 34, 22, 40, 24, 32, 18].map((height, index) => (
+                <span
+                  key={`${height}-${index}`}
+                  className="w-2 rounded-full bg-orange-500/80 animate-pulse"
+                  style={{ height: `${height}px`, animationDelay: `${index * 90}ms` }}
+                />
+              ))}
+            </div>
+          </div>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 18 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.28, duration: 0.5, ease: 'easeOut' }}
+          className="absolute bottom-0 right-4 w-[48%] rounded-[24px] border border-orange-200 bg-orange-50/95 p-4 shadow-[0_24px_60px_rgba(249,115,22,0.16)] sm:right-10 sm:w-[42%]"
+        >
+          <p className="text-[10px] font-mono font-black uppercase tracking-wider text-orange-700">Dynamic responses</p>
+          <div className="mt-3 space-y-2">
+            {['Website quote', 'Booking request', 'WhatsApp summary'].map((item) => (
+              <div key={item} className="flex items-center gap-2 rounded-full bg-white px-3 py-2">
+                <Check size={13} className="text-orange-500" />
+                <span className="truncate text-[11px] font-black text-gray-800">{item}</span>
+              </div>
+            ))}
+          </div>
+        </motion.div>
+      </div>
+    </div>
+  );
+}
+
 export default function Pakistan({ onPageChange, onOpenPackageModal, onOpenConsultationModal }: PakistanProps) {
   return (
     <div className="space-y-24 pb-20 mt-16 font-sans overflow-hidden">
@@ -493,44 +627,7 @@ export default function Pakistan({ onPageChange, onOpenPackageModal, onOpenConsu
           </motion.div>
 
           <motion.div {...sectionMotion} className="lg:col-span-5">
-            <div className="relative bg-white border border-black/5 rounded-[40px] p-5 sm:p-7 shadow-[0_45px_90px_rgba(0,0,0,0.04)] overflow-hidden">
-              <div className="absolute -top-24 -right-24 w-56 h-56 rounded-full bg-orange-200/35 blur-3xl" />
-              <div className="relative rounded-[28px] bg-[#F0EEEA] border border-black/5 p-4 sm:p-5">
-                <div className="bg-white rounded-[22px] border border-black/5 shadow-sm p-4 space-y-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-mono font-bold text-orange-600 uppercase tracking-wider">Live inquiry system</span>
-                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-                  </div>
-                  <div className="h-36 sm:h-44 rounded-[18px] bg-gradient-to-br from-gray-950 via-gray-900 to-orange-950 p-4 text-white flex flex-col justify-between">
-                    <div className="flex items-center gap-2">
-                      <Globe size={16} className="text-orange-300" />
-                      <span className="text-xs font-black uppercase">Business Website</span>
-                    </div>
-                    <div>
-                      <p className="text-2xl font-black tracking-tighter leading-none">Book, ask, order</p>
-                      <p className="text-xs text-orange-100/80 mt-2">Forms, WhatsApp, maps, and smart lead capture.</p>
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="rounded-[18px] bg-orange-50 border border-orange-100 p-4">
-                      <MessageCircle size={18} className="text-orange-500" />
-                      <p className="text-xs font-black text-gray-900 mt-3">WhatsApp inquiry</p>
-                    </div>
-                    <div className="rounded-[18px] bg-rose-50 border border-rose-100 p-4">
-                      <Phone size={18} className="text-rose-500" />
-                      <p className="text-xs font-black text-gray-900 mt-3">Missed call follow-up</p>
-                    </div>
-                  </div>
-                  <div className="rounded-[18px] bg-gray-50 border border-gray-100 p-4 flex items-center justify-between gap-4">
-                    <div>
-                      <p className="text-xs font-black text-gray-900">Pip-style assistant</p>
-                      <p className="text-[11px] text-gray-500">Captures useful customer details.</p>
-                    </div>
-                    <Bot size={22} className="text-orange-500 shrink-0" />
-                  </div>
-                </div>
-              </div>
-            </div>
+            <PakistanHeroVisual />
           </motion.div>
         </div>
       </section>

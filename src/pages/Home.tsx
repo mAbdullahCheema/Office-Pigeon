@@ -76,6 +76,7 @@ export default function Home({ onPageChange, onOpenPackageModal, onOpenConsultat
 
   return (
     <div className="space-y-28 pb-20 mt-16 font-sans select-none overflow-hidden relative">
+      <div className="home-orbit-field absolute inset-0 z-0 pointer-events-none" />
       
       {/* Background Text Layer Stamp behind core elements */}
       <div className="absolute top-[8%] left-1/2 -translate-x-1/2 w-full text-center pointer-events-none select-none z-0 opacity-40">

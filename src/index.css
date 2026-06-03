@@ -134,6 +134,33 @@ textarea {
   animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+.home-orbit-field {
+  background-image:
+    radial-gradient(circle at 12% 18%, rgba(249, 115, 22, 0.34) 0 1px, transparent 1.5px),
+    radial-gradient(circle at 86% 12%, rgba(244, 63, 94, 0.24) 0 1px, transparent 1.5px),
+    radial-gradient(circle at 72% 46%, rgba(245, 158, 11, 0.28) 0 1px, transparent 1.5px),
+    radial-gradient(circle at 24% 72%, rgba(249, 115, 22, 0.22) 0 1px, transparent 1.5px),
+    radial-gradient(circle at 50% 50%, rgba(255, 247, 237, 0.85), rgba(250, 249, 246, 0) 58%);
+  background-size: 120px 120px, 160px 160px, 220px 220px, 280px 280px, 100% 100%;
+  opacity: 0.52;
+  mask-image: linear-gradient(to bottom, #000 0%, #000 78%, transparent 100%);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .home-orbit-field {
+    animation: orbitFieldDrift 24s linear infinite;
+  }
+}
+
+@keyframes orbitFieldDrift {
+  from {
+    background-position: 0 0, 0 0, 0 0, 0 0, center;
+  }
+  to {
+    background-position: 120px 120px, -160px 160px, 220px -220px, -280px -280px, center;
+  }
+}
+
 .navbar-kicker {
   font-size: 0.625rem !important;
   letter-spacing: 0.11em !important;
