@@ -4,6 +4,7 @@
  */
 
 import { motion } from 'motion/react';
+import { useState } from 'react';
 import {
   ArrowRight,
   Bot,
@@ -350,6 +351,53 @@ const faqs = [
   ['Do you guarantee leads or sales?', 'No. Office Pigeon does not guarantee leads, sales, rankings, revenue, or exact business results. The systems are designed to improve presentation, response, inquiry capture, and follow-up.']
 ];
 
+const heroModes = [
+  {
+    id: 'website',
+    label: 'Website',
+    title: 'Clean business presence',
+    status: 'Premium website',
+    customer: 'I need a website for my salon.',
+    reply: 'Great. I can collect your business details and send the right package.',
+    result: 'Customer inquiry captured',
+    resultDetail: 'Name, phone, service, city, and next step saved.',
+    agentTitle: 'Starter website',
+    agentDetail: 'WhatsApp, calls, maps, and contact forms ready.',
+    action: 'Website quote',
+    accent: 'orange'
+  },
+  {
+    id: 'chatbot',
+    label: 'WhatsApp Bot',
+    title: 'Instant inquiry replies',
+    status: 'Smart FAQ bot',
+    customer: 'Do you offer appointments in Lahore?',
+    reply: 'Yes. Please share your area, preferred time, and service.',
+    result: 'Lead details collected',
+    resultDetail: 'Question answered, contact captured, and WhatsApp summary prepared.',
+    agentTitle: 'Lead & booking bot',
+    agentDetail: 'Answers common questions and routes serious leads.',
+    action: 'Booking request',
+    accent: 'emerald'
+  },
+  {
+    id: 'calling',
+    label: 'AI Caller',
+    title: 'Missed calls recovered',
+    status: 'AI calling agent',
+    customer: 'I missed your call. Can you call back?',
+    reply: 'Calling now, then sending a short summary to the team.',
+    result: 'Follow-up scheduled',
+    resultDetail: 'Call reason, customer intent, and next action logged.',
+    agentTitle: 'AI calling agent',
+    agentDetail: 'Human-tone follow-up for approved customer workflows.',
+    action: 'WhatsApp summary',
+    accent: 'rose'
+  }
+] as const;
+
+type HeroMode = (typeof heroModes)[number];
+
 const toPackage = (item: PakistanPackage): Package => ({
   id: item.type,
   name: item.name,
@@ -469,18 +517,63 @@ function CompactInfoSection({ title, items }: { title: string; items: { heading:
 }
 
 function PakistanHeroVisual() {
+  const [activeModeId, setActiveModeId] = useState<HeroMode['id']>('website');
+  const activeMode = heroModes.find((mode) => mode.id === activeModeId) || heroModes[0];
+  const accentClasses = {
+    orange: {
+      badge: 'text-orange-600',
+      chip: 'bg-orange-500 text-white',
+      soft: 'bg-orange-100',
+      glow: 'bg-orange-200/35',
+      ring: 'ring-orange-500/30',
+      line: 'bg-orange-500/80'
+    },
+    emerald: {
+      badge: 'text-emerald-700',
+      chip: 'bg-emerald-600 text-white',
+      soft: 'bg-emerald-100',
+      glow: 'bg-emerald-200/35',
+      ring: 'ring-emerald-500/30',
+      line: 'bg-emerald-500/80'
+    },
+    rose: {
+      badge: 'text-rose-600',
+      chip: 'bg-rose-500 text-white',
+      soft: 'bg-rose-100',
+      glow: 'bg-rose-200/35',
+      ring: 'ring-rose-500/30',
+      line: 'bg-rose-500/80'
+    }
+  }[activeMode.accent];
+
   return (
     <div className="relative mx-auto w-full max-w-[620px] lg:max-w-none">
-      <div className="absolute -left-10 top-10 h-52 w-52 rounded-full bg-orange-200/35 blur-3xl" />
+      <div className={`absolute -left-10 top-10 h-52 w-52 rounded-full ${accentClasses.glow} blur-3xl`} />
       <div className="absolute -right-8 bottom-0 h-64 w-64 rounded-full bg-rose-200/25 blur-3xl" />
 
       <div className="relative min-h-[520px] sm:min-h-[560px] lg:min-h-[610px]">
+        <div className="absolute left-2 top-0 z-20 flex flex-wrap gap-2 rounded-full border border-black/10 bg-white/90 p-1.5 shadow-[0_18px_40px_rgba(20,18,15,0.10)] backdrop-blur sm:left-6">
+          {heroModes.map((mode) => (
+            <button
+              key={mode.id}
+              type="button"
+              onClick={() => setActiveModeId(mode.id)}
+              className={`rounded-full px-3.5 py-2 text-[10px] font-mono font-black uppercase transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-black/40 ${
+                activeMode.id === mode.id ? `${accentClasses.chip} shadow-sm` : 'text-gray-600 hover:bg-black/5'
+              }`}
+              aria-pressed={activeMode.id === mode.id}
+            >
+              {mode.label}
+            </button>
+          ))}
+        </div>
+
         <motion.div
           initial={{ opacity: 0, y: 18, rotate: -1 }}
           whileInView={{ opacity: 1, y: 0, rotate: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.55, ease: 'easeOut' }}
-          className="absolute left-0 top-12 w-[88%] rounded-[28px] border border-black/10 bg-gray-950 p-3 shadow-[0_42px_110px_rgba(15,23,42,0.25)] sm:w-[82%] lg:left-2"
+          className={`absolute left-0 top-16 w-[88%] rounded-[28px] border border-black/10 bg-gray-950 p-3 shadow-[0_42px_110px_rgba(15,23,42,0.25)] ring-4 ${accentClasses.ring} transition-shadow sm:w-[82%] lg:left-2`}
         >
           <div className="flex items-center gap-1.5 px-2 pb-2">
             <span className="h-2.5 w-2.5 rounded-full bg-rose-400" />
@@ -491,30 +584,49 @@ function PakistanHeroVisual() {
           <div className="overflow-hidden rounded-[20px] bg-[#FAF9F6]">
             <div className="relative h-64 p-5 sm:h-72">
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_75%_15%,rgba(249,115,22,0.18),transparent_34%),radial-gradient(circle_at_10%_80%,rgba(251,191,36,0.16),transparent_38%)]" />
-              <div className="relative flex items-center justify-between">
+              <motion.div
+                key={activeMode.id}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.22, ease: 'easeOut' }}
+                className="relative flex items-center justify-between"
+              >
                 <div>
-                  <p className="text-[10px] font-mono font-black uppercase tracking-wider text-orange-600">Premium Website</p>
+                  <p className={`text-[10px] font-mono font-black uppercase tracking-wider ${accentClasses.badge}`}>{activeMode.status}</p>
                   <h3 className="mt-2 max-w-[260px] text-3xl font-black uppercase leading-none tracking-tighter text-gray-950">
-                    Clean business presence
+                    {activeMode.title}
                   </h3>
                 </div>
                 <div className="hidden rounded-full bg-black px-4 py-2 text-[10px] font-mono font-bold uppercase tracking-wider text-white sm:block">
                   WhatsApp Ready
                 </div>
-              </div>
+              </motion.div>
               <div className="relative mt-7 grid grid-cols-3 gap-3">
-                {['Services', 'Reviews', 'Bookings'].map((label, index) => (
-                  <div key={label} className="rounded-2xl border border-black/5 bg-white p-3 shadow-sm">
-                    <div className={`mb-4 h-12 rounded-xl ${index === 0 ? 'bg-orange-100' : index === 1 ? 'bg-rose-100' : 'bg-amber-100'}`} />
-                    <p className="text-[10px] font-black text-gray-900">{label}</p>
+                {heroModes.map((mode, index) => (
+                  <button
+                    key={mode.id}
+                    type="button"
+                    onClick={() => setActiveModeId(mode.id)}
+                    className={`rounded-2xl border bg-white p-3 text-left shadow-sm transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-black/40 ${
+                      activeMode.id === mode.id ? 'border-black/20 -translate-y-1' : 'border-black/5 hover:-translate-y-0.5'
+                    }`}
+                  >
+                    <div className={`mb-4 h-12 rounded-xl ${activeMode.id === mode.id ? accentClasses.soft : index === 1 ? 'bg-rose-100' : 'bg-amber-100'}`} />
+                    <p className="text-[10px] font-black text-gray-900">{mode.label}</p>
                     <div className="mt-2 h-1.5 rounded-full bg-gray-100" />
-                  </div>
+                  </button>
                 ))}
               </div>
-              <div className="relative mt-5 rounded-2xl bg-black p-4 text-white">
-                <p className="text-xs font-black">Customer inquiry captured</p>
-                <p className="mt-1 text-[11px] text-white/60">Name, phone, service, city, and next step saved.</p>
-              </div>
+              <motion.div
+                key={`${activeMode.id}-result`}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.22, ease: 'easeOut' }}
+                className="relative mt-5 rounded-2xl bg-black p-4 text-white"
+              >
+                <p className="text-xs font-black">{activeMode.result}</p>
+                <p className="mt-1 text-[11px] text-white/60">{activeMode.resultDetail}</p>
+              </motion.div>
             </div>
           </div>
         </motion.div>
@@ -527,21 +639,27 @@ function PakistanHeroVisual() {
           className="absolute right-0 top-4 w-[43%] min-w-[178px] max-w-[230px] rounded-[30px] border border-black/10 bg-gray-950 p-2 shadow-[0_28px_70px_rgba(15,23,42,0.28)]"
         >
           <div className="rounded-[24px] bg-[#EDE5DA] p-3">
-            <div className="flex items-center gap-2 rounded-2xl bg-emerald-600 px-3 py-2 text-white">
+            <div className={`flex items-center gap-2 rounded-2xl px-3 py-2 ${accentClasses.chip}`}>
               <MessageCircle size={14} />
-              <span className="text-[10px] font-black">WhatsApp Bot</span>
+              <span className="text-[10px] font-black">{activeMode.label}</span>
             </div>
-            <div className="mt-3 space-y-2">
+            <motion.div
+              key={`${activeMode.id}-chat`}
+              initial={{ opacity: 0, x: 8 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.2, ease: 'easeOut' }}
+              className="mt-3 space-y-2"
+            >
               <div className="max-w-[88%] rounded-2xl rounded-tl-sm bg-white p-2.5 text-[10px] font-semibold text-gray-800 shadow-sm">
                 Assalamualaikum. Do you need prices, booking, or service details?
               </div>
               <div className="ml-auto max-w-[82%] rounded-2xl rounded-tr-sm bg-[#d9fdd3] p-2.5 text-[10px] font-semibold text-gray-900">
-                I need a website for my salon.
+                {activeMode.customer}
               </div>
               <div className="max-w-[92%] rounded-2xl rounded-tl-sm bg-white p-2.5 text-[10px] font-semibold text-gray-800 shadow-sm">
-                Great. I can collect your details and send them to the team.
+                {activeMode.reply}
               </div>
-            </div>
+            </motion.div>
           </div>
         </motion.div>
 
@@ -558,8 +676,8 @@ function PakistanHeroVisual() {
                 <Bot size={22} />
               </span>
               <div>
-                <p className="text-sm font-black text-gray-950">AI calling agent</p>
-                <p className="text-[11px] font-semibold text-gray-500">Human-tone follow-up</p>
+                <p className="text-sm font-black text-gray-950">{activeMode.agentTitle}</p>
+                <p className="text-[11px] font-semibold text-gray-500">{activeMode.agentDetail}</p>
               </div>
             </div>
             <span className="flex h-10 w-10 items-center justify-center rounded-full bg-black text-white">
@@ -567,12 +685,12 @@ function PakistanHeroVisual() {
             </span>
           </div>
           <div className="mt-4 rounded-2xl bg-[#F0EEEA] p-3">
-            <p className="text-[11px] font-bold text-gray-800">Calling customer about a missed inquiry...</p>
+            <p className="text-[11px] font-bold text-gray-800">{activeMode.result}...</p>
             <div className="mt-3 flex items-end gap-1.5">
               {[28, 18, 34, 22, 40, 24, 32, 18].map((height, index) => (
                 <span
                   key={`${height}-${index}`}
-                  className="w-2 rounded-full bg-orange-500/80 animate-pulse"
+                  className={`w-2 rounded-full ${accentClasses.line} animate-pulse`}
                   style={{ height: `${height}px`, animationDelay: `${index * 90}ms` }}
                 />
               ))}
@@ -589,11 +707,18 @@ function PakistanHeroVisual() {
         >
           <p className="text-[10px] font-mono font-black uppercase tracking-wider text-orange-700">Dynamic responses</p>
           <div className="mt-3 space-y-2">
-            {['Website quote', 'Booking request', 'WhatsApp summary'].map((item) => (
-              <div key={item} className="flex items-center gap-2 rounded-full bg-white px-3 py-2">
+            {heroModes.map((mode) => (
+              <button
+                key={mode.id}
+                type="button"
+                onClick={() => setActiveModeId(mode.id)}
+                className={`flex w-full items-center gap-2 rounded-full bg-white px-3 py-2 text-left transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-black/40 ${
+                  activeMode.id === mode.id ? 'shadow-sm' : 'opacity-75 hover:opacity-100'
+                }`}
+              >
                 <Check size={13} className="text-orange-500" />
-                <span className="truncate text-[11px] font-black text-gray-800">{item}</span>
-              </div>
+                <span className="truncate text-[11px] font-black text-gray-800">{mode.action}</span>
+              </button>
             ))}
           </div>
         </motion.div>
