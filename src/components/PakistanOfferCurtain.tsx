@@ -71,7 +71,7 @@ export default function PakistanOfferCurtain({ currentPage, onPageChange }: Paki
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 18, scale: 0.92, filter: 'blur(6px)' }}
           transition={{ duration: 0.34, ease: [0.16, 1, 0.3, 1] }}
-          className="fixed inset-x-0 bottom-[96px] z-[35] px-3 pointer-events-none sm:bottom-[96px] sm:px-5 lg:bottom-6"
+          className="fixed inset-x-0 top-[76px] bottom-auto z-[35] px-3 pointer-events-none lg:top-auto lg:bottom-6 lg:px-5"
           aria-label="Pakistan pricing option"
         >
           <div className="mx-auto flex max-w-[calc(100vw-24px)] justify-center pointer-events-auto sm:max-w-xl">
@@ -121,7 +121,7 @@ export default function PakistanOfferCurtain({ currentPage, onPageChange }: Paki
           animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
           exit={{ opacity: 0, y: 18, scale: 0.88, filter: 'blur(6px)' }}
           transition={{ duration: 0.38, ease: [0.16, 1, 0.3, 1] }}
-          className="fixed bottom-[82px] right-5 z-[35] pointer-events-none sm:bottom-[88px] sm:right-6"
+          className="fixed top-[76px] left-4 bottom-auto right-auto z-[35] pointer-events-none lg:top-auto lg:bottom-[82px] lg:left-auto lg:right-5 sm:left-5"
           aria-label="Pakistan pricing minimized option"
         >
           <button
