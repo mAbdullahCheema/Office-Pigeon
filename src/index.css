@@ -66,11 +66,15 @@ textarea {
 }
 
 .text-gray-400 {
-  color: #374151 !important; /* Darker gray for high contrast, readable subtext */
+  color: #2c3540 !important; /* Dark slate gray for high contrast, readable subtext */
 }
 
 .text-gray-500 {
-  color: #1f2937 !important; /* Near off-black gray for body/paragraph text */
+  color: #1a1a1a !important; /* Rich charcoal gray/off-black for body/paragraph text */
+}
+
+.text-gray-900 {
+  color: #0c0d0e !important; /* Solid dark black for headings and high contrast titles */
 }
 
 .text-\[8px\],
