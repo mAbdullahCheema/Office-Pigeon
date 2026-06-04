@@ -2,6 +2,7 @@
 
 import { FormEvent, useState } from 'react';
 import { Briefcase, Mail, Phone, User } from 'lucide-react';
+import DropdownMenu from '@/components/ui/dropdown-menu';
 
 export interface PipLead {
   id?: string;
@@ -76,17 +77,17 @@ export default function PipAILeadForm({ onSaved }: { onSaved: (lead: PipLead) =>
         </label>
       ))}
 
-      <select
+      <DropdownMenu
         value={form.needHelpWith}
-        onChange={(event) => update('needHelpWith', event.target.value)}
-        className="w-full rounded-2xl border border-gray-100 bg-white px-3 py-3 text-xs outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100"
-      >
-        <option>Website</option>
-        <option>Smart chatbot</option>
-        <option>Workflow automation</option>
-        <option>Not sure yet</option>
-        <option>Multiple services</option>
-      </select>
+        onChange={(value) => update('needHelpWith', value)}
+        options={[
+          'Website',
+          'Smart chatbot',
+          'Workflow automation',
+          'Not sure yet',
+          'Multiple services'
+        ]}
+      />
 
       <label className="flex items-start gap-2 text-[10px] leading-relaxed text-gray-500">
         <input
