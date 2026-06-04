@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
 @theme {
@@ -66,11 +66,11 @@ textarea {
 }
 
 .text-gray-400 {
-  color: #667085 !important;
+  color: #374151 !important; /* Darker gray for high contrast, readable subtext */
 }
 
 .text-gray-500 {
-  color: #4b5563 !important;
+  color: #1f2937 !important; /* Near off-black gray for body/paragraph text */
 }
 
 .text-\[8px\],
@@ -171,6 +171,7 @@ textarea {
   font-size: clamp(0.625rem, 0.46rem + 0.22vw, 0.75rem) !important;
   letter-spacing: 0.025em !important;
   line-height: 1 !important;
+  font-weight: 800 !important; /* Force extrabold weight for high visibility */
 }
 
 .navbar-cta {

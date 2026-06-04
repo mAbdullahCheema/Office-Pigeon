@@ -76,7 +76,7 @@ export default function Navbar({ currentPage, onPageChange, onOpenConsultationMo
             <button
               key={item.page}
               onClick={() => handleNavClick(item.page)}
-              className={`navbar-link px-2.5 py-2.5 2xl:px-4 rounded-full font-sans font-black uppercase transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/25 cursor-pointer whitespace-nowrap ${
+              className={`navbar-link px-2.5 py-2.5 2xl:px-4 rounded-full font-sans font-extrabold uppercase transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/25 cursor-pointer whitespace-nowrap ${
                 currentPage === item.page
                   ? 'bg-black text-white shadow-sm'
                   : 'text-gray-500 hover:text-gray-900 hover:bg-black/5'
@@ -119,7 +119,7 @@ export default function Navbar({ currentPage, onPageChange, onOpenConsultationMo
             <button
               key={item.page}
               onClick={() => handleNavClick(item.page)}
-              className={`w-full text-left px-5 py-3.5 rounded-2xl text-xs font-sans font-black uppercase tracking-wider transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/25 ${
+              className={`w-full text-left px-5 py-3.5 rounded-2xl text-xs font-sans font-extrabold uppercase tracking-wider transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/25 ${
                 currentPage === item.page
                   ? 'bg-orange-500/10 text-orange-600 border border-orange-500/20'
                   : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
