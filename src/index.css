@@ -5,6 +5,10 @@
   --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
   --font-serif: "Manrope", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  --color-gray-400: #2c3540;
+  --color-gray-500: #1a1a1a;
+  --color-gray-900: #0c0d0e;
 }
 
 /* Base typography for a readable, consistent AI products website */
@@ -63,18 +67,6 @@ textarea {
 .font-serif {
   font-family: var(--font-sans) !important;
   font-style: normal !important;
-}
-
-.text-gray-400 {
-  color: #2c3540 !important; /* Dark slate gray for high contrast, readable subtext */
-}
-
-.text-gray-500 {
-  color: #1a1a1a !important; /* Rich charcoal gray/off-black for body/paragraph text */
-}
-
-.text-gray-900 {
-  color: #0c0d0e !important; /* Solid dark black for headings and high contrast titles */
 }
 
 .text-\[8px\],

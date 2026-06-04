@@ -111,7 +111,7 @@ export default function Home({ onPageChange, onOpenPackageModal, onOpenConsultat
               Your Business Shouldn't Be <TypewriterWord /> While You're Busy.
             </h1>
             
-            <p className="text-sm sm:text-base text-gray-500 max-w-xl leading-relaxed font-sans font-medium">
+            <p className="text-sm sm:text-base text-gray-800 max-w-xl leading-relaxed font-sans font-semibold">
               We build high-performing websites, smart chatbots, AI calling agents, and automation systems that help your business stay responsive, capture more leads, and turn customer interest into revenue.
             </p>
 
@@ -173,7 +173,7 @@ export default function Home({ onPageChange, onOpenPackageModal, onOpenConsultat
             <h2 className="text-4xl sm:text-5xl font-black text-gray-900 tracking-tighter uppercase leading-[1.0]">
               Your business should not run on manual chaos
             </h2>
-            <p className="text-sm sm:text-base text-gray-400 max-w-2xl mx-auto leading-relaxed font-medium">
+            <p className="text-sm sm:text-base text-gray-800 max-w-2xl mx-auto leading-relaxed font-semibold">
               Missed messages, slow replies, outdated websites, scattered leads, and repeated manual tasks can quietly hold a business back. Office Pigeon helps turn those messy daily processes into smarter digital systems.
             </p>
           </div>
@@ -185,7 +185,7 @@ export default function Home({ onPageChange, onOpenPackageModal, onOpenConsultat
                 01
               </div>
               <h4 className="font-serif italic text-2xl text-gray-900">Weak Online Presence</h4>
-              <p className="text-xs text-gray-500 leading-relaxed">
+              <p className="text-xs text-gray-800 leading-relaxed font-semibold">
                 Customers often check your business online before they contact you. A missing or outdated website can make your business look less serious than it really is.
               </p>
             </div>
@@ -195,7 +195,7 @@ export default function Home({ onPageChange, onOpenPackageModal, onOpenConsultat
                 02
               </div>
               <h4 className="font-serif italic text-2xl text-gray-900">Slow Customer Replies</h4>
-              <p className="text-xs text-gray-500 leading-relaxed">
+              <p className="text-xs text-gray-800 leading-relaxed font-semibold">
                 When customers ask questions and wait too long, many simply move on. Smart chatbots help your business respond faster, even outside working hours.
               </p>
             </div>
@@ -205,7 +205,7 @@ export default function Home({ onPageChange, onOpenPackageModal, onOpenConsultat
                 03
               </div>
               <h4 className="font-serif italic text-2xl text-gray-900">Repetitive Manual Work</h4>
-              <p className="text-xs text-gray-500 leading-relaxed">
+              <p className="text-xs text-gray-800 leading-relaxed font-semibold">
                 Copying leads, sending reminders, updating sheets, and following up manually wastes hours. Automations help those tasks happen in the background.
               </p>
             </div>
@@ -222,7 +222,7 @@ export default function Home({ onPageChange, onOpenPackageModal, onOpenConsultat
           <h2 className="text-3xl sm:text-5xl font-black tracking-tighter uppercase text-gray-900 leading-[1.0]">
             Four ways Office Pigeon helps your business grow smarter
           </h2>
-          <p className="text-xs sm:text-sm text-gray-400 font-medium font-sans">
+          <p className="text-xs sm:text-sm text-gray-800 font-semibold font-sans">
             Start with a beautiful website, add smart chat or calling agents, then automate the repetitive work behind the scenes.
           </p>
         </div>
@@ -237,7 +237,7 @@ export default function Home({ onPageChange, onOpenPackageModal, onOpenConsultat
                 <Smartphone size={20} />
               </div>
               <h3 className="font-serif italic text-3xl text-gray-900 leading-tight">Beautiful Web Development</h3>
-              <p className="text-xs text-gray-500 leading-relaxed font-sans">
+              <p className="text-xs text-gray-800 leading-relaxed font-sans font-semibold">
                 Build online credibility with a clean, modern, mobile-friendly website that makes your business look professional and easy to contact.
               </p>
             </div>
@@ -256,7 +256,7 @@ export default function Home({ onPageChange, onOpenPackageModal, onOpenConsultat
                 <MessageSquare size={20} />
               </div>
               <h3 className="font-serif italic text-3xl text-gray-900 leading-tight">Smart Chatbots</h3>
-              <p className="text-xs text-gray-500 leading-relaxed font-sans">
+              <p className="text-xs text-gray-800 leading-relaxed font-sans font-semibold">
                 Let customers get answers, share details, and book appointments through a smart assistant trained on your business information.
               </p>
             </div>
@@ -275,7 +275,7 @@ export default function Home({ onPageChange, onOpenPackageModal, onOpenConsultat
                 <Settings size={20} />
               </div>
               <h3 className="font-serif italic text-3xl text-gray-900 leading-tight">Workflow Automations</h3>
-              <p className="text-xs text-gray-500 leading-relaxed font-sans">
+              <p className="text-xs text-gray-800 leading-relaxed font-sans font-semibold">
                 Connect your tools so leads, reminders, updates, and follow-ups move automatically without constant manual effort.
               </p>
             </div>
@@ -294,7 +294,7 @@ export default function Home({ onPageChange, onOpenPackageModal, onOpenConsultat
                 <Volume2 size={20} />
               </div>
               <h3 className="font-serif italic text-3xl text-gray-900 leading-tight">AI Calling Agents</h3>
-              <p className="text-xs text-gray-500 leading-relaxed font-sans">
+              <p className="text-xs text-gray-800 leading-relaxed font-sans font-semibold">
                 Answer calls, capture lead details, support booking requests, and follow up through managed AI phone and WhatsApp workflows.
               </p>
             </div>
@@ -318,7 +318,7 @@ export default function Home({ onPageChange, onOpenPackageModal, onOpenConsultat
             <h2 className="text-3xl sm:text-5xl font-black tracking-tighter uppercase text-gray-900 leading-[1.0]">
               Beautiful websites built to make your business look serious
             </h2>
-            <p className="text-xs sm:text-sm text-gray-400 font-medium font-sans">
+            <p className="text-xs sm:text-sm text-gray-800 font-semibold font-sans">
               Whether you need a simple landing page or a more powerful business system, Office Pigeon gives your business a clean digital home.
             </p>
           </div>
@@ -341,13 +341,13 @@ export default function Home({ onPageChange, onOpenPackageModal, onOpenConsultat
                   <div className="mt-4 mb-2 flex items-baseline">
                     <span className="text-5xl font-black italic tracking-tighter text-gray-900">{pkg.price}</span>
                   </div>
-                  <p className="text-[11px] text-gray-400 mt-2 font-semibold font-sans leading-relaxed">{pkg.bestFor}</p>
+                  <p className="text-[11px] text-gray-800 mt-2 font-semibold font-sans leading-relaxed">{pkg.bestFor}</p>
                   
                   <div className="h-px bg-black/5 my-6" />
                   
                   <ul className="space-y-3.5">
                     {pkg.includes.slice(0, 5).map((inc, i) => (
-                      <li key={i} className="flex items-start gap-2.5 text-xs text-gray-500 leading-normal font-sans">
+                      <li key={i} className="flex items-start gap-2.5 text-xs text-gray-800 leading-normal font-sans font-semibold">
                         <Check size={14} className="text-orange-500 shrink-0 mt-0.5" />
                         <span>{inc}</span>
                       </li>
@@ -366,7 +366,7 @@ export default function Home({ onPageChange, onOpenPackageModal, onOpenConsultat
                   >
                     Select {pkg.name}
                   </button>
-                  <p className="text-[10px] text-gray-400 text-center font-mono uppercase tracking-wider">Timeline: {pkg.timeline}</p>
+                  <p className="text-[10px] text-gray-600 text-center font-mono uppercase tracking-wider font-semibold">Timeline: {pkg.timeline}</p>
                 </div>
               </div>
             ))}
@@ -383,7 +383,7 @@ export default function Home({ onPageChange, onOpenPackageModal, onOpenConsultat
           <h2 className="text-3xl sm:text-5xl font-black tracking-tighter uppercase text-gray-900 leading-[1.0]">
             Let your business reply faster, capture leads & stay available longer
           </h2>
-          <p className="text-xs sm:text-sm text-gray-400 font-medium font-sans">
+          <p className="text-xs sm:text-sm text-gray-800 font-semibold font-sans">
             Smart chatbots help customers get answers, share details, and take action without waiting for manual replies.
           </p>
         </div>
@@ -405,17 +405,17 @@ export default function Home({ onPageChange, onOpenPackageModal, onOpenConsultat
                 <h4 className="font-serif italic text-3xl text-gray-900 leading-tight mb-2">{pkg.name}</h4>
                 <div className="mt-4 mb-2 flex items-baseline">
                   <span className="text-5xl font-black italic tracking-tighter text-gray-900">{pkg.price.split(' ')[0]}</span>
-                  <span className="text-xs text-gray-400 font-mono uppercase tracking-wider ml-1">
+                  <span className="text-xs text-gray-600 font-mono uppercase tracking-wider font-semibold ml-1">
                     {pkg.price.includes('setup') ? pkg.price.substring(pkg.price.indexOf('setup')) : ''}
                   </span>
                 </div>
-                <p className="text-[11px] text-gray-400 mt-2 font-semibold font-sans leading-relaxed">{pkg.bestFor}</p>
+                <p className="text-[11px] text-gray-800 mt-2 font-semibold font-sans leading-relaxed">{pkg.bestFor}</p>
 
                 <div className="h-px bg-black/5 my-6" />
 
                 <ul className="space-y-3.5">
                   {pkg.includes.slice(0, 5).map((inc, i) => (
-                    <li key={i} className="flex items-start gap-2.5 text-xs text-gray-500 leading-normal font-sans">
+                    <li key={i} className="flex items-start gap-2.5 text-xs text-gray-800 leading-normal font-sans font-semibold">
                       <Check size={14} className="text-rose-500 shrink-0 mt-0.5" />
                       <span>{inc}</span>
                     </li>
@@ -434,7 +434,7 @@ export default function Home({ onPageChange, onOpenPackageModal, onOpenConsultat
                 >
                   Configure {pkg.name}
                 </button>
-                <p className="text-[10px] text-gray-400 text-center font-mono uppercase tracking-wider italic">{pkg.note}</p>
+                <p className="text-[10px] text-gray-600 text-center font-mono uppercase tracking-wider font-semibold italic">{pkg.note}</p>
               </div>
             </div>
           ))}
@@ -452,12 +452,12 @@ export default function Home({ onPageChange, onOpenPackageModal, onOpenConsultat
               <h2 className="text-3xl sm:text-5xl font-black text-gray-900 tracking-tighter uppercase leading-[1.0]">
                 Stop repeating the same tasks every day
               </h2>
-              <p className="text-xs sm:text-sm text-gray-500 leading-relaxed font-sans font-medium">
+              <p className="text-xs sm:text-sm text-gray-800 leading-relaxed font-sans font-semibold">
                 Connect your tools so leads, reminders, updates, and follow-ups move automatically in the background. Fully managed by Office Pigeon, so you do not have to deal with the technical side.
               </p>
               <div className="bg-amber-50/50 border border-amber-100/50 p-6 rounded-[24px]">
-                <p className="text-xs font-mono font-bold uppercase tracking-wider text-amber-800">Affordable Starting Point</p>
-                <p className="text-[11px] text-amber-700 mt-1.5 font-sans leading-relaxed">Starting from $100 setup + convenient monthly active monitoring options.</p>
+                <p className="text-xs font-mono font-bold uppercase tracking-wider text-amber-900">Affordable Starting Point</p>
+                <p className="text-[11px] text-amber-950 mt-1.5 font-sans leading-relaxed font-semibold">Starting from $100 setup + convenient monthly active monitoring options.</p>
               </div>
               <button
                 onClick={() => {
@@ -483,7 +483,7 @@ export default function Home({ onPageChange, onOpenPackageModal, onOpenConsultat
                 <div key={idx} className="bg-white p-6 border border-black/5 rounded-[24px] shadow-xs space-y-3 hover:translate-y-[-2px] transition-transform">
                   <span className="text-[9px] font-bold text-amber-600 font-mono bg-amber-50 px-3 py-1 rounded-full uppercase tracking-wider">{`Flow 0${idx + 1}`}</span>
                   <h4 className="font-serif italic text-xl text-gray-900 pt-1 leading-tight">{item.title}</h4>
-                  <p className="text-[11px] text-gray-400 leading-relaxed font-sans font-medium">{item.description}</p>
+                  <p className="text-[11px] text-gray-800 leading-relaxed font-sans font-semibold">{item.description}</p>
                 </div>
               ))}
             </div>
@@ -499,7 +499,7 @@ export default function Home({ onPageChange, onOpenPackageModal, onOpenConsultat
             <Volume2 size={11} /> AI Calling Agents
           </span>
           <h2 className="text-3xl sm:text-4xl font-serif italic text-gray-900 leading-tight">Answer calls, capture leads, and book customers automatically</h2>
-          <p className="text-xs sm:text-sm text-gray-400 max-w-xl mx-auto leading-relaxed font-sans font-medium">
+          <p className="text-xs sm:text-sm text-gray-800 max-w-xl mx-auto leading-relaxed font-sans font-semibold">
             Office Pigeon builds AI phone and WhatsApp agents that answer customer questions, collect lead details, handle booking requests, send follow-ups, and notify your team under clear monthly usage limits.
           </p>
           <div className="pt-2">
@@ -528,10 +528,10 @@ export default function Home({ onPageChange, onOpenPackageModal, onOpenConsultat
                 <div>
                   <h4 className="font-serif italic text-2xl text-gray-900 leading-tight">{pkg.name}</h4>
                   <p className="mt-3 text-xl font-black text-gray-900">{pkg.price}</p>
-                  <p className="text-[11px] text-gray-400 mt-2 leading-relaxed">{pkg.bestFor}</p>
+                  <p className="text-[11px] text-gray-800 mt-2 leading-relaxed font-semibold">{pkg.bestFor}</p>
                   <ul className="mt-5 space-y-2.5">
                     {pkg.includes.slice(-2).map((inc) => (
-                      <li key={inc} className="flex items-start gap-2 text-[11px] text-gray-500">
+                      <li key={inc} className="flex items-start gap-2 text-[11px] text-gray-800 font-semibold">
                         <Check size={13} className="text-orange-500 shrink-0 mt-0.5" />
                         <span>{inc}</span>
                       </li>
@@ -574,7 +574,7 @@ export default function Home({ onPageChange, onOpenPackageModal, onOpenConsultat
                 1
               </div>
               <h4 className="font-serif italic text-xl text-gray-900 leading-tight">Tell Us What You Need</h4>
-              <p className="text-[11px] text-gray-400 leading-normal font-sans font-medium">
+              <p className="text-[11px] text-gray-800 leading-normal font-sans font-semibold">
                 Share your business, your current problems, and what you want to improve.
               </p>
             </div>
@@ -584,7 +584,7 @@ export default function Home({ onPageChange, onOpenPackageModal, onOpenConsultat
                 2
               </div>
               <h4 className="font-serif italic text-xl text-gray-900 leading-tight">We Plan the Solution</h4>
-              <p className="text-[11px] text-gray-400 leading-normal font-sans font-medium">
+              <p className="text-[11px] text-gray-800 leading-normal font-sans font-semibold">
                 We recommend the right website, chatbot, calling agent, automation, or combination based on your goals.
               </p>
             </div>
@@ -594,7 +594,7 @@ export default function Home({ onPageChange, onOpenPackageModal, onOpenConsultat
                 3
               </div>
               <h4 className="font-serif italic text-xl text-gray-900 leading-tight">We Build & Show You</h4>
-              <p className="text-[11px] text-gray-400 leading-normal font-sans font-medium">
+              <p className="text-[11px] text-gray-800 leading-normal font-sans font-semibold">
                 You see the working system before final delivery, so everything is clear.
               </p>
             </div>
@@ -604,7 +604,7 @@ export default function Home({ onPageChange, onOpenPackageModal, onOpenConsultat
                 4
               </div>
               <h4 className="font-serif italic text-xl text-gray-900 leading-tight">Your Business Runs</h4>
-              <p className="text-[11px] text-gray-400 leading-normal font-sans font-medium">
+              <p className="text-[11px] text-gray-800 leading-normal font-sans font-semibold">
                 Your new website, chatbot, calling agent, or automation starts helping your business save time and opportunities.
               </p>
             </div>
@@ -623,7 +623,7 @@ export default function Home({ onPageChange, onOpenPackageModal, onOpenConsultat
           <div className="md:col-span-3 bg-white p-8 border border-black/5 rounded-[36px] shadow-[0_40px_80px_rgba(0,0,0,0.02)] space-y-4">
             <span className="text-[9px] font-mono font-bold text-orange-600 bg-orange-50 px-3 py-1 rounded-full uppercase tracking-wider">Simple Language</span>
             <h4 className="font-serif italic text-2xl text-gray-900 pt-1 leading-none">We explain everything simply first</h4>
-            <p className="text-xs text-gray-400 leading-relaxed font-sans font-medium">
+            <p className="text-xs text-gray-800 leading-relaxed font-sans font-semibold">
               We translate systems configurations into human-friendly outcomes. No technical acronym soup or LLMs jargon larping—just honest growth updates.
             </p>
           </div>
@@ -631,7 +631,7 @@ export default function Home({ onPageChange, onOpenPackageModal, onOpenConsultat
           <div className="md:col-span-2 bg-white p-8 border border-black/5 rounded-[36px] shadow-[0_40px_80px_rgba(0,0,0,0.02)] space-y-4">
             <span className="text-[9px] font-mono font-bold text-rose-600 bg-rose-50 px-3 py-1 rounded-full uppercase tracking-wider font-bold">Practical Setup</span>
             <h4 className="font-serif italic text-2xl text-gray-900 pt-1 leading-none">Real operational answers</h4>
-            <p className="text-xs text-gray-400 leading-relaxed font-sans font-medium">
+            <p className="text-xs text-gray-800 leading-relaxed font-sans font-semibold">
               We train bots and connect triggers that directly address missed bookings and phone rings.
             </p>
           </div>
@@ -639,7 +639,7 @@ export default function Home({ onPageChange, onOpenPackageModal, onOpenConsultat
           <div className="md:col-span-2 bg-white p-8 border border-black/5 rounded-[36px] shadow-[0_40px_80px_rgba(0,0,0,0.02)] space-y-4">
             <span className="text-[9px] font-mono font-bold text-amber-600 bg-amber-50 px-3 py-1 rounded-full uppercase tracking-wider font-bold">Managed Systems</span>
             <h4 className="font-serif italic text-2xl text-gray-900 pt-1 leading-none">100% Fully Managed Care</h4>
-            <p className="text-xs text-gray-400 leading-relaxed font-sans font-medium">
+            <p className="text-xs text-gray-800 leading-relaxed font-sans font-semibold">
               Our active monitored program handles all hosting revisions and troubleshooting, meaning you never touch an API.
             </p>
           </div>
@@ -647,7 +647,7 @@ export default function Home({ onPageChange, onOpenPackageModal, onOpenConsultat
           <div className="md:col-span-3 bg-white p-8 border border-black/5 rounded-[36px] shadow-[0_40px_80px_rgba(0,0,0,0.02)] space-y-4">
             <span className="text-[9px] font-mono font-bold text-orange-600 bg-orange-50 px-3 py-1 rounded-full uppercase tracking-wider font-bold">Communication</span>
             <h4 className="font-serif italic text-2xl text-gray-900 pt-1 leading-none">Accelerated Support Delivery</h4>
-            <p className="text-xs text-gray-400 leading-relaxed font-sans font-medium">
+            <p className="text-xs text-gray-800 leading-relaxed font-sans font-semibold">
               We align setups over fast email channels, Cal.co integrations, or direct interactive WhatsApp messages to prioritize speed.
             </p>
           </div>
@@ -666,7 +666,7 @@ export default function Home({ onPageChange, onOpenPackageModal, onOpenConsultat
           <h2 className="text-4xl sm:text-6xl font-black mt-6 max-w-2xl leading-none uppercase tracking-tighter">
             Ready to make your business smarter?
           </h2>
-          <p className="text-xs sm:text-sm text-gray-400 mt-4 max-w-lg leading-relaxed font-medium">
+          <p className="text-xs sm:text-sm text-white/70 mt-4 max-w-lg leading-relaxed font-semibold">
             Book a free coordinator consultation or test custom FAQ bots. Learn how automations reclaim lost booking slots.
           </p>
           

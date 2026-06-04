@@ -420,7 +420,7 @@ function SectionHeader({ eyebrow, title, text }: { eyebrow: string; title: strin
       <h2 className="text-3xl sm:text-5xl font-black tracking-tighter uppercase text-gray-900 leading-[1.0]">
         {title}
       </h2>
-      <p className="text-xs sm:text-sm text-gray-500 font-medium leading-relaxed">{text}</p>
+      <p className="text-xs sm:text-sm text-gray-800 font-semibold leading-relaxed">{text}</p>
     </div>
   );
 }
@@ -462,20 +462,20 @@ function PricingCard({ item, accent = 'orange', onOpen }: { item: PakistanPackag
         </p>
         <div className="mt-5 space-y-2">
           <p className="text-3xl sm:text-4xl font-black tracking-tighter text-gray-900">{item.investment}</p>
-          {item.recurring && <p className="text-xs font-bold text-gray-500">{item.recurring}</p>}
-          {item.usage && <p className="text-xs font-mono text-gray-400 uppercase tracking-wider">{item.usage}</p>}
+          {item.recurring && <p className="text-xs font-semibold text-gray-800">{item.recurring}</p>}
+          {item.usage && <p className="text-xs font-mono text-gray-700 uppercase tracking-wider font-semibold">{item.usage}</p>}
         </div>
-        <p className="text-xs text-gray-500 mt-4 leading-relaxed font-medium">{item.description}</p>
+        <p className="text-xs text-gray-800 mt-4 leading-relaxed font-semibold">{item.description}</p>
         <div className="h-px bg-black/5 my-5" />
         <ul className="space-y-3">
           {item.includes.map((include) => (
-            <li key={include} className="flex items-start gap-2.5 text-xs text-gray-500 leading-normal">
+            <li key={include} className="flex items-start gap-2.5 text-xs text-gray-800 leading-normal font-semibold">
               <Check size={14} className={`${accentClasses.split(' ')[2]} shrink-0 mt-0.5`} strokeWidth={2.5} />
               <span>{include}</span>
             </li>
           ))}
         </ul>
-        {item.note && <p className="mt-5 text-[11px] text-gray-400 leading-relaxed border-t border-black/5 pt-4">{item.note}</p>}
+        {item.note && <p className="mt-5 text-[11px] text-gray-700 leading-relaxed border-t border-black/5 pt-4 font-semibold">{item.note}</p>}
       </div>
       <button
         onClick={() => onOpen(toPackage(item))}
@@ -503,7 +503,7 @@ function CompactInfoSection({ title, items }: { title: string; items: { heading:
             <h3 className="text-lg font-black text-gray-900">{item.heading}</h3>
             <ul className="mt-4 space-y-2.5">
               {item.points.map((point) => (
-                <li key={point} className="flex items-start gap-2 text-xs text-gray-500">
+                <li key={point} className="flex items-start gap-2 text-xs text-gray-800 font-semibold">
                   <Check size={13} className="text-orange-500 shrink-0 mt-0.5" />
                   <span>{point}</span>
                 </li>
@@ -677,7 +677,7 @@ function PakistanHeroVisual() {
               </span>
               <div>
                 <p className="text-sm font-black text-gray-950">{activeMode.agentTitle}</p>
-                <p className="text-[11px] font-semibold text-gray-500">{activeMode.agentDetail}</p>
+                <p className="text-[11px] font-semibold text-gray-800">{activeMode.agentDetail}</p>
               </div>
             </div>
             <span className="flex h-10 w-10 items-center justify-center rounded-full bg-black text-white">
@@ -740,7 +740,7 @@ export default function Pakistan({ onPageChange, onOpenPackageModal, onOpenConsu
             <h1 className="text-3xl sm:text-5xl lg:text-6xl xl:text-[64px] font-black text-gray-900 leading-[1.05] tracking-tighter uppercase">
               Professional Websites, Smart Chatbots & AI Calling Agents for Pakistani Businesses
             </h1>
-            <p className="text-sm sm:text-base text-gray-500 max-w-2xl leading-relaxed font-medium">
+            <p className="text-sm sm:text-base text-gray-800 max-w-2xl leading-relaxed font-semibold">
               Office Pigeon helps growing businesses in Pakistan look more trusted online, capture customer inquiries, reply faster, and reduce missed opportunities through modern websites, smart chatbots, and AI-powered communication systems.
             </p>
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-2">
@@ -757,7 +757,7 @@ export default function Pakistan({ onPageChange, onOpenPackageModal, onOpenConsu
                 View Pakistan Packages
               </button>
             </div>
-            <p className="text-[11px] text-gray-500 font-mono uppercase tracking-wider">
+            <p className="text-[11px] text-gray-600 font-mono uppercase tracking-wider font-semibold">
               Built for clear pricing, fast delivery, WhatsApp-friendly customer journeys, and professional online systems.
             </p>
           </motion.div>
@@ -781,7 +781,7 @@ export default function Pakistan({ onPageChange, onOpenPackageModal, onOpenConsu
                 <Icon size={18} />
               </span>
               <h3 className="mt-5 text-lg font-black text-gray-900">{title}</h3>
-              <p className="mt-2 text-xs text-gray-500 leading-relaxed">{text}</p>
+              <p className="mt-2 text-xs text-gray-800 leading-relaxed font-semibold">{text}</p>
             </motion.div>
           ))}
         </div>
@@ -801,7 +801,7 @@ export default function Pakistan({ onPageChange, onOpenPackageModal, onOpenConsu
               </div>
             ))}
           </div>
-          <p className="mt-8 text-center text-xs text-gray-500 max-w-3xl mx-auto">
+          <p className="mt-8 text-center text-xs text-gray-800 max-w-3xl mx-auto font-semibold">
             Timelines can increase if requirements are complex, custom, or time-consuming to develop. Any extra charges are mentioned beforehand at the time of purchase depending on the client's specific requirements.
           </p>
         </div>
@@ -821,7 +821,7 @@ export default function Pakistan({ onPageChange, onOpenPackageModal, onOpenConsu
           ))}
         </div>
         <div className="mt-8 bg-white border border-black/5 rounded-[28px] p-6 text-center shadow-xs">
-          <p className="text-xs text-gray-500 leading-relaxed">
+          <p className="text-xs text-gray-800 leading-relaxed font-semibold">
             One AI message means one response generated by the chatbot. Extra chatbot usage is PKR 2,000 per extra 10,000 AI messages for all chatbot packages. Official WhatsApp API charges, Meta charges, BSP/platform fees, paid CRM tools, SMS, payment gateway fees, and third-party subscriptions are separate unless clearly included in a custom proposal.
           </p>
         </div>
@@ -840,7 +840,7 @@ export default function Pakistan({ onPageChange, onOpenPackageModal, onOpenConsu
                 <MessageCircle size={22} className="text-orange-500" />
                 <h3 className="mt-4 text-lg font-black text-gray-900">{option.title}</h3>
                 <p className="mt-2 text-[10px] font-mono uppercase tracking-wider font-bold text-orange-600">{option.label}</p>
-                <p className="mt-4 text-xs text-gray-500 leading-relaxed">{option.text}</p>
+                <p className="mt-4 text-xs text-gray-800 leading-relaxed font-semibold">{option.text}</p>
               </div>
             ))}
           </div>
@@ -863,11 +863,11 @@ export default function Pakistan({ onPageChange, onOpenPackageModal, onOpenConsu
         <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="bg-emerald-50 border border-emerald-100 rounded-[28px] p-6">
             <h3 className="font-black text-gray-900">Approved use cases</h3>
-            <p className="text-xs text-emerald-800 mt-3 leading-relaxed">Inbound customer support, missed-call callbacks, website lead follow-up, appointment reminders, booking confirmations, review request calls, payment reminders where appropriate, and follow-up after customer consent.</p>
+            <p className="text-xs text-emerald-950 mt-3 leading-relaxed font-semibold">Inbound customer support, missed-call callbacks, website lead follow-up, appointment reminders, booking confirmations, review request calls, payment reminders where appropriate, and follow-up after customer consent.</p>
           </div>
           <div className="bg-rose-50 border border-rose-100 rounded-[28px] p-6">
             <h3 className="font-black text-gray-900">Not included as standard</h3>
-            <p className="text-xs text-rose-800 mt-3 leading-relaxed">Random cold calls, spam calls, robocall campaigns, political calls, scam/fraud workflows, and high-risk medical, legal, or financial decisions.</p>
+            <p className="text-xs text-rose-950 mt-3 leading-relaxed font-semibold">Random cold calls, spam calls, robocall campaigns, political calls, scam/fraud workflows, and high-risk medical, legal, or financial decisions.</p>
           </div>
         </div>
       </section>
@@ -935,7 +935,7 @@ export default function Pakistan({ onPageChange, onOpenPackageModal, onOpenConsu
                 </span>
                 <h2 className="text-3xl sm:text-5xl font-black mt-5 uppercase tracking-tighter">No scary fine print</h2>
               </div>
-              <div className="space-y-4 text-sm text-gray-300 leading-relaxed font-medium">
+              <div className="space-y-4 text-sm text-gray-200 leading-relaxed font-semibold">
                 <p>Work begins after upfront payment. Because websites, chatbots, AI calling agents, and automations require custom planning, design, setup, and technical work, payments are non-refundable once work has started.</p>
                 <p>Office Pigeon does not guarantee sales, leads, revenue, rankings, platform approval, WhatsApp approval, WhatsApp account safety, call answer rates, or exact business results.</p>
                 <p>Our systems are designed to help your business look more professional, respond faster, capture inquiries more clearly, and reduce missed opportunities.</p>
@@ -969,7 +969,7 @@ export default function Pakistan({ onPageChange, onOpenPackageModal, onOpenConsu
           <div className="absolute top-[-80px] right-[-60px] w-72 h-72 bg-orange-500/15 blur-3xl rounded-full pointer-events-none" />
           <div className="relative space-y-6">
             <h2 className="text-3xl sm:text-5xl font-black uppercase tracking-tighter">Ready to Build a Smarter Business Presence in Pakistan?</h2>
-            <p className="text-sm text-gray-300 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-sm text-white/80 max-w-2xl mx-auto leading-relaxed font-semibold">
               Tell Office Pigeon what your business needs, and we'll recommend the right website, chatbot, calling agent, or growth system.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -1004,7 +1004,7 @@ export default function Pakistan({ onPageChange, onOpenPackageModal, onOpenConsu
             </div>
             <button
               onClick={() => onPageChange('home')}
-              className="text-[11px] text-gray-400 hover:text-white font-mono uppercase tracking-wider font-bold transition-colors cursor-pointer"
+              className="text-[11px] text-white/60 hover:text-white font-mono uppercase tracking-wider font-bold transition-colors cursor-pointer"
             >
               Return to main Office Pigeon website
             </button>
