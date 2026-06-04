@@ -71,7 +71,7 @@ export default function PakistanOfferCurtain({ currentPage, onPageChange }: Paki
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 18, scale: 0.92, filter: 'blur(6px)' }}
           transition={{ duration: 0.34, ease: [0.16, 1, 0.3, 1] }}
-          className="fixed inset-x-0 top-[76px] bottom-auto z-[35] px-3 pointer-events-none lg:top-auto lg:bottom-6 lg:px-5"
+          className="fixed bottom-[76px] right-5 left-auto top-auto z-[35] w-[calc(100vw-2.5rem)] max-w-[320px] pointer-events-none lg:inset-x-0 lg:left-0 lg:right-0 lg:w-auto lg:max-w-none lg:bottom-6 lg:px-5"
           aria-label="Pakistan pricing option"
         >
           <div className="mx-auto flex max-w-[calc(100vw-24px)] justify-center pointer-events-auto sm:max-w-xl">
@@ -121,23 +121,23 @@ export default function PakistanOfferCurtain({ currentPage, onPageChange }: Paki
           animate={{ opacity: 1, y: 0, scale: 1, filter: 'blur(0px)' }}
           exit={{ opacity: 0, y: 18, scale: 0.88, filter: 'blur(6px)' }}
           transition={{ duration: 0.38, ease: [0.16, 1, 0.3, 1] }}
-          className="fixed top-[76px] left-4 bottom-auto right-auto z-[35] pointer-events-none lg:top-auto lg:bottom-[82px] lg:left-auto lg:right-5 sm:left-5"
+          className="fixed bottom-[76px] right-5 left-auto top-auto z-[35] pointer-events-none lg:bottom-[82px] lg:right-5 lg:left-auto lg:top-auto"
           aria-label="Pakistan pricing minimized option"
         >
           <button
             type="button"
             onClick={goToPakistanPage}
-            className="group pointer-events-auto flex max-w-[min(250px,calc(100vw-40px))] items-center gap-2 rounded-full border border-orange-500/20 bg-white/95 p-2 pr-3 text-left shadow-[0_16px_42px_rgba(20,18,15,0.14)] backdrop-blur-xl transition-all hover:-translate-y-0.5 hover:border-orange-500/35 hover:shadow-[0_20px_50px_rgba(20,18,15,0.18)] focus:outline-none focus:ring-2 focus:ring-orange-300 sm:max-w-[270px] sm:pr-4"
+            className="group pointer-events-auto flex h-12 w-12 items-center justify-center rounded-full border border-orange-500/20 bg-white/95 text-orange-500 shadow-[0_16px_42px_rgba(20,18,15,0.14)] backdrop-blur-xl transition-all hover:-translate-y-0.5 hover:border-orange-500/35 hover:shadow-[0_20px_50px_rgba(20,18,15,0.18)] focus:outline-none focus:ring-2 focus:ring-orange-300 lg:h-auto lg:w-auto lg:p-2 lg:pr-4 lg:gap-2 cursor-pointer"
             aria-label="View Pakistan pricing packages"
           >
-            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-orange-50 text-orange-500 ring-1 ring-orange-500/15">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-orange-50 text-orange-500 ring-1 ring-orange-500/15 lg:h-10 lg:w-10">
               <MapPin size={17} />
             </span>
-            <span className="hidden min-w-0 min-[390px]:block">
+            <span className="hidden lg:block min-w-0">
               <span className="block truncate text-xs font-black leading-tight text-gray-900 sm:text-sm">Pakistan pricing</span>
               <span className="block truncate text-[10px] font-semibold leading-tight text-gray-500 sm:text-[11px]">PKR packages</span>
             </span>
-            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-black text-white transition-transform group-hover:translate-x-0.5">
+            <span className="hidden lg:flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-black text-white transition-transform group-hover:translate-x-0.5">
               <ArrowRight size={13} />
             </span>
           </button>
