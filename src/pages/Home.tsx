@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { motion } from 'motion/react';
 import { ArrowRight, HelpCircle, Check, Play, UserCheck, Smartphone, Settings, Zap, ArrowUpRight, MessageSquare, Flame, Sparkles, Volume2 } from 'lucide-react';
 import { PageId, Package } from '../types';
 import { BRAND, WEBSITE_PACKAGES, CHATBOT_PACKAGES, CALLING_AGENT_PACKAGES, AUTOMATION_EXAMPLES } from '../config';
-import ThreeHub from '../components/ThreeHub';
+const ThreeHub = lazy(() => import('../components/ThreeHub'));
 
 function TypewriterWord() {
   const word = "LOSING CUSTOMERS";
@@ -145,7 +145,18 @@ export default function Home({ onPageChange, onOpenPackageModal, onOpenConsultat
           {/* RIGHT 3D MODEL VIEWPORT */}
           <div className="lg:col-span-5 relative w-full flex items-center justify-center lg:absolute lg:top-1/2 lg:-translate-y-1/2 lg:-right-[8%] xl:-right-[14%] lg:w-[48vw] lg:h-[700px] lg:max-w-[900px] z-10 pointer-events-none">
             <div className="w-full h-full pointer-events-auto flex items-center justify-center">
-              <ThreeHub />
+              <Suspense fallback={
+                <div className="w-full h-full flex flex-col items-center justify-center relative p-6 animate-pulse" id="threejs-fallback-hub">
+                  <div className="relative w-48 h-48 bg-orange-50/50 border border-orange-100/50 rounded-full flex items-center justify-center shadow-lg shadow-orange-50/20">
+                    <div className="absolute inset-2 border-2 border-dashed border-orange-200/50 rounded-full animate-spin [animation-duration:15s]" />
+                    <div className="absolute inset-8 border border-rose-100/30 rounded-full animate-reverse-spin [animation-duration:8s]" />
+                    <div className="w-16 h-16 bg-gradient-to-tr from-orange-500 to-rose-500 opacity-80 rounded-full flex items-center justify-center p-3 shadow-md" />
+                  </div>
+                  <p className="mt-6 text-xs text-gray-400 text-center uppercase tracking-widest font-mono">Initializing ThreeHub...</p>
+                </div>
+              }>
+                <ThreeHub />
+              </Suspense>
             </div>
           </div>
 

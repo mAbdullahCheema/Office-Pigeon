@@ -146,7 +146,7 @@ textarea {
   mask-image: linear-gradient(to bottom, #000 0%, #000 78%, transparent 100%);
 }
 
-@media (prefers-reduced-motion: no-preference) {
+@media (prefers-reduced-motion: no-preference) and (min-width: 768px) {
   .home-orbit-field {
     animation: orbitFieldDrift 24s linear infinite;
   }

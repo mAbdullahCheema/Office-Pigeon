@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, lazy, Suspense } from 'react';
 import { PageId, Package } from './types';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -15,17 +15,17 @@ import PakistanOfferCurtain from './components/PakistanOfferCurtain';
 
 // Pages
 import Home from './pages/Home';
-import Websites from './pages/Websites';
-import Chatbots from './pages/Chatbots';
-import CallingAgents from './pages/CallingAgents';
-import Automations from './pages/Automations';
-import Examples from './pages/Examples';
-import About from './pages/About';
-import Contact from './pages/Contact';
-import FAQ from './pages/FAQ';
-import Legal from './pages/Legal';
-import Admin from './pages/Admin';
-import Pakistan from './pages/Pakistan';
+const Websites = lazy(() => import('./pages/Websites'));
+const Chatbots = lazy(() => import('./pages/Chatbots'));
+const CallingAgents = lazy(() => import('./pages/CallingAgents'));
+const Automations = lazy(() => import('./pages/Automations'));
+const Examples = lazy(() => import('./pages/Examples'));
+const About = lazy(() => import('./pages/About'));
+const Contact = lazy(() => import('./pages/Contact'));
+const FAQ = lazy(() => import('./pages/FAQ'));
+const Legal = lazy(() => import('./pages/Legal'));
+const Admin = lazy(() => import('./pages/Admin'));
+const Pakistan = lazy(() => import('./pages/Pakistan'));
 
 const PAGE_TITLES: Record<PageId, string> = {
   home: 'Office Pigeon | AI Websites, Chatbots, Calling Agents & Automations',
@@ -240,7 +240,14 @@ export default function App() {
         <div className="pt-2">
           {/* Main dynamic viewport transition */}
           <main id="main-content-viewport">
-            {renderActivePage()}
+            <Suspense fallback={
+              <div className="min-h-[60vh] flex flex-col items-center justify-center animate-pulse">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-orange-500 to-rose-500 animate-spin" />
+                <p className="mt-4 text-xs text-gray-400 font-mono uppercase tracking-widest">Loading Page...</p>
+              </div>
+            }>
+              {renderActivePage()}
+            </Suspense>
           </main>
 
           {/* FOOTER */}

@@ -9,7 +9,6 @@ import * as THREE from 'three';
 export default function ThreeHub() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [activeNode, setActiveNode] = useState<string | null>(null);
-  const [isMobile, setIsMobile] = useState(false);
   const [webGlSupported, setWebGlSupported] = useState(true);
 
   useEffect(() => {
@@ -22,13 +21,6 @@ export default function ThreeHub() {
     } catch {
       setWebGlSupported(false);
     }
-
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
   useEffect(() => {
@@ -38,19 +30,28 @@ export default function ThreeHub() {
     const width = container.clientWidth || 500;
     const height = container.clientHeight || 500;
 
+    // Detect mobile device width for particle count and size once at mount
+    const checkIsMobile = () => window.innerWidth < 768;
+    const isMobileDevice = checkIsMobile();
+
     // SCENE
     const scene = new THREE.Scene();
 
     // CAMERA
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
-    const screenWidth = window.innerWidth;
-    if (screenWidth < 640) {
-      camera.position.z = 7.8; // Zoomed in closer for mobile devices so the planets are prominent and not too tiny
-    } else if (screenWidth >= 640 && screenWidth < 1024) {
-      camera.position.z = 8.2; // Zoomed-in for tablet to make the planetary interaction highly captivating
-    } else {
-      camera.position.z = 8.5; // Perfect perspective for desktop background
-    }
+    
+    // Set initial Z position based on window width
+    const updateCameraZ = (cam: THREE.PerspectiveCamera) => {
+      const sw = window.innerWidth;
+      if (sw < 640) {
+        cam.position.z = 7.8; // Zoomed in closer for mobile devices
+      } else if (sw >= 640 && sw < 1024) {
+        cam.position.z = 8.2; // Zoomed-in for tablet
+      } else {
+        cam.position.z = 8.5; // Perfect perspective for desktop background
+      }
+    };
+    updateCameraZ(camera);
 
     // RENDERER
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -74,23 +75,22 @@ export default function ThreeHub() {
     secondaryPointLight.position.set(-5, -5, 5);
     scene.add(secondaryPointLight);
 
-    // CENTRAL HUB GEOMETRY
+    // CENTRAL HUB GEOMETRY - Basic material is extremely fast as it doesn't compute lighting
     const hubGeometry = new THREE.IcosahedronGeometry(1.6, 2);
-    const hubMaterial = new THREE.MeshPhongMaterial({
-      color: 0x1f1f1f,
+    const hubMaterial = new THREE.MeshBasicMaterial({
+      color: 0x333333,
       wireframe: true,
       transparent: true,
-      opacity: 0.15,
+      opacity: 0.12,
     });
     const hubMesh = new THREE.Mesh(hubGeometry, hubMaterial);
     mainGroup.add(hubMesh);
 
-    // GLOWING INNER SPHERE
+    // GLOWING INNER SPHERE - Lambert material is much faster on mobile than Phong
     const innerGeometry = new THREE.IcosahedronGeometry(0.8, 1);
-    const innerMaterial = new THREE.MeshPhongMaterial({
+    const innerMaterial = new THREE.MeshLambertMaterial({
       color: 0xf97316,
       emissive: 0xea580c,
-      shininess: 100,
       flatShading: true,
     });
     const innerMesh = new THREE.Mesh(innerGeometry, innerMaterial);
@@ -115,7 +115,7 @@ export default function ThreeHub() {
     createOrbitRing(3.15, 0xec4899, -0.3);
     createOrbitRing(3.75, 0xf59e0b, 0.5);
 
-    // SATELLITE NODES
+    // SATELLITE NODES - Lambert material is much faster on mobile than Phong
     const nodeGroup = new THREE.Group();
     mainGroup.add(nodeGroup);
 
@@ -123,11 +123,10 @@ export default function ThreeHub() {
       const parent = new THREE.Group();
       
       const geom = new THREE.SphereGeometry(0.3, 16, 16);
-      const mat = new THREE.MeshPhongMaterial({
+      const mat = new THREE.MeshLambertMaterial({
         color: colorId,
         emissive: colorId,
         emissiveIntensity: 0.8,
-        shininess: 30,
       });
       const mesh = new THREE.Mesh(geom, mat);
       
@@ -154,13 +153,12 @@ export default function ThreeHub() {
     });
 
     // PARTICLE SWARM / FLIGHT PATHS
-    const particleCount = isMobile ? 60 : 150;
+    const particleCount = isMobileDevice ? 50 : 120;
     const particleGeometry = new THREE.BufferGeometry();
     const particlePositions = new Float32Array(particleCount * 3);
     const particleSpeeds: number[] = [];
 
     for (let i = 0; i < particleCount; i++) {
-      // Randomly disperse particles inside sphere shell
       const r = 1.7 + Math.random() * 4.1;
       const u = Math.random();
       const v = Math.random();
@@ -168,7 +166,7 @@ export default function ThreeHub() {
       const phi = Math.acos(2.0 * v - 1.0);
       
       const x = r * Math.sin(phi) * Math.cos(theta);
-      const y = r * Math.sin(phi) * Math.sin(theta) * 0.4; // squashed y
+      const y = r * Math.sin(phi) * Math.sin(theta) * 0.4;
       const z = r * Math.cos(phi);
 
       particlePositions[i * 3] = x;
@@ -181,7 +179,7 @@ export default function ThreeHub() {
     particleGeometry.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
     const particleMaterial = new THREE.PointsMaterial({
       color: 0xf97316,
-      size: isMobile ? 0.06 : 0.08,
+      size: isMobileDevice ? 0.05 : 0.07,
       transparent: true,
       opacity: 0.6,
       blending: THREE.AdditiveBlending,
@@ -201,7 +199,6 @@ export default function ThreeHub() {
       const x = event.clientX - rect.left;
       const y = event.clientY - rect.top;
       
-      // Normalize between -1 and 1
       mouseX = (x / rect.width) * 2 - 1;
       mouseY = -(y / rect.height) * 2 + 1;
     };
@@ -219,12 +216,24 @@ export default function ThreeHub() {
     window.addEventListener('mousemove', onMouseMove);
     window.addEventListener('touchmove', onTouchMove, { passive: true });
 
+    // INTERSECTION OBSERVER TO PAUSE ANIMATION WHEN CANVAS OFFSCREEN
+    let isVisible = true;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isVisible = entry.isIntersecting;
+      },
+      { threshold: 0.05 }
+    );
+    observer.observe(container);
+
     // RENDER LOOP WITH SPRING PHYSICS ELASTIC INTERACTION
     let animationFrameId: number;
-    let lastTime = 0;
 
     const animate = (time: number) => {
       animationFrameId = requestAnimationFrame(animate);
+
+      // Skip heavy math calculations and rendering if component is off-screen
+      if (!isVisible) return;
 
       // Smooth Lerping movement back to cursor position
       targetX += (mouseX - targetX) * 0.06;
@@ -246,11 +255,10 @@ export default function ThreeHub() {
         
         const x = n.radius * Math.cos(n.angle);
         const z = n.radius * Math.sin(n.angle) * 0.9;
-        const y = n.initialY + Math.sin(time * 0.002 + index) * 0.2; // delicate float bump
+        const y = n.initialY + Math.sin(time * 0.002 + index) * 0.2;
         
         n.mesh.position.set(x, y, z);
         
-        // Slightly rotate each satellite mesh
         n.mesh.rotation.x += 0.01;
         n.mesh.rotation.y += 0.02;
       });
@@ -258,21 +266,18 @@ export default function ThreeHub() {
       // Animate particle flow
       const positions = particles.geometry.attributes.position.array as Float32Array;
       for (let i = 0; i < particleCount; i++) {
-        // Simple rotation calculations around the Y axis
         const xIdx = i * 3;
         const zIdx = i * 3 + 2;
         const x = positions[xIdx];
         const z = positions[zIdx];
         const sp = particleSpeeds[i];
 
-        // Orbit rotational formulas
         positions[xIdx] = x * Math.cos(sp) - z * Math.sin(sp);
         positions[zIdx] = x * Math.sin(sp) + z * Math.cos(sp);
       }
       particles.geometry.attributes.position.needsUpdate = true;
 
-      // Raycast test to identify closest orbit nodes (showing titles in UI)
-      // Check node heights to show subtle active feedback in overlay lists
+      // Raycast test to identify closest orbit nodes
       const currentHighest = nodesData.reduce((prev, curr) => {
         return curr.node.mesh.position.z > prev.node.mesh.position.z ? curr : prev;
       });
@@ -287,12 +292,13 @@ export default function ThreeHub() {
 
     animationFrameId = requestAnimationFrame(animate);
 
-    // RESIZE HANDLING
+    // RESIZE HANDLING - Smooth update without recreation
     const handleResize = () => {
       if (!container) return;
       const w = container.clientWidth;
       const h = container.clientHeight;
       camera.aspect = w / h;
+      updateCameraZ(camera);
       camera.updateProjectionMatrix();
       renderer.setSize(w, h);
     };
@@ -302,6 +308,7 @@ export default function ThreeHub() {
     // CLEANUP
     return () => {
       cancelAnimationFrame(animationFrameId);
+      observer.disconnect();
       window.removeEventListener('mousemove', onMouseMove);
       window.removeEventListener('touchmove', onTouchMove);
       window.removeEventListener('resize', handleResize);
@@ -309,8 +316,14 @@ export default function ThreeHub() {
         container.removeChild(renderer.domElement);
       }
       renderer.dispose();
+      hubGeometry.dispose();
+      hubMaterial.dispose();
+      innerGeometry.dispose();
+      innerMaterial.dispose();
+      particleGeometry.dispose();
+      particleMaterial.dispose();
     };
-  }, [webGlSupported, isMobile]);
+  }, [webGlSupported]);
 
   return (
     <div className="relative w-full flex flex-col items-center justify-center select-none font-sans">
