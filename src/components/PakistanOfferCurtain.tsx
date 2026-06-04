@@ -22,6 +22,7 @@ const MINIMIZED_KEY = 'office-pigeon-pakistan-offer-minimized';
 export default function PakistanOfferCurtain({ currentPage, onPageChange }: PakistanOfferCurtainProps) {
   const [visible, setVisible] = useState(false);
   const [minimized, setMinimized] = useState(false);
+  const [showTooltip, setShowTooltip] = useState(false);
 
   useEffect(() => {
     if (currentPage === 'pakistan') {
@@ -29,7 +30,8 @@ export default function PakistanOfferCurtain({ currentPage, onPageChange }: Paki
       return;
     }
 
-    setMinimized(sessionStorage.getItem(MINIMIZED_KEY) === '1');
+    const isLargeScreen = window.innerWidth >= 1024;
+    setMinimized(sessionStorage.getItem(MINIMIZED_KEY) === '1' || !isLargeScreen);
 
     const controller = new AbortController();
     const search = new URLSearchParams(window.location.search);
@@ -49,6 +51,20 @@ export default function PakistanOfferCurtain({ currentPage, onPageChange }: Paki
 
     return () => controller.abort();
   }, [currentPage]);
+
+  useEffect(() => {
+    if (visible) {
+      const isLargeScreen = window.innerWidth >= 1024;
+      if (!isLargeScreen) {
+        setMinimized(true);
+        setShowTooltip(true);
+        const timer = setTimeout(() => {
+          setShowTooltip(false);
+        }, 3000);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [visible]);
 
   const minimize = () => {
     sessionStorage.setItem(MINIMIZED_KEY, '1');
@@ -124,20 +140,36 @@ export default function PakistanOfferCurtain({ currentPage, onPageChange }: Paki
           className="fixed bottom-[76px] right-5 left-auto top-auto z-[35] pointer-events-none lg:bottom-[82px] lg:right-5 lg:left-auto lg:top-auto"
           aria-label="Pakistan pricing minimized option"
         >
+          <AnimatePresence>
+            {showTooltip && (
+              <motion.div
+                initial={{ opacity: 0, y: 8, scale: 0.9 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 5, scale: 0.95 }}
+                transition={{ duration: 0.25, ease: 'easeOut' }}
+                className="absolute bottom-full right-0 mb-3.5 whitespace-nowrap bg-orange-600 text-white text-[11px] font-black uppercase tracking-wider px-3.5 py-2.5 rounded-2xl shadow-xl border border-orange-500/10 pointer-events-auto flex items-center gap-1.5"
+              >
+                <span>Regional PKR pricing available</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping" />
+                <div className="absolute top-full right-5 -mt-[1px] w-0 h-0 border-l-4 border-l-transparent border-r-4 border-r-transparent border-t-4 border-t-orange-600" />
+              </motion.div>
+            )}
+          </AnimatePresence>
+
           <button
             type="button"
             onClick={goToPakistanPage}
-            className="group pointer-events-auto flex h-12 w-12 items-center justify-center rounded-full border border-orange-500/20 bg-white/95 text-orange-500 shadow-[0_16px_42px_rgba(20,18,15,0.14)] backdrop-blur-xl transition-all hover:-translate-y-0.5 hover:border-orange-500/35 hover:shadow-[0_20px_50px_rgba(20,18,15,0.18)] focus:outline-none focus:ring-2 focus:ring-orange-300 lg:h-auto lg:w-auto lg:p-2 lg:pr-4 lg:gap-2 cursor-pointer"
+            className="group pointer-events-auto flex h-12 w-12 items-center justify-center rounded-full border border-orange-500/20 bg-white/95 text-orange-500 shadow-[0_16px_42px_rgba(20,18,15,0.14)] backdrop-blur-xl transition-all hover:-translate-y-0.5 hover:border-orange-500/35 hover:shadow-[0_20px_50px_rgba(20,18,15,0.18)] focus:outline-none focus:ring-2 focus:ring-orange-300 sm:h-auto sm:w-auto sm:p-2 sm:pr-4 sm:gap-2 cursor-pointer"
             aria-label="View Pakistan pricing packages"
           >
-            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-orange-50 text-orange-500 ring-1 ring-orange-500/15 lg:h-10 lg:w-10">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-orange-50 text-orange-500 ring-1 ring-orange-500/15">
               <MapPin size={17} />
             </span>
-            <span className="hidden lg:block min-w-0">
+            <span className="hidden sm:block min-w-0">
               <span className="block truncate text-xs font-black leading-tight text-gray-900 sm:text-sm">Pakistan pricing</span>
               <span className="block truncate text-[10px] font-semibold leading-tight text-gray-500 sm:text-[11px]">PKR packages</span>
             </span>
-            <span className="hidden lg:flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-black text-white transition-transform group-hover:translate-x-0.5">
+            <span className="hidden sm:flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-black text-white transition-transform group-hover:translate-x-0.5">
               <ArrowRight size={13} />
             </span>
           </button>
