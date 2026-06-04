@@ -136,7 +136,7 @@ export default function Navbar({ currentPage, onPageChange, onOpenConsultationMo
             }}
             className="w-full py-4 bg-black hover:bg-orange-500 text-white rounded-2xl text-xs font-bold uppercase tracking-wide transition-all shadow-md text-center cursor-pointer block focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/30"
           >
-            Get Free CRM Consultation
+            Get Free Consultation
           </button>
         </div>
       </div>
