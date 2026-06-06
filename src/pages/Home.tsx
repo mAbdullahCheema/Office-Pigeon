@@ -537,11 +537,16 @@ export default function Home({ onPageChange, onOpenPackageModal, onOpenConsultat
                 )}
                 <div>
                   <h4 className={homeCardTitle}>{pkg.name}</h4>
-                  <p className={`${homeCardPrice} mt-4`}>{pkg.price}</p>
+                  <div className="mt-4 mb-2 flex items-baseline">
+                    <span className={homeCardPrice}>{pkg.price.split(' ')[0]}</span>
+                    <span className="text-xs !text-[#1A1A1A] font-mono uppercase tracking-wider font-bold ml-1">
+                      {pkg.price.includes('setup') ? pkg.price.substring(pkg.price.indexOf('setup')) : ''}
+                    </span>
+                  </div>
                   <p className={homeCardCopy}>{pkg.bestFor}</p>
                   <div className="h-px bg-black/5 my-6" />
                   <ul className="space-y-3.5">
-                    {pkg.includes.slice(-2).map((inc) => (
+                    {pkg.includes.slice(0, 5).map((inc) => (
                       <li key={inc} className={homeCardListItem}>
                         <Check size={14} className="text-orange-500 shrink-0 mt-0.5" />
                         <span>{inc}</span>
@@ -549,14 +554,19 @@ export default function Home({ onPageChange, onOpenPackageModal, onOpenConsultat
                     ))}
                   </ul>
                 </div>
-                <button
-                  onClick={() => onOpenPackageModal(pkg)}
-                  className={`mt-6 w-full py-3.5 text-[10px] font-mono font-bold uppercase tracking-wider rounded-full transition-all cursor-pointer ${
-                    pkg.badge ? 'bg-orange-500 hover:bg-orange-600 text-white' : 'bg-[#F0EEEA] hover:bg-black/5 text-gray-800'
-                  }`}
-                >
-                  Configure {pkg.name}
-                </button>
+                <div className="mt-8 space-y-2.5">
+                  <button
+                    onClick={() => onOpenPackageModal(pkg)}
+                    className={`w-full py-4 text-xs font-mono font-bold uppercase tracking-wider rounded-full text-center transition-all cursor-pointer focus:outline-none ${
+                      pkg.badge
+                        ? 'bg-orange-500 hover:bg-orange-600 text-white shadow-md shadow-orange-100'
+                        : 'bg-[#F0EEEA] hover:bg-black/5 text-gray-800'
+                    }`}
+                  >
+                    Configure {pkg.name}
+                  </button>
+                  <p className="text-[10px] text-gray-600 text-center font-mono uppercase tracking-wider font-semibold italic">{pkg.note}</p>
+                </div>
               </div>
             ))}
           </div>
