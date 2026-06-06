@@ -71,6 +71,11 @@ function scrollToSection(sectionId: string) {
   });
 }
 
+const homeSectionBand = "bg-[#F0EEEA]/40 border-y border-black/5 py-20";
+const homeSectionEyebrow = "text-[10px] font-mono tracking-[0.25em] uppercase text-orange-600 font-bold bg-white border border-black/10 px-4 py-1.5 rounded-full inline-block";
+const homeSectionTitle = "text-3xl sm:text-5xl font-black tracking-tighter uppercase text-gray-900 leading-[1.0]";
+const homeSectionCopy = "text-xs sm:text-sm text-gray-800 font-semibold font-sans leading-relaxed";
+
 interface HomeProps {
   onPageChange: (page: PageId) => void;
   onOpenPackageModal: (pkg: Package) => void;
@@ -309,16 +314,16 @@ export default function Home({ onPageChange, onOpenPackageModal, onOpenConsultat
       </section>
 
       {/* 4. WEBSITE PACKAGES */}
-      <section className="bg-[#F0EEEA]/40 border-y border-black/5 py-20">
+      <section className={homeSectionBand}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto space-y-3 mb-16">
-            <span className="text-[10px] font-mono tracking-[0.25em] uppercase text-orange-600 font-bold bg-white border border-black/10 px-4 py-1.5 rounded-full inline-block">
+            <span className={homeSectionEyebrow}>
               WEBSITES & LANDING PAGES
             </span>
-            <h2 className="text-3xl sm:text-5xl font-black tracking-tighter uppercase text-gray-900 leading-[1.0]">
+            <h2 className={homeSectionTitle}>
               Beautiful websites built to make your business look serious
             </h2>
-            <p className="text-xs sm:text-sm text-gray-800 font-semibold font-sans">
+            <p className={homeSectionCopy}>
               Whether you need a simple landing page or a more powerful business system, Office Pigeon gives your business a clean digital home.
             </p>
           </div>
@@ -375,89 +380,91 @@ export default function Home({ onPageChange, onOpenPackageModal, onOpenConsultat
       </section>
 
       {/* 5. SMART CHATBOTS SECTION */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-3xl mx-auto space-y-3 mb-16">
-          <span className="text-[10px] font-mono tracking-[0.25em] uppercase text-rose-500 font-bold bg-rose-50 px-4 py-1.5 border border-black/5 rounded-full inline-block">
-            SMART ASSISTANTS
-          </span>
-          <h2 className="text-3xl sm:text-5xl font-black tracking-tighter uppercase text-gray-900 leading-[1.0]">
-            Let your business reply faster, capture leads & stay available longer
-          </h2>
-          <p className="text-xs sm:text-sm text-gray-800 font-semibold font-sans">
-            Smart chatbots help customers get answers, share details, and take action without waiting for manual replies.
-          </p>
-        </div>
+      <section className={homeSectionBand}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-3xl mx-auto space-y-3 mb-16">
+            <span className={homeSectionEyebrow}>
+              SMART ASSISTANTS
+            </span>
+            <h2 className={homeSectionTitle}>
+              Let your business reply faster, capture leads & stay available longer
+            </h2>
+            <p className={homeSectionCopy}>
+              Smart chatbots help customers get answers, share details, and take action without waiting for manual replies.
+            </p>
+          </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {CHATBOT_PACKAGES.map((pkg) => (
-            <div
-              key={pkg.id}
-              className={`bg-white border p-8 rounded-[40px] shadow-[0_45px_90px_rgba(0,0,0,0.03)] flex flex-col justify-between relative transition-all duration-300 hover:scale-102 hover:shadow-lg ${
-                pkg.badge ? 'border-rose-500 ring-4 ring-rose-100/30' : 'border-black/5'
-              }`}
-            >
-              {pkg.badge && (
-                <span className="absolute top-0 right-7 -translate-y-1/2 bg-rose-500 text-white text-[9px] font-mono font-bold uppercase tracking-widest px-3.5 py-1 rounded-full shadow-md">
-                  {pkg.badge}
-                </span>
-              )}
-              <div>
-                <h4 className="font-serif italic text-3xl text-gray-900 leading-tight mb-2">{pkg.name}</h4>
-                <div className="mt-4 mb-2 flex items-baseline">
-                  <span className="text-5xl font-black italic tracking-tighter text-gray-900">{pkg.price.split(' ')[0]}</span>
-                  <span className="text-xs text-gray-600 font-mono uppercase tracking-wider font-semibold ml-1">
-                    {pkg.price.includes('setup') ? pkg.price.substring(pkg.price.indexOf('setup')) : ''}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {CHATBOT_PACKAGES.map((pkg) => (
+              <div
+                key={pkg.id}
+                className={`bg-white border p-8 rounded-[40px] shadow-[0_45px_90px_rgba(0,0,0,0.03)] flex flex-col justify-between relative transition-all duration-300 hover:scale-102 hover:shadow-lg ${
+                  pkg.badge ? 'border-orange-500 ring-4 ring-orange-100/30' : 'border-black/5'
+                }`}
+              >
+                {pkg.badge && (
+                  <span className="absolute top-0 right-7 -translate-y-1/2 bg-orange-500 text-white text-[9px] font-mono font-bold uppercase tracking-widest px-3.5 py-1 rounded-full shadow-md">
+                    {pkg.badge}
                   </span>
+                )}
+                <div>
+                  <h4 className="font-serif italic text-3xl text-gray-900 leading-tight mb-2">{pkg.name}</h4>
+                  <div className="mt-4 mb-2 flex items-baseline">
+                    <span className="text-5xl font-black italic tracking-tighter text-gray-900">{pkg.price.split(' ')[0]}</span>
+                    <span className="text-xs text-gray-600 font-mono uppercase tracking-wider font-semibold ml-1">
+                      {pkg.price.includes('setup') ? pkg.price.substring(pkg.price.indexOf('setup')) : ''}
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-gray-800 mt-2 font-semibold font-sans leading-relaxed">{pkg.bestFor}</p>
+
+                  <div className="h-px bg-black/5 my-6" />
+
+                  <ul className="space-y-3.5">
+                    {pkg.includes.slice(0, 5).map((inc, i) => (
+                      <li key={i} className="flex items-start gap-2.5 text-xs text-gray-800 leading-normal font-sans font-semibold">
+                        <Check size={14} className="text-orange-500 shrink-0 mt-0.5" />
+                        <span>{inc}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-                <p className="text-[11px] text-gray-800 mt-2 font-semibold font-sans leading-relaxed">{pkg.bestFor}</p>
 
-                <div className="h-px bg-black/5 my-6" />
-
-                <ul className="space-y-3.5">
-                  {pkg.includes.slice(0, 5).map((inc, i) => (
-                    <li key={i} className="flex items-start gap-2.5 text-xs text-gray-800 leading-normal font-sans font-semibold">
-                      <Check size={14} className="text-rose-500 shrink-0 mt-0.5" />
-                      <span>{inc}</span>
-                    </li>
-                  ))}
-                </ul>
+                <div className="mt-8 space-y-2.5">
+                  <button
+                    onClick={() => onOpenPackageModal(pkg)}
+                    className={`w-full py-4 text-xs font-mono font-bold uppercase tracking-wider rounded-full text-center transition-all cursor-pointer focus:outline-none ${
+                      pkg.badge
+                        ? 'bg-orange-500 hover:bg-orange-600 text-white shadow-md shadow-orange-100'
+                        : 'bg-[#F0EEEA] hover:bg-black/5 text-gray-800'
+                    }`}
+                  >
+                    Configure {pkg.name}
+                  </button>
+                  <p className="text-[10px] text-gray-600 text-center font-mono uppercase tracking-wider font-semibold italic">{pkg.note}</p>
+                </div>
               </div>
-
-              <div className="mt-8 space-y-2.5">
-                <button
-                  onClick={() => onOpenPackageModal(pkg)}
-                  className={`w-full py-4 text-xs font-mono font-bold uppercase tracking-wider rounded-full text-center transition-all cursor-pointer focus:outline-none ${
-                    pkg.badge
-                      ? 'bg-rose-500 hover:bg-rose-600 text-white shadow-md shadow-rose-100'
-                      : 'bg-[#F0EEEA] hover:bg-black/5 text-gray-800'
-                  }`}
-                >
-                  Configure {pkg.name}
-                </button>
-                <p className="text-[10px] text-gray-600 text-center font-mono uppercase tracking-wider font-semibold italic">{pkg.note}</p>
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </section>
       {/* 6. WORKFLOW AUTOMATION SUBSECTION */}
-      <section className="bg-[#F0EEEA]/30 border-y border-black/5 py-20">
+      <section className={homeSectionBand}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             
             <div className="lg:col-span-5 space-y-6">
-              <span className="text-[10px] font-mono tracking-[0.25em] uppercase text-amber-600 font-bold bg-amber-50 px-4 py-1.5 border border-amber-100 rounded-full inline-block">
+              <span className={homeSectionEyebrow}>
                 CONNECTED WORKFLOWS
               </span>
-              <h2 className="text-3xl sm:text-5xl font-black text-gray-900 tracking-tighter uppercase leading-[1.0]">
+              <h2 className={homeSectionTitle}>
                 Stop repeating the same tasks every day
               </h2>
-              <p className="text-xs sm:text-sm text-gray-800 leading-relaxed font-sans font-semibold">
+              <p className={homeSectionCopy}>
                 Connect your tools so leads, reminders, updates, and follow-ups move automatically in the background. Fully managed by Office Pigeon, so you do not have to deal with the technical side.
               </p>
-              <div className="bg-amber-50/50 border border-amber-100/50 p-6 rounded-[24px]">
-                <p className="text-xs font-mono font-bold uppercase tracking-wider text-amber-900">Affordable Starting Point</p>
-                <p className="text-[11px] text-amber-950 mt-1.5 font-sans leading-relaxed font-semibold">Starting from $100 setup + convenient monthly active monitoring options.</p>
+              <div className="bg-white border border-black/10 p-6 rounded-[24px] shadow-[0_24px_60px_rgba(0,0,0,0.025)]">
+                <p className="text-xs font-mono font-bold uppercase tracking-wider text-orange-600">Affordable Starting Point</p>
+                <p className="text-[11px] text-gray-800 mt-1.5 font-sans leading-relaxed font-semibold">Starting from $100 setup + convenient monthly active monitoring options.</p>
               </div>
               <button
                 onClick={() => {
@@ -481,7 +488,7 @@ export default function Home({ onPageChange, onOpenPackageModal, onOpenConsultat
             <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-6">
               {AUTOMATION_EXAMPLES.slice(0, 4).map((item, idx) => (
                 <div key={idx} className="bg-white p-6 border border-black/5 rounded-[24px] shadow-xs space-y-3 hover:translate-y-[-2px] transition-transform">
-                  <span className="text-[9px] font-bold text-amber-600 font-mono bg-amber-50 px-3 py-1 rounded-full uppercase tracking-wider">{`Flow 0${idx + 1}`}</span>
+                  <span className="text-[9px] font-bold text-orange-600 font-mono bg-[#F0EEEA] border border-black/5 px-3 py-1 rounded-full uppercase tracking-wider">{`Flow 0${idx + 1}`}</span>
                   <h4 className="font-serif italic text-xl text-gray-900 pt-1 leading-tight">{item.title}</h4>
                   <p className="text-[11px] text-gray-800 leading-relaxed font-sans font-semibold">{item.description}</p>
                 </div>
@@ -494,12 +501,12 @@ export default function Home({ onPageChange, onOpenPackageModal, onOpenConsultat
 
       {/* 7. AI CALLING AGENTS LIVE SERVICE */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center select-none relative">
-        <div className="relative border border-amber-200 bg-[#FAF9F6] p-8 sm:p-10 rounded-[40px] shadow-lg shadow-amber-500/5 space-y-8">
-          <span className="inline-flex items-center gap-1.5 text-[9px] font-mono tracking-widest uppercase text-amber-600 bg-amber-50 border border-amber-100 px-4 py-1.5 rounded-full font-bold">
+        <div className="relative border border-black/10 bg-[#FAF9F6] p-8 sm:p-10 rounded-[40px] shadow-[0_45px_90px_rgba(0,0,0,0.035)] space-y-8">
+          <span className="inline-flex items-center gap-1.5 text-[10px] font-mono tracking-[0.25em] uppercase text-orange-600 bg-white border border-black/10 px-4 py-1.5 rounded-full font-bold">
             <Volume2 size={11} /> AI Calling Agents
           </span>
-          <h2 className="text-3xl sm:text-4xl font-serif italic text-gray-900 leading-tight">Answer calls, capture leads, and book customers automatically</h2>
-          <p className="text-xs sm:text-sm text-gray-800 max-w-xl mx-auto leading-relaxed font-sans font-semibold">
+          <h2 className="text-3xl sm:text-5xl font-black tracking-tighter uppercase text-gray-900 leading-[1.0]">Answer calls, capture leads, and book customers automatically</h2>
+          <p className={`${homeSectionCopy} max-w-xl mx-auto`}>
             Office Pigeon builds AI phone and WhatsApp agents that answer customer questions, collect lead details, handle booking requests, send follow-ups, and notify your team under clear monthly usage limits.
           </p>
           <div className="pt-2">
