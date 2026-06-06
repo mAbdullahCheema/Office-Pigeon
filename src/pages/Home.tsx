@@ -71,10 +71,17 @@ function scrollToSection(sectionId: string) {
   });
 }
 
-const homeSectionBand = "bg-[#F0EEEA]/40 border-y border-black/5 py-20";
-const homeSectionEyebrow = "text-[10px] font-mono tracking-[0.25em] uppercase text-orange-600 font-bold bg-white border border-black/10 px-4 py-1.5 rounded-full inline-block";
-const homeSectionTitle = "text-3xl sm:text-5xl font-black tracking-tighter uppercase text-gray-900 leading-[1.0]";
-const homeSectionCopy = "text-xs sm:text-sm text-gray-800 font-semibold font-sans leading-relaxed";
+const homeSectionBand = "relative bg-[#FAF9F6] border-y border-black/5 py-24 overflow-hidden";
+const homeSectionInner = "relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8";
+const homeSectionHeader = "text-center max-w-3xl mx-auto space-y-3 mb-16";
+const homeSectionEyebrow = "text-[10px] font-mono tracking-[0.25em] uppercase !text-orange-600 font-black bg-white border border-black/10 px-4 py-1.5 rounded-full inline-block shadow-sm";
+const homeSectionTitle = "text-3xl sm:text-5xl font-black tracking-tighter uppercase !text-[#0B0B0B] leading-[1.0]";
+const homeSectionCopy = "text-xs sm:text-sm !text-[#1A1A1A] font-bold font-sans leading-relaxed";
+const homePackageCard = "bg-white border border-black/5 p-8 rounded-[40px] shadow-[0_45px_90px_rgba(0,0,0,0.03)] flex flex-col justify-between relative transition-all duration-300 hover:scale-102 hover:shadow-lg";
+const homeCardTitle = "font-serif italic text-3xl !text-[#0B0B0B] leading-tight mb-2";
+const homeCardPrice = "text-5xl font-black italic tracking-tighter !text-[#000000]";
+const homeCardCopy = "text-[11px] !text-[#1A1A1A] mt-2 font-bold font-sans leading-relaxed";
+const homeCardListItem = "flex items-start gap-2.5 text-xs !text-[#1A1A1A] leading-normal font-sans font-bold";
 
 interface HomeProps {
   onPageChange: (page: PageId) => void;
@@ -315,8 +322,8 @@ export default function Home({ onPageChange, onOpenPackageModal, onOpenConsultat
 
       {/* 4. WEBSITE PACKAGES */}
       <section className={homeSectionBand}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto space-y-3 mb-16">
+        <div className={homeSectionInner}>
+          <div className={homeSectionHeader}>
             <span className={homeSectionEyebrow}>
               WEBSITES & LANDING PAGES
             </span>
@@ -332,7 +339,7 @@ export default function Home({ onPageChange, onOpenPackageModal, onOpenConsultat
             {WEBSITE_PACKAGES.map((pkg) => (
               <div
                 key={pkg.id}
-                className={`bg-white border p-8 rounded-[40px] shadow-[0_45px_90px_rgba(0,0,0,0.03)] flex flex-col justify-between relative transition-all duration-300 hover:scale-102 hover:shadow-lg ${
+                className={`${homePackageCard} ${
                   pkg.badge ? 'border-orange-500 ring-4 ring-orange-100/30' : 'border-black/5'
                 }`}
               >
@@ -342,17 +349,17 @@ export default function Home({ onPageChange, onOpenPackageModal, onOpenConsultat
                   </span>
                 )}
                 <div>
-                  <h4 className="font-serif italic text-3xl text-gray-900 leading-tight mb-2">{pkg.name}</h4>
+                  <h4 className={homeCardTitle}>{pkg.name}</h4>
                   <div className="mt-4 mb-2 flex items-baseline">
-                    <span className="text-5xl font-black italic tracking-tighter text-gray-900">{pkg.price}</span>
+                    <span className={homeCardPrice}>{pkg.price}</span>
                   </div>
-                  <p className="text-[11px] text-gray-800 mt-2 font-semibold font-sans leading-relaxed">{pkg.bestFor}</p>
+                  <p className={homeCardCopy}>{pkg.bestFor}</p>
                   
                   <div className="h-px bg-black/5 my-6" />
                   
                   <ul className="space-y-3.5">
                     {pkg.includes.slice(0, 5).map((inc, i) => (
-                      <li key={i} className="flex items-start gap-2.5 text-xs text-gray-800 leading-normal font-sans font-semibold">
+                      <li key={i} className={homeCardListItem}>
                         <Check size={14} className="text-orange-500 shrink-0 mt-0.5" />
                         <span>{inc}</span>
                       </li>
@@ -381,8 +388,8 @@ export default function Home({ onPageChange, onOpenPackageModal, onOpenConsultat
 
       {/* 5. SMART CHATBOTS SECTION */}
       <section className={homeSectionBand}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto space-y-3 mb-16">
+        <div className={homeSectionInner}>
+          <div className={homeSectionHeader}>
             <span className={homeSectionEyebrow}>
               SMART ASSISTANTS
             </span>
@@ -398,7 +405,7 @@ export default function Home({ onPageChange, onOpenPackageModal, onOpenConsultat
             {CHATBOT_PACKAGES.map((pkg) => (
               <div
                 key={pkg.id}
-                className={`bg-white border p-8 rounded-[40px] shadow-[0_45px_90px_rgba(0,0,0,0.03)] flex flex-col justify-between relative transition-all duration-300 hover:scale-102 hover:shadow-lg ${
+                className={`${homePackageCard} ${
                   pkg.badge ? 'border-orange-500 ring-4 ring-orange-100/30' : 'border-black/5'
                 }`}
               >
@@ -408,20 +415,20 @@ export default function Home({ onPageChange, onOpenPackageModal, onOpenConsultat
                   </span>
                 )}
                 <div>
-                  <h4 className="font-serif italic text-3xl text-gray-900 leading-tight mb-2">{pkg.name}</h4>
+                  <h4 className={homeCardTitle}>{pkg.name}</h4>
                   <div className="mt-4 mb-2 flex items-baseline">
-                    <span className="text-5xl font-black italic tracking-tighter text-gray-900">{pkg.price.split(' ')[0]}</span>
-                    <span className="text-xs text-gray-600 font-mono uppercase tracking-wider font-semibold ml-1">
+                    <span className={homeCardPrice}>{pkg.price.split(' ')[0]}</span>
+                    <span className="text-xs !text-[#1A1A1A] font-mono uppercase tracking-wider font-bold ml-1">
                       {pkg.price.includes('setup') ? pkg.price.substring(pkg.price.indexOf('setup')) : ''}
                     </span>
                   </div>
-                  <p className="text-[11px] text-gray-800 mt-2 font-semibold font-sans leading-relaxed">{pkg.bestFor}</p>
+                  <p className={homeCardCopy}>{pkg.bestFor}</p>
 
                   <div className="h-px bg-black/5 my-6" />
 
                   <ul className="space-y-3.5">
                     {pkg.includes.slice(0, 5).map((inc, i) => (
-                      <li key={i} className="flex items-start gap-2.5 text-xs text-gray-800 leading-normal font-sans font-semibold">
+                      <li key={i} className={homeCardListItem}>
                         <Check size={14} className="text-orange-500 shrink-0 mt-0.5" />
                         <span>{inc}</span>
                       </li>
@@ -449,97 +456,94 @@ export default function Home({ onPageChange, onOpenPackageModal, onOpenConsultat
       </section>
       {/* 6. WORKFLOW AUTOMATION SUBSECTION */}
       <section className={homeSectionBand}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-            
-            <div className="lg:col-span-5 space-y-6">
-              <span className={homeSectionEyebrow}>
-                CONNECTED WORKFLOWS
-              </span>
-              <h2 className={homeSectionTitle}>
-                Stop repeating the same tasks every day
-              </h2>
-              <p className={homeSectionCopy}>
-                Connect your tools so leads, reminders, updates, and follow-ups move automatically in the background. Fully managed by Office Pigeon, so you do not have to deal with the technical side.
-              </p>
-              <div className="bg-white border border-black/10 p-6 rounded-[24px] shadow-[0_24px_60px_rgba(0,0,0,0.025)]">
-                <p className="text-xs font-mono font-bold uppercase tracking-wider text-orange-600">Affordable Starting Point</p>
-                <p className="text-[11px] text-gray-800 mt-1.5 font-sans leading-relaxed font-semibold">Starting from $100 setup + convenient monthly active monitoring options.</p>
-              </div>
-              <button
-                onClick={() => {
-                  const payload: Package = {
-                    id: 'automation-audit',
-                    name: 'Workflow Automation Audit',
-                    price: 'Custom Audit',
-                    timeline: '2-4 working days',
-                    revision: '1 revision included',
-                    bestFor: 'Evaluate existing operational friction points.',
-                    includes: ['Review maps, spreadsheets, email triggers']
-                  };
-                  onOpenPackageModal(payload);
-                }}
-                className="px-8 py-4.5 bg-black hover:bg-orange-500 text-white rounded-full font-sans text-xs font-black uppercase tracking-widest shadow-lg shadow-black/5 transition-all cursor-pointer block text-center focus:outline-none"
-              >
-                Book a Free Workflow Audit
-              </button>
-            </div>
-
-            <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-6">
-              {AUTOMATION_EXAMPLES.slice(0, 4).map((item, idx) => (
-                <div key={idx} className="bg-white p-6 border border-black/5 rounded-[24px] shadow-xs space-y-3 hover:translate-y-[-2px] transition-transform">
-                  <span className="text-[9px] font-bold text-orange-600 font-mono bg-[#F0EEEA] border border-black/5 px-3 py-1 rounded-full uppercase tracking-wider">{`Flow 0${idx + 1}`}</span>
-                  <h4 className="font-serif italic text-xl text-gray-900 pt-1 leading-tight">{item.title}</h4>
-                  <p className="text-[11px] text-gray-800 leading-relaxed font-sans font-semibold">{item.description}</p>
-                </div>
-              ))}
-            </div>
-
+        <div className={homeSectionInner}>
+          <div className={homeSectionHeader}>
+            <span className={homeSectionEyebrow}>
+              CONNECTED WORKFLOWS
+            </span>
+            <h2 className={homeSectionTitle}>
+              Stop repeating the same tasks every day
+            </h2>
+            <p className={homeSectionCopy}>
+              Connect your tools so leads, reminders, updates, and follow-ups move automatically in the background. Fully managed by Office Pigeon, so you do not have to deal with the technical side.
+            </p>
           </div>
-        </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {AUTOMATION_EXAMPLES.slice(0, 3).map((item, idx) => (
+              <div key={idx} className={`${homePackageCard} min-h-[300px]`}>
+                <div>
+                  <span className="text-[9px] font-black !text-orange-600 font-mono bg-[#F0EEEA] border border-black/5 px-3 py-1 rounded-full uppercase tracking-wider">{`Flow 0${idx + 1}`}</span>
+                  <h4 className={`${homeCardTitle} mt-5`}>{item.title}</h4>
+                  <p className={homeCardCopy}>{item.description}</p>
+                </div>
+                {idx === 0 && (
+                  <div className="mt-8 rounded-[24px] border border-black/10 bg-[#FAF9F6] p-5">
+                    <p className="text-xs font-mono font-black uppercase tracking-wider !text-orange-600">Affordable Starting Point</p>
+                    <p className="text-[11px] !text-[#1A1A1A] mt-1.5 font-sans leading-relaxed font-bold">Starting from $100 setup + convenient monthly active monitoring options.</p>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-10 flex justify-center">
+            <button
+              onClick={() => {
+                const payload: Package = {
+                  id: 'automation-audit',
+                  name: 'Workflow Automation Audit',
+                  price: 'Custom Audit',
+                  timeline: '2-4 working days',
+                  revision: '1 revision included',
+                  bestFor: 'Evaluate existing operational friction points.',
+                  includes: ['Review maps, spreadsheets, email triggers']
+                };
+                onOpenPackageModal(payload);
+              }}
+              className="px-8 py-4.5 bg-black hover:bg-orange-500 text-white rounded-full font-sans text-xs font-black uppercase tracking-widest shadow-lg shadow-black/5 transition-all cursor-pointer text-center focus:outline-none"
+            >
+              Book a Free Workflow Audit
+            </button>
+          </div>
+            </div>
       </section>
 
       {/* 7. AI CALLING AGENTS LIVE SERVICE */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center select-none relative">
-        <div className="relative border border-black/10 bg-[#FAF9F6] p-8 sm:p-10 rounded-[40px] shadow-[0_45px_90px_rgba(0,0,0,0.035)] space-y-8">
-          <span className="inline-flex items-center gap-1.5 text-[10px] font-mono tracking-[0.25em] uppercase text-orange-600 bg-white border border-black/10 px-4 py-1.5 rounded-full font-bold">
-            <Volume2 size={11} /> AI Calling Agents
-          </span>
-          <h2 className="text-3xl sm:text-5xl font-black tracking-tighter uppercase text-gray-900 leading-[1.0]">Answer calls, capture leads, and book customers automatically</h2>
-          <p className={`${homeSectionCopy} max-w-xl mx-auto`}>
-            Office Pigeon builds AI phone and WhatsApp agents that answer customer questions, collect lead details, handle booking requests, send follow-ups, and notify your team under clear monthly usage limits.
-          </p>
-          <div className="pt-2">
-            <button
-              onClick={() => {
-                onOpenPackageModal(CALLING_AGENT_PACKAGES[1]);
-              }}
-              className="px-8 py-4 bg-orange-500 text-white font-mono text-[10px] uppercase font-bold tracking-widest rounded-full hover:bg-orange-600 transition-all cursor-pointer inline-flex items-center gap-1.5 shadow-lg shadow-orange-100 focus:outline-none"
-            >
-              Configure Calling Agent <ArrowRight size={13} />
-            </button>
+      <section className={homeSectionBand}>
+        <div className={homeSectionInner}>
+          <div className={homeSectionHeader}>
+            <span className={homeSectionEyebrow}>
+              AI Calling Agents
+            </span>
+            <h2 className={homeSectionTitle}>Answer calls, capture leads, and book customers automatically</h2>
+            <p className={homeSectionCopy}>
+              Office Pigeon builds AI phone and WhatsApp agents that answer customer questions, collect lead details, handle booking requests, send follow-ups, and notify your team under clear monthly usage limits.
+            </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left pt-4">
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {CALLING_AGENT_PACKAGES.map((pkg) => (
               <div
                 key={pkg.id}
-                className={`bg-white border p-6 rounded-[28px] shadow-xs flex flex-col justify-between relative transition-all hover:translate-y-[-3px] ${
-                  pkg.badge ? 'border-orange-200 ring-4 ring-orange-50/50' : 'border-black/5'
+                className={`${homePackageCard} ${
+                  pkg.badge ? 'border-orange-500 ring-4 ring-orange-100/30' : 'border-black/5'
                 }`}
               >
                 {pkg.badge && (
-                  <span className="absolute top-0 right-5 -translate-y-1/2 bg-orange-600 text-white text-[8px] font-mono font-bold uppercase tracking-widest px-3 py-1 rounded-full shadow-md">
+                  <span className="absolute top-0 right-7 -translate-y-1/2 bg-orange-500 text-white text-[9px] font-mono font-bold uppercase tracking-widest px-3.5 py-1 rounded-full shadow-md">
                     {pkg.badge}
                   </span>
                 )}
                 <div>
-                  <h4 className="font-serif italic text-2xl text-gray-900 leading-tight">{pkg.name}</h4>
-                  <p className="mt-3 text-xl font-black text-gray-900">{pkg.price}</p>
-                  <p className="text-[11px] text-gray-800 mt-2 leading-relaxed font-semibold">{pkg.bestFor}</p>
-                  <ul className="mt-5 space-y-2.5">
+                  <h4 className={homeCardTitle}>{pkg.name}</h4>
+                  <p className={`${homeCardPrice} mt-4`}>{pkg.price}</p>
+                  <p className={homeCardCopy}>{pkg.bestFor}</p>
+                  <div className="h-px bg-black/5 my-6" />
+                  <ul className="space-y-3.5">
                     {pkg.includes.slice(-2).map((inc) => (
-                      <li key={inc} className="flex items-start gap-2 text-[11px] text-gray-800 font-semibold">
-                        <Check size={13} className="text-orange-500 shrink-0 mt-0.5" />
+                      <li key={inc} className={homeCardListItem}>
+                        <Check size={14} className="text-orange-500 shrink-0 mt-0.5" />
                         <span>{inc}</span>
                       </li>
                     ))}
@@ -556,12 +560,15 @@ export default function Home({ onPageChange, onOpenPackageModal, onOpenConsultat
               </div>
             ))}
           </div>
-          <button
-            onClick={() => onPageChange('calling-agents')}
-            className="px-8 py-4 bg-black hover:bg-orange-500 text-white font-mono text-[10px] uppercase font-bold tracking-widest rounded-full transition-all cursor-pointer inline-flex items-center gap-1.5 shadow-lg shadow-black/10 focus:outline-none"
-          >
-            Explore AI Calling Agents <ArrowRight size={13} />
-          </button>
+
+          <div className="mt-10 flex justify-center">
+            <button
+              onClick={() => onPageChange('calling-agents')}
+              className="px-8 py-4 bg-black hover:bg-orange-500 text-white font-mono text-[10px] uppercase font-bold tracking-widest rounded-full transition-all cursor-pointer inline-flex items-center gap-1.5 shadow-lg shadow-black/10 focus:outline-none"
+            >
+              Explore AI Calling Agents <ArrowRight size={13} />
+            </button>
+          </div>
         </div>
       </section>
 
