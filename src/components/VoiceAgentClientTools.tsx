@@ -95,10 +95,13 @@ export default function VoiceAgentClientTools() {
     // Defer ElevenLabs script and widget load to avoid blocking main thread on load
     let script: HTMLScriptElement | null = null;
     let widget: HTMLElement | null = null;
-    let timer: number | null = null;
-    let idleId: number | null = null;
+    let fallbackTimer: number | null = null;
+    let loaded = false;
 
     const loadWidget = () => {
+      if (loaded) return;
+      loaded = true;
+
       script = document.createElement('script');
       script.src = 'https://unpkg.com/@elevenlabs/convai-widget-embed';
       script.async = true;
@@ -108,23 +111,33 @@ export default function VoiceAgentClientTools() {
       widget = document.createElement('elevenlabs-convai');
       widget.setAttribute('agent-id', 'agent_3401kt1vweh5efea1jxg1ecxz995');
       document.body.appendChild(widget);
+
+      cleanupListeners();
     };
 
-    if (typeof window !== 'undefined') {
-      if ('requestIdleCallback' in window) {
-        timer = window.setTimeout(() => {
-          idleId = (window as any).requestIdleCallback(() => loadWidget(), { timeout: 2000 });
-        }, 2500);
-      } else {
-        timer = window.setTimeout(loadWidget, 3500);
+    const triggerLoad = () => {
+      loadWidget();
+    };
+
+    const cleanupListeners = () => {
+      window.removeEventListener('scroll', triggerLoad);
+      window.removeEventListener('mousemove', triggerLoad);
+      window.removeEventListener('touchstart', triggerLoad);
+      if (fallbackTimer !== null) {
+        clearTimeout(fallbackTimer);
       }
-    }
+    };
+
+    // Load widget on first scroll, mouse movement, or touch
+    window.addEventListener('scroll', triggerLoad, { passive: true });
+    window.addEventListener('mousemove', triggerLoad, { passive: true });
+    window.addEventListener('touchstart', triggerLoad, { passive: true });
+
+    // Fallback load after 6 seconds if no interaction occurs
+    fallbackTimer = window.setTimeout(loadWidget, 6000);
 
     return () => {
-      if (timer !== null) clearTimeout(timer);
-      if (idleId !== null && typeof window !== 'undefined' && 'cancelIdleCallback' in window) {
-        (window as any).cancelIdleCallback(idleId);
-      }
+      cleanupListeners();
       observer.disconnect();
       if (script && document.body.contains(script)) {
         document.body.removeChild(script);

@@ -324,8 +324,43 @@ export default function ThreeHub() {
       animationFrameId = requestAnimationFrame(animate);
     };
 
+    // Asynchronously compile scene shaders on a background thread before starting render loops
+    let compiled = false;
+    let compiling = false;
+
     const startAnimation = () => {
       if (animationFrameId === null && isIntersecting && isTabVisible) {
+        if (!compiled) {
+          if (compiling) return;
+          compiling = true;
+
+          const runCompile = () => {
+            if (typeof renderer.compileAsync === 'function') {
+              renderer.compileAsync(scene, camera)
+                .then(() => {
+                  compiled = true;
+                  compiling = false;
+                  startAnimation();
+                })
+                .catch((err) => {
+                  console.warn('WebGL compileAsync failed, using sync fallback:', err);
+                  renderer.compile(scene, camera);
+                  compiled = true;
+                  compiling = false;
+                  startAnimation();
+                });
+            } else {
+              renderer.compile(scene, camera);
+              compiled = true;
+              compiling = false;
+              startAnimation();
+            }
+          };
+
+          runCompile();
+          return;
+        }
+
         isVisible = true;
         lastTime = performance.now();
         frameCount = 0;
