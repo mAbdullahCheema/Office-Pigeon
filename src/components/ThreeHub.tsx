@@ -70,7 +70,12 @@ export default function ThreeHub() {
     updateCameraZ(camera);
 
     // RENDERER
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    const renderer = new THREE.WebGLRenderer({ 
+      antialias: window.devicePixelRatio < 2, 
+      alpha: true,
+      powerPreference: 'high-performance',
+      precision: 'mediump'
+    });
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     container.appendChild(renderer.domElement);

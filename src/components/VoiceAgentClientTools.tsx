@@ -95,8 +95,10 @@ export default function VoiceAgentClientTools() {
     // Defer ElevenLabs script and widget load to avoid blocking main thread on load
     let script: HTMLScriptElement | null = null;
     let widget: HTMLElement | null = null;
+    let timer: number | null = null;
+    let idleId: number | null = null;
 
-    const timer = setTimeout(() => {
+    const loadWidget = () => {
       script = document.createElement('script');
       script.src = 'https://unpkg.com/@elevenlabs/convai-widget-embed';
       script.async = true;
@@ -106,10 +108,23 @@ export default function VoiceAgentClientTools() {
       widget = document.createElement('elevenlabs-convai');
       widget.setAttribute('agent-id', 'agent_3401kt1vweh5efea1jxg1ecxz995');
       document.body.appendChild(widget);
-    }, 2000);
+    };
+
+    if (typeof window !== 'undefined') {
+      if ('requestIdleCallback' in window) {
+        timer = window.setTimeout(() => {
+          idleId = (window as any).requestIdleCallback(() => loadWidget(), { timeout: 2000 });
+        }, 2500);
+      } else {
+        timer = window.setTimeout(loadWidget, 3500);
+      }
+    }
 
     return () => {
-      clearTimeout(timer);
+      if (timer !== null) clearTimeout(timer);
+      if (idleId !== null && typeof window !== 'undefined' && 'cancelIdleCallback' in window) {
+        (window as any).cancelIdleCallback(idleId);
+      }
       observer.disconnect();
       if (script && document.body.contains(script)) {
         document.body.removeChild(script);
