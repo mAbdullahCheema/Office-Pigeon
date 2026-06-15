@@ -681,8 +681,8 @@ export default function Home({ onPageChange, onOpenPackageModal, onOpenConsultat
       {/* 10. FINAL ACTION PANEL */}
       <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center pt-8">
         <div className="bg-black rounded-[40px] p-12 sm:p-16 text-white hover:shadow-2xl transition-all relative overflow-hidden flex flex-col items-center border border-black/10">
-          <div className="absolute top-[-30px] right-[-30px] w-64 h-64 bg-orange-500/10 blur-3xl rounded-full pointer-events-none" />
-          <div className="absolute bottom-[-30px] left-[-30px] w-64 h-64 bg-rose-500/5 blur-3xl rounded-full pointer-events-none" />
+          <div style={{ willChange: 'transform', transform: 'translate3d(0,0,0)', background: 'radial-gradient(circle, rgba(249, 115, 22, 0.10) 0%, transparent 70%)' }} className="absolute top-[-30px] right-[-30px] w-64 h-64 rounded-full pointer-events-none" />
+          <div style={{ willChange: 'transform', transform: 'translate3d(0,0,0)', background: 'radial-gradient(circle, rgba(236, 72, 153, 0.05) 0%, transparent 70%)' }} className="absolute bottom-[-30px] left-[-30px] w-64 h-64 rounded-full pointer-events-none" />
           
           <span className="text-[9px] font-mono font-bold uppercase tracking-widest bg-white/10 px-4 py-1.5 rounded-full leading-none text-orange-400">
             CONVERSION PORTAL OPEN

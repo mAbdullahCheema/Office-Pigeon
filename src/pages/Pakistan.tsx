@@ -546,10 +546,16 @@ function PakistanHeroVisual() {
     }
   }[activeMode.accent];
 
+  const glowColor = {
+    orange: 'rgba(254, 215, 170, 0.35)',
+    emerald: 'rgba(167, 243, 208, 0.35)',
+    rose: 'rgba(254, 205, 211, 0.35)'
+  }[activeMode.accent];
+
   return (
     <div className="relative mx-auto w-full max-w-[620px] lg:max-w-none">
-      <div className={`absolute -left-10 top-10 h-52 w-52 rounded-full ${accentClasses.glow} blur-3xl`} />
-      <div className="absolute -right-8 bottom-0 h-64 w-64 rounded-full bg-rose-200/25 blur-3xl" />
+      <div style={{ willChange: 'transform', transform: 'translate3d(0,0,0)', background: `radial-gradient(circle, ${glowColor} 0%, transparent 70%)` }} className="absolute -left-10 top-10 h-52 w-52 rounded-full" />
+      <div style={{ willChange: 'transform', transform: 'translate3d(0,0,0)', background: 'radial-gradient(circle, rgba(254, 205, 211, 0.25) 0%, transparent 70%)' }} className="absolute -right-8 bottom-0 h-64 w-64 rounded-full" />
 
       <div className="relative min-h-[520px] sm:min-h-[560px] lg:min-h-[610px]">
         <div className="absolute left-2 top-0 z-20 flex flex-wrap gap-2 rounded-full border border-black/10 bg-white/90 p-1.5 shadow-[0_18px_40px_rgba(20,18,15,0.10)] backdrop-blur sm:left-6">
@@ -926,7 +932,7 @@ export default function Pakistan({ onPageChange, onOpenPackageModal, onOpenConsu
       <section className="bg-white/55 border-y border-black/5 py-20">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-black rounded-[40px] p-8 sm:p-12 text-white shadow-xl shadow-black/10 relative overflow-hidden">
-            <div className="absolute -top-24 -right-16 w-72 h-72 bg-orange-500/15 blur-3xl rounded-full" />
+            <div style={{ willChange: 'transform', transform: 'translate3d(0,0,0)', background: 'radial-gradient(circle, rgba(249, 115, 22, 0.15) 0%, transparent 70%)' }} className="absolute -top-24 -right-16 w-72 h-72 rounded-full" />
             <div className="relative grid grid-cols-1 lg:grid-cols-[0.8fr_1.2fr] gap-8 items-start">
               <div>
                 <span className="inline-flex items-center gap-2 text-[10px] font-mono font-bold uppercase tracking-widest bg-white/10 px-4 py-1.5 rounded-full text-orange-300">
@@ -966,7 +972,7 @@ export default function Pakistan({ onPageChange, onOpenPackageModal, onOpenConsu
 
       <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center pt-4">
         <div className="bg-black rounded-[40px] p-10 sm:p-14 text-white relative overflow-hidden border border-black/10 shadow-2xl shadow-black/10">
-          <div className="absolute top-[-80px] right-[-60px] w-72 h-72 bg-orange-500/15 blur-3xl rounded-full pointer-events-none" />
+          <div style={{ willChange: 'transform', transform: 'translate3d(0,0,0)', background: 'radial-gradient(circle, rgba(249, 115, 22, 0.15) 0%, transparent 70%)' }} className="absolute top-[-80px] right-[-60px] w-72 h-72 rounded-full pointer-events-none" />
           <div className="relative space-y-6">
             <h2 className="text-3xl sm:text-5xl font-black uppercase tracking-tighter">Ready to Build a Smarter Business Presence in Pakistan?</h2>
             <p className="text-sm text-white/80 max-w-2xl mx-auto leading-relaxed font-semibold">

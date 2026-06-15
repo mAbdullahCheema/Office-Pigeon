@@ -9,10 +9,26 @@ import * as THREE from 'three';
 export default function ThreeHub() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [activeNode, setActiveNode] = useState<string | null>(null);
-  const [webGlSupported, setWebGlSupported] = useState(true);
+  const [webGlSupported, setWebGlSupported] = useState(false);
+  const [shouldRender, setShouldRender] = useState(false);
 
   useEffect(() => {
-    // Check for webgl support before starting
+    const timer = setTimeout(() => {
+      setShouldRender(true);
+    }, 1000); // 1s delay to let page stabilize
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    if (!shouldRender) return;
+
+    // Disable WebGL on mobile devices (width < 768px) to guarantee smooth scrolling and zero lag
+    const isMobile = window.innerWidth < 768;
+    if (isMobile) {
+      setWebGlSupported(false);
+      return;
+    }
+
     try {
       const canvas = document.createElement('canvas');
       const support = !!(window.WebGLRenderingContext && 
@@ -21,7 +37,7 @@ export default function ThreeHub() {
     } catch {
       setWebGlSupported(false);
     }
-  }, []);
+  }, [shouldRender]);
 
   useEffect(() => {
     if (!webGlSupported || !containerRef.current) return;
@@ -216,35 +232,26 @@ export default function ThreeHub() {
     window.addEventListener('mousemove', onMouseMove);
     window.addEventListener('touchmove', onTouchMove, { passive: true });
 
-    // INTERSECTION OBSERVER TO PAUSE ANIMATION WHEN CANVAS OFFSCREEN
-    let isVisible = true;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        isVisible = entry.isIntersecting;
-      },
-      { threshold: 0.05 }
-    );
-    observer.observe(container);
-
-    // RENDER LOOP WITH SPRING PHYSICS ELASTIC INTERACTION
-    let animationFrameId: number;
+    // visibility, animation loop and dynamic FPS tracking
+    let animationFrameId: number | null = null;
+    let isVisible = false;
+    let isIntersecting = false;
+    let isTabVisible = !document.hidden;
+    let frameCount = 0;
+    let lastTime = performance.now();
+    let lowFpsCount = 0;
 
     const animate = (time: number) => {
-      animationFrameId = requestAnimationFrame(animate);
-
-      // Skip heavy math calculations and rendering if component is off-screen
       if (!isVisible) return;
 
       // Smooth Lerping movement back to cursor position
       targetX += (mouseX - targetX) * 0.06;
       targetY += (mouseY - targetY) * 0.06;
 
-      // Rotate group accordingly
-      mainGroup.rotation.y = targetX * 0.6;
+      // Rotate group accordingly (idle rotation + mouse tracking combined)
+      mainGroup.rotation.y = targetX * 0.6 + time * 0.00008;
       mainGroup.rotation.x = -targetY * 0.4;
       
-      // Auto idle orbit swing
-      mainGroup.rotation.y += time * 0.0001;
       hubMesh.rotation.y -= 0.001;
       innerMesh.rotation.x += 0.003;
 
@@ -258,7 +265,6 @@ export default function ThreeHub() {
         const y = n.initialY + Math.sin(time * 0.002 + index) * 0.2;
         
         n.mesh.position.set(x, y, z);
-        
         n.mesh.rotation.x += 0.01;
         n.mesh.rotation.y += 0.02;
       });
@@ -288,9 +294,71 @@ export default function ThreeHub() {
       }
 
       renderer.render(scene, camera);
+
+      // FPS tracking
+      frameCount++;
+      const now = performance.now();
+      const deltaMs = now - lastTime;
+      if (deltaMs >= 1000) {
+        const fps = (frameCount * 1000) / deltaMs;
+        frameCount = 0;
+        lastTime = now;
+
+        if (fps < 35) {
+          lowFpsCount++;
+          if (lowFpsCount >= 3) {
+            console.warn('Low FPS detected (' + Math.round(fps) + '), falling back to CSS animation');
+            setWebGlSupported(false);
+            return; // Exit rendering loop immediately
+          }
+        } else {
+          lowFpsCount = Math.max(0, lowFpsCount - 1);
+        }
+      }
+
+      animationFrameId = requestAnimationFrame(animate);
     };
 
-    animationFrameId = requestAnimationFrame(animate);
+    const startAnimation = () => {
+      if (animationFrameId === null && isIntersecting && isTabVisible) {
+        isVisible = true;
+        lastTime = performance.now();
+        frameCount = 0;
+        animationFrameId = requestAnimationFrame(animate);
+      }
+    };
+
+    const stopAnimation = () => {
+      if (animationFrameId !== null) {
+        cancelAnimationFrame(animationFrameId);
+        animationFrameId = null;
+        isVisible = false;
+      }
+    };
+
+    const handleVisibilityChange = () => {
+      isTabVisible = !document.hidden;
+      if (isTabVisible) {
+        startAnimation();
+      } else {
+        stopAnimation();
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    // INTERSECTION OBSERVER TO PAUSE ANIMATION WHEN CANVAS OFFSCREEN
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isIntersecting = entry.isIntersecting;
+        if (isIntersecting) {
+          startAnimation();
+        } else {
+          stopAnimation();
+        }
+      },
+      { threshold: 0.05 }
+    );
+    observer.observe(container);
 
     // RESIZE HANDLING - Smooth update without recreation
     const handleResize = () => {
@@ -307,8 +375,9 @@ export default function ThreeHub() {
 
     // CLEANUP
     return () => {
-      cancelAnimationFrame(animationFrameId);
+      stopAnimation();
       observer.disconnect();
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
       window.removeEventListener('mousemove', onMouseMove);
       window.removeEventListener('touchmove', onTouchMove);
       window.removeEventListener('resize', handleResize);
@@ -329,9 +398,9 @@ export default function ThreeHub() {
     <div className="relative w-full flex flex-col items-center justify-center select-none font-sans">
       {/* 3D Render viewport box */}
       <div className="relative w-full h-[360px] md:h-[480px] lg:h-full lg:min-h-[620px] flex items-center justify-center">
-        {/* Background Decorative Auras - Tailwind CSS glow */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[70%] h-[70%] bg-gradient-to-tr from-orange-300/10 to-transparent opacity-25 blur-3xl rounded-full" />
-        <div className="absolute top-[40%] left-[60%] w-[50%] h-[50%] bg-gradient-to-tr from-rose-300/10 to-transparent opacity-20 blur-3xl rounded-full" />
+        {/* Background Decorative Auras - Tailwind CSS glow replacement using radial gradients */}
+        <div style={{ willChange: 'transform', transform: 'translate3d(0,0,0)', background: 'radial-gradient(circle, rgba(253, 186, 116, 0.10) 0%, transparent 70%)' }} className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[70%] h-[70%] rounded-full opacity-25" />
+        <div style={{ willChange: 'transform', transform: 'translate3d(0,0,0)', background: 'radial-gradient(circle, rgba(244, 63, 94, 0.10) 0%, transparent 70%)' }} className="absolute top-[40%] left-[60%] w-[50%] h-[50%] rounded-full opacity-20" />
 
         {/* THREEJS CANVAS MOUNT */}
         {webGlSupported ? (

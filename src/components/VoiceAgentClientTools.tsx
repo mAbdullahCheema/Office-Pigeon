@@ -92,8 +92,31 @@ export default function VoiceAgentClientTools() {
     const observer = new MutationObserver(attachAllWidgets);
     observer.observe(document.body, { childList: true, subtree: true });
 
+    // Defer ElevenLabs script and widget load to avoid blocking main thread on load
+    let script: HTMLScriptElement | null = null;
+    let widget: HTMLElement | null = null;
+
+    const timer = setTimeout(() => {
+      script = document.createElement('script');
+      script.src = 'https://unpkg.com/@elevenlabs/convai-widget-embed';
+      script.async = true;
+      script.type = 'text/javascript';
+      document.body.appendChild(script);
+
+      widget = document.createElement('elevenlabs-convai');
+      widget.setAttribute('agent-id', 'agent_3401kt1vweh5efea1jxg1ecxz995');
+      document.body.appendChild(widget);
+    }, 2000);
+
     return () => {
+      clearTimeout(timer);
       observer.disconnect();
+      if (script && document.body.contains(script)) {
+        document.body.removeChild(script);
+      }
+      if (widget && document.body.contains(widget)) {
+        document.body.removeChild(widget);
+      }
       if (window.OfficePigeonVoiceAgentClientTools === tools) {
         delete window.OfficePigeonVoiceAgentClientTools;
       }

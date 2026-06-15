@@ -219,9 +219,9 @@ export default function App() {
         <>
       
       {/* Decorative 3D Ambient Elements (Simulated) */}
-      <div className="absolute top-[-120px] right-[-120px] w-[600px] h-[600px] rounded-full bg-gradient-to-br from-orange-200/40 via-orange-100/20 to-transparent blur-3xl opacity-60 pointer-events-none z-0"></div>
-      <div className="absolute bottom-[20%] left-[-150px] w-[500px] h-[500px] rounded-full bg-gradient-to-tr from-amber-200/30 via-orange-100/10 to-transparent blur-3xl opacity-50 pointer-events-none z-0"></div>
-      <div className="absolute top-[40%] right-[-150px] w-[600px] h-[600px] rounded-full bg-gradient-to-tl from-rose-100/20 via-orange-50/10 to-transparent blur-3xl opacity-40 pointer-events-none z-0"></div>
+      <div style={{ willChange: 'transform', transform: 'translate3d(0,0,0)', background: 'radial-gradient(circle, rgba(254, 215, 170, 0.4) 0%, rgba(255, 237, 213, 0.15) 50%, transparent 70%)' }} className="absolute top-[-120px] right-[-120px] w-[600px] h-[600px] rounded-full opacity-60 pointer-events-none z-0"></div>
+      <div style={{ willChange: 'transform', transform: 'translate3d(0,0,0)', background: 'radial-gradient(circle, rgba(253, 230, 138, 0.3) 0%, rgba(254, 215, 170, 0.1) 50%, transparent 70%)' }} className="absolute bottom-[20%] left-[-150px] w-[500px] h-[500px] rounded-full opacity-50 pointer-events-none z-0"></div>
+      <div style={{ willChange: 'transform', transform: 'translate3d(0,0,0)', background: 'radial-gradient(circle, rgba(255, 228, 230, 0.2) 0%, rgba(255, 247, 237, 0.08) 50%, transparent 70%)' }} className="absolute top-[40%] right-[-150px] w-[600px] h-[600px] rounded-full opacity-40 pointer-events-none z-0"></div>
       
       {/* NAVBAR */}
       <Navbar
