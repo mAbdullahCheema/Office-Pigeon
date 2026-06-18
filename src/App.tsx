@@ -121,6 +121,29 @@ export default function App() {
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
+  useEffect(() => {
+    // Prefetch all lazy pages and ThreeHub when browser is idle to optimize navigation responsiveness
+    const prefetch = () => {
+      import('./pages/Websites');
+      import('./pages/Chatbots');
+      import('./pages/CallingAgents');
+      import('./pages/Automations');
+      import('./pages/Examples');
+      import('./pages/About');
+      import('./pages/Contact');
+      import('./pages/FAQ');
+      import('./pages/Legal');
+      import('./pages/Pakistan');
+      import('./components/ThreeHub');
+    };
+
+    if ('requestIdleCallback' in window) {
+      (window as any).requestIdleCallback(prefetch);
+    } else {
+      setTimeout(prefetch, 1500);
+    }
+  }, []);
+
   const handlePageChange = (page: PageId) => {
     setCurrentPage(page);
     const path = PAGE_PATHS[page];

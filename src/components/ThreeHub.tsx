@@ -215,8 +215,13 @@ export default function ThreeHub() {
     let targetX = 0;
     let targetY = 0;
 
+    // Cache bounding rect to prevent layout thrashing on mouse/touch moves
+    let rect = container.getBoundingClientRect();
+    const updateRect = () => {
+      if (container) rect = container.getBoundingClientRect();
+    };
+
     const onMouseMove = (event: MouseEvent) => {
-      const rect = container.getBoundingClientRect();
       const x = event.clientX - rect.left;
       const y = event.clientY - rect.top;
       
@@ -226,7 +231,6 @@ export default function ThreeHub() {
 
     const onTouchMove = (event: TouchEvent) => {
       if (event.touches.length > 0) {
-        const rect = container.getBoundingClientRect();
         const x = event.touches[0].clientX - rect.left;
         const y = event.touches[0].clientY - rect.top;
         mouseX = (x / rect.width) * 2 - 1;
@@ -236,6 +240,7 @@ export default function ThreeHub() {
 
     window.addEventListener('mousemove', onMouseMove);
     window.addEventListener('touchmove', onTouchMove, { passive: true });
+    window.addEventListener('scroll', updateRect, { passive: true });
 
     // visibility, animation loop and dynamic FPS tracking
     let animationFrameId: number | null = null;
@@ -409,6 +414,7 @@ export default function ThreeHub() {
       updateCameraZ(camera);
       camera.updateProjectionMatrix();
       renderer.setSize(w, h);
+      updateRect();
     };
 
     window.addEventListener('resize', handleResize);
@@ -420,6 +426,7 @@ export default function ThreeHub() {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       window.removeEventListener('mousemove', onMouseMove);
       window.removeEventListener('touchmove', onTouchMove);
+      window.removeEventListener('scroll', updateRect);
       window.removeEventListener('resize', handleResize);
       if (renderer.domElement && container.contains(renderer.domElement)) {
         container.removeChild(renderer.domElement);

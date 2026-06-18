@@ -48,10 +48,10 @@ interface PakistanPackage {
 }
 
 const sectionMotion = {
-  initial: { opacity: 0, y: 18 },
+  initial: { opacity: 0, y: 10 },
   whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, margin: '-80px' },
-  transition: { duration: 0.45, ease: 'easeOut' }
+  viewport: { once: true, margin: '150px 0px' },
+  transition: { duration: 0.35, ease: 'easeOut' }
 };
 
 const websitePackages: PakistanPackage[] = [
@@ -577,7 +577,7 @@ function PakistanHeroVisual() {
         <motion.div
           initial={{ opacity: 0, y: 18, rotate: -1 }}
           whileInView={{ opacity: 1, y: 0, rotate: 0 }}
-          viewport={{ once: true }}
+          viewport={{ once: true, margin: '150px 0px' }}
           transition={{ duration: 0.55, ease: 'easeOut' }}
           className={`absolute left-0 top-16 w-[88%] rounded-[28px] border border-black/10 bg-gray-950 p-3 shadow-[0_42px_110px_rgba(15,23,42,0.25)] ring-4 ${accentClasses.ring} transition-shadow sm:w-[82%] lg:left-2`}
         >
@@ -640,7 +640,7 @@ function PakistanHeroVisual() {
         <motion.div
           initial={{ opacity: 0, x: 24, y: 14 }}
           whileInView={{ opacity: 1, x: 0, y: 0 }}
-          viewport={{ once: true }}
+          viewport={{ once: true, margin: '150px 0px' }}
           transition={{ delay: 0.12, duration: 0.5, ease: 'easeOut' }}
           className="absolute right-0 top-4 w-[43%] min-w-[178px] max-w-[230px] rounded-[30px] border border-black/10 bg-gray-950 p-2 shadow-[0_28px_70px_rgba(15,23,42,0.28)]"
         >
@@ -672,7 +672,7 @@ function PakistanHeroVisual() {
         <motion.div
           initial={{ opacity: 0, x: -22, y: 20 }}
           whileInView={{ opacity: 1, x: 0, y: 0 }}
-          viewport={{ once: true }}
+          viewport={{ once: true, margin: '150px 0px' }}
           transition={{ delay: 0.2, duration: 0.5, ease: 'easeOut' }}
           className="absolute bottom-12 left-5 w-[68%] rounded-[28px] border border-black/5 bg-white/95 p-4 shadow-[0_30px_80px_rgba(20,18,15,0.16)] backdrop-blur-xl sm:left-12 sm:w-[58%]"
         >
@@ -707,7 +707,7 @@ function PakistanHeroVisual() {
         <motion.div
           initial={{ opacity: 0, y: 18 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
+          viewport={{ once: true, margin: '150px 0px' }}
           transition={{ delay: 0.28, duration: 0.5, ease: 'easeOut' }}
           className="absolute bottom-0 right-4 w-[48%] rounded-[24px] border border-orange-200 bg-orange-50/95 p-4 shadow-[0_24px_60px_rgba(249,115,22,0.16)] sm:right-10 sm:w-[42%]"
         >
