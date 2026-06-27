@@ -54,6 +54,10 @@ Legend: ⬜ not done · ✅ done · ➖ n/a
 
 **Gate:** Page/JSON-LD/sitemap/robots code builds first. **Sitemap submission + final indexing wait for the owner's green-signal after everything is finalized** (owner: "I will submit the proper sitemap after you finalize everything and give me the green signal").
 
+**⬜ CUTOVER manual step (NEW — blocking the runtime switch only; all Phase 3 code is done):**
+- Owner sets **Hostinger Node version → 22.x**. Start command stays `node dist/server.cjs` (new shim boots Next; no entry-file change). Confirm Supabase + LLM env vars present in Hostinger Node settings.
+- Then assistant tags `express-rollback`, flips `package.json` `build` → `next build && node scripts/buildNext.mjs`, pushes → Hostinger redeploys onto Next. Reply **`cutover ready`** (with Node set to 22) to proceed. Rollback = revert that commit / `git checkout express-rollback -- package.json`.
+
 ---
 
 ## Phase 4 — Hero "show the system working"

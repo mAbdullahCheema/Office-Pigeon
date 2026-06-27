@@ -26,7 +26,8 @@ Full brain: [01-ANALYSIS](01-ANALYSIS.md) (issues+IDs) · [02-PLAN](02-PLAN.md) 
 - **RESP-08 interim:** `/websites` CLS≈0.99 root-caused (lazy-route Suspense fallback) and mitigated (fallback now `min-h-[100dvh]`). Real fix = SSR.
 - **Phase 2 (Next.js foundation):** Next 16 App Router now **builds + runs side-by-side** with the live Vite/Express SPA without breaking it. `next.config.ts` (`output:'standalone'` + scoped `tsconfig.next.json`), `postcss.config.mjs` (Next-only), `app/layout.tsx` (metadata + `next/font`, canonical=apex), `app/globals.css`. Un-deaded `app/api/*`. Coexistence mechanics in §6a.
 - **Phase 3 frontend SSR + SEO core:** **all 13 marketing pages ported** to `app/(site)/<route>` Server Components, each reusing its `src/views/*` UI as a client island via the `SiteChrome` actions context. Single-source `lib/site/routes.ts`; per-route metadata (`lib/seo/pageMetadata.ts`, SEO-02); JSON-LD Org/LocalBusiness/Service/FAQ/Breadcrumb (`lib/seo/jsonld.ts` + `app/_components/JsonLd.tsx`, SEO-04); `app/robots.ts` + `app/sitemap.ts` (SEO-05). **Verified:** `next build` green; every page serves unique title+content+JSON-LD in raw HTML; SPA still green.
-- **Phase 3 API parity (most) + PK gating:** ported 1:1 from `server.ts` (reuse `lib/*` + new `lib/server/{env,formUtils,previews,adminAuth,pakistanPage}.ts`, `lib/geo/country.ts`): `/api/contact-submission`, `/api/package-inquiry`, `/api/region-offer`, `/api/public/previews`, `/api/admin/{config,me,previews,previews/[slug],previews/[slug]/status}`. `middleware.ts` gates `/pakistan` by visitor country. **Verified** (see §3-test). **Remaining:** preview file serving (`/previews/:slug/*` + banner) + `/api/preview-leads`.
+- **Phase 3 API parity COMPLETE + PK gating:** ported 1:1 from `server.ts` (reuse `lib/*` + new `lib/server/{env,formUtils,previews,adminAuth,pakistanPage}.ts`, `lib/geo/country.ts`): `/api/contact-submission`, `/api/package-inquiry`, `/api/region-offer`, `/api/public/previews`, `/api/admin/{config,me,previews,previews/[slug],previews/[slug]/status}`, **preview file serving** (`app/previews/[slug]/[[...rest]]` — banner injection + `<base href>` + status gating + content-types + noindex), **`/api/preview-leads`** (rate-limited). `middleware.ts` gates `/pakistan`. **Security headers** (next.config `headers()`, SEC-02) + **branded og:image** (`app/opengraph-image.tsx`, referenced in `pageMetadata`).
+- **Cutover proven (not yet flipped):** `scripts/buildNext.mjs` assembles `dist/` from `.next/standalone`; `node dist/server.cjs` boots Next serving home(SSR)/about/api/previews — all 200. Express still the live build until the flip (see §6).
 
 ## 4. Status — what's NOT done / next
 1. **Phase 3 — SSR pages + JSON-LD + sitemap/robots + backend consolidation + boot cutover (the next big task).** The actual SEO payoff. See §6.
@@ -56,18 +57,21 @@ Phase 2 is **done**. Mechanics to know before touching the build:
 - **Chrome/context** = `app/(site)/SiteChrome.tsx` (`useSite()`), wrapped by `app/(site)/layout.tsx`. Home lives at `app/(site)/page.tsx` (root `app/page.tsx` removed). Legal = 4 routes sharing `app/(site)/LegalView.tsx`.
 - **SEO single source** = `lib/site/routes.ts` (routes+titles+descriptions), `lib/seo/{pageMetadata,jsonld}.ts`, `app/_components/JsonLd.tsx`.
 
-## 6. ▶️ EXACT NEXT STEP — Phase 3 backend (API parity → middleware → headers → cutover)
-**Gate:** code proceeds now. **Sitemap submission + indexing wait for the owner's green signal** (see [05-PREREQS Phase 3/7](05-PREREQS.md)). Search Console TXT is owner-side DNS, non-blocking.
+## 6. ▶️ EXACT NEXT STEP — THE BOOT CUTOVER (owner-gated; everything else in Phase 3 is done)
+All Phase 3 code is complete + verified locally. The only remaining step flips the live runtime from Express to Next. It's owner-gated because it needs a Hostinger change and is the production switch.
 
-**Hard Hostinger constraint (for the cutover):** start command fixed to `node dist/server.cjs` (run by npm), **cannot change** — but the **entry file content CAN change** and **Node→22.x**. The cutover build must make `dist/server.cjs` boot the Next standalone server (`output:'standalone'` already set). ⚠️ **At cutover the assistant must hand the owner exact Hostinger steps** (set entry/startup file + Node 22).
+**Cutover steps (do together with owner):**
+1. **Owner (Hostinger):** set Node version to **22.x**. Start command stays `node dist/server.cjs` (the new `dist/server.cjs` is a shim that boots Next — no entry-file change needed). Confirm Supabase + LLM env vars are set in Hostinger Node settings.
+2. **Assistant:** `git tag express-rollback <sha>` (current Express build) for instant rollback.
+3. **Assistant:** flip `package.json` `build` → `next build && node scripts/buildNext.mjs` (keep `postinstall` → `build`; the old vite+esbuild build is the rollback). Commit + push → Hostinger redeploys via postinstall → live on Next.
+4. **Verify live:** view-source title/desc/canonical/JSON-LD per route; forms/chat/preview/admin all work; security headers (securityheaders.com); `/pakistan` gated; PageSpeed re-run (RESP-08 `/websites` CLS should drop to ~0).
+5. **Rollback if needed:** revert the build-script commit (or `git checkout express-rollback -- package.json`), redeploy → Express back.
 
-**Approach (in order):**
-1. **Finish API parity (only 2 endpoints left).** ✅ Done: contact-submission, package-inquiry, region-offer, public/previews, admin/{config,me,previews,previews/[slug],previews/[slug]/status}, plus pre-existing pip/*, admin/reindex, elevenlabs/search. ✅ PK gating via `middleware.ts`. **TODO:** (a) **preview file serving + banner** — Next catch-all `app/previews/[slug]/[[...rest]]/route.ts`: read from `previewDirCandidates()`, port `injectPreviewHtml`/`buildPreviewInjection`/`buildExpiredPreviewPage` into `lib/server/previews.ts`, status-gate (non-`live` → expired page), `X-Robots-Tag: noindex` + cache headers, correct content-types for assets; (b) **`/api/preview-leads`** — rate-limited Supabase insert (banner posts here). Legacy `/api/chat` + `/api/pip-lead` are NOT used by the SPA (it calls `/api/pip/chat` + `/api/pip/lead`, both exist) — skip unless wanted.
-2. **Security headers** via `next.config` `headers()` (SEC-02); fix `trust proxy` (SEC-01, lib/geo already reads x-forwarded-for); admin allowlist env-only (SEC-04).
-3. **og:image** 1200×630 branded → wire into OpenGraph (root + `pageMetadata`).
-4. **Boot cutover (last):** build copies `.next/standalone/*` (+ `.next/static`, `public/`, **`previews/`**) into `dist/`; `dist/server.cjs` → thin shim booting the standalone `server.js`. **Tag an Express rollback commit first.** Test locally → push. ⚠️ **Hand owner the Hostinger steps** (set entry/startup file + Node 22).
+**Already proven locally:** `node scripts/buildNext.mjs` (after `next build`) → `node dist/server.cjs` serves home(SSR)/about/api/previews all 200.
 
-**Acceptance (Phase 3):** every route view-source has unique title/desc/canonical + JSON-LD (✅); all forms/chat/preview/admin work through Next; security headers present; Express retired. Then hand the owner the **green-signal checklist** for sitemap submission.
+**Hard Hostinger constraint:** start command fixed to `node dist/server.cjs` (cannot change); entry file content CAN change + Node→22. Satisfied by the shim approach.
+
+**Acceptance (Phase 3):** ✅ every route view-source has unique title/desc/canonical + JSON-LD; ✅ API parity + security headers + og:image; **pending cutover:** forms/chat/preview/admin verified on live Next, Express retired. Then hand owner the **green-signal checklist** for sitemap submission.
 
 ### §3-test — how the ported APIs were verified (local `next start`)
 region-offer → JSON; contact/package-inquiry POST → 503 Supabase-guard (no local env), same as Express; admin/config → JSON; admin/me (no token) → 401; public/previews → lists real `previews/` folders; `/pakistan` → restricted page by default, real page with `x-vercel-ip-country: PK`, restricted with `US`.
@@ -83,6 +87,9 @@ region-offer → JSON; contact/package-inquiry POST → 503 Supabase-guard (no l
 - Untracked stray file: `public/logos/office-pigeon-icon .png` (note the space) — confirm intent before adding/deleting.
 
 ## 8. Commit log this overhaul (newest first)
+- `f2963c0` build(next): add cutover build script (scripts/buildNext.mjs; not wired to live build yet)
+- `84a7093` feat(next): Phase 3 — security headers (SEC-02) + branded og:image
+- `fd7a7cb` feat(next): Phase 3 API parity complete — preview serving + preview-leads
 - `6440e17` feat(next): Phase 3 API parity — admin previews, public previews, PK middleware
 - `817cdf7` feat(next): Phase 3 API parity — contact, package-inquiry, region-offer
 - `2ed3211` feat(next): Phase 3 — port all 13 marketing pages to SSR (metadata + JSON-LD per page)
