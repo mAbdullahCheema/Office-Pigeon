@@ -41,7 +41,7 @@ Legend: ⬜ not started · 🟡 in progress · ✅ done · ⏸ blocked
 
 | Phase | Title | Status | Notes |
 |-------|-------|--------|-------|
-| 0 | Safety net & baselines | 🟡 | README done; baselines (owner/PageSpeed) + lint/CI/Playwright TODO |
+| 0 | Safety net & baselines | 🟡 | README + GitHub Actions CI (typecheck+build) + .gitattributes/.editorconfig done; PageSpeed baselines (owner), ESLint/Prettier, Playwright still TODO |
 | 1 | Performance quick wins | 🟡 | PERF-01/03/07/08 done; PERF-02/06 deferred to Phase 4; PERF-05/09/10 TODO |
 | 2 | Next.js foundation | ⬜ | Needs Hostinger runtime answers |
 | 3 | Pages + API migration + SEO core | ⬜ | Critical path for SEO |
@@ -92,6 +92,7 @@ Targets (Phase 7): mobile Perf ≥ 90, LCP < 2.5s, CLS < 0.1, unique SSR metadat
 ---
 
 ## Session Log (newest first)
+- **2026-06-27 (f)** — Phase 0 infra: added GitHub Actions CI (`.github/workflows/ci.yml` — typecheck + build on push/PR), `.gitattributes` (LF normalization — stops the CRLF churn) and `.editorconfig`. Still TODO in Phase 0: ESLint+Prettier (deferred — will surface a warning flood + needs deps; do as a focused pass with non-breaking config), Playwright smoke test (needs browser install; add config + spec next), and owner PageSpeed baselines.
 - **2026-06-27 (e)** — Phase 4 hero (autonomous). Built `src/components/SystemDemo.tsx` — a lightweight CSS/SVG "show the system working" panel (customer msg → AI books it → lead captured/team notified, with the 4 product channels). Wired into Home + Pakistan heroes; deleted `ThreeHub.tsx` and removed `three` from the home path (PERF-04); removed the typewriter (PERF-06/CONTENT-03) for a static gradient headline; demoted the decorative "AUTOMATE" `<h1>` to an aria-hidden span (SEO-06); simplified Home's risky absolute hero column to an in-grid layout (RESP-02). Old `PakistanHeroVisual`/`heroModes` now unused (tree-shaken; source cleanup pending). Reduced-motion-safe (CSS gated). tsc + build green; `three` chunk gone, Pakistan chunk 42→32KB. **Subjective:** hero copy/visual are my call per "show the system working" — owner can tweak wording.
 - **2026-06-27 (d)** — Started Phase 1. Landed PERF-01 (ThreeHub: ref + 150ms throttle, no per-frame setState), PERF-03 (fonts off @import → preconnect+link in index.html), PERF-07 (vite manualChunks split three/motion/react), PERF-08 (deleted dead SmoothScroll.tsx + comment), and Phase-0 ARCH-04 (real README). `tsc` clean; `vite build` green in 8.79s — three (504KB) + motion (96KB) now lazy/separate chunks. Deferred PERF-02/PERF-06 to Phase 4 (hero replaces ThreeHub/typewriter). Noted: initial index chunk ~353KB needs deeper splitting later.
 - **2026-06-27 (c)** — `/init` didn't resume work (it only rewrites CLAUDE.md). Added `/resume` project command (`.claude/commands/resume.md`) that loads the brain, reports state, and continues the current phase. Pointed CLAUDE.md/INDEX/HANDOFF at `/resume`. **To resume: type `/resume`, not `/init`.**
