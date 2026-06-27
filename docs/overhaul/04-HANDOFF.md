@@ -24,7 +24,8 @@ Full brain: [01-ANALYSIS](01-ANALYSIS.md) (issues+IDs) · [02-PLAN](02-PLAN.md) 
 - **Phase 1 (perf):** PERF-01 (no per-frame setState in old hero), PERF-03 (fonts preconnect), PERF-07 (vite chunks), PERF-08 (dead SmoothScroll removed).
 - **Phase 4 (hero):** `src/components/SystemDemo.tsx` on Home + Pakistan — Three.js + typewriter removed (`three` no longer loaded), single H1, and **interactive channel tabs** (Website/WhatsApp/Call/Automation each show a distinct scenario). PERF-04/06, CONTENT-01/02/03/05, SEO-06.
 - **RESP-08 interim:** `/websites` CLS≈0.99 root-caused (lazy-route Suspense fallback) and mitigated (fallback now `min-h-[100dvh]`). Real fix = SSR.
-- **Phase 2 (Next.js foundation):** Next 16 App Router now **builds + runs side-by-side** with the live Vite/Express SPA without breaking it. `next.config.ts` (`output:'standalone'` + scoped `tsconfig.next.json`), `postcss.config.mjs` (Next-only), `app/layout.tsx` (metadata + `next/font`, canonical=apex), `app/globals.css`, `app/page.tsx` (real SSR home placeholder). Un-deaded `app/api/*`. **Verified:** `next build` green; view-source has real title/desc/canonical/h1 (no JS); `/api/pip/health` works through Next; SPA path still green (`npm run lint` + `npm run build`→`dist/server.cjs`). Coexistence mechanics in §6a.
+- **Phase 2 (Next.js foundation):** Next 16 App Router now **builds + runs side-by-side** with the live Vite/Express SPA without breaking it. `next.config.ts` (`output:'standalone'` + scoped `tsconfig.next.json`), `postcss.config.mjs` (Next-only), `app/layout.tsx` (metadata + `next/font`, canonical=apex), `app/globals.css`. Un-deaded `app/api/*`. Coexistence mechanics in §6a.
+- **Phase 3 frontend SSR + SEO core:** **all 13 marketing pages ported** to `app/(site)/<route>` Server Components, each reusing its `src/views/*` UI as a client island via the `SiteChrome` actions context. Single-source `lib/site/routes.ts`; per-route metadata (`lib/seo/pageMetadata.ts`, SEO-02); JSON-LD Org/LocalBusiness/Service/FAQ/Breadcrumb (`lib/seo/jsonld.ts` + `app/_components/JsonLd.tsx`, SEO-04); `app/robots.ts` + `app/sitemap.ts` (SEO-05). **Verified:** `next build` (26 routes) green; every page serves unique title+content+JSON-LD in raw HTML; SPA still green. Pakistan noindex + sitemap-excluded (SEO-09 TBD).
 
 ## 4. Status — what's NOT done / next
 1. **Phase 3 — SSR pages + JSON-LD + sitemap/robots + backend consolidation + boot cutover (the next big task).** The actual SEO payoff. See §6.
@@ -48,19 +49,27 @@ Phase 2 is **done**. Mechanics to know before touching the build:
 - **tsconfig split:** root `tsconfig.json` = the SPA's (untouched). Next uses **`tsconfig.next.json`** (wired via `next.config` `typescript.tsconfigPath`), scoped to `app/`+`lib/` only — Next does NOT type-check the legacy SPA. Next mutates `tsconfig.next.json`, never root. `.next/` + `next-env.d.ts` gitignored.
 - **Rename:** `src/pages/` → **`src/views/`** (SPA view components, not Next pages) to avoid App-Router-vs-Pages-Router collision. Only `src/App.tsx` imported them. **All docs/paths now say `src/views/`.**
 
-## 6. ▶️ EXACT NEXT STEP — Phase 3 (pages + API migration + SEO core + cutover)
-**Gate:** Phase 3 page/JSON-LD/sitemap/robots **code** proceeds now. **Sitemap submission + indexing wait for the owner's green signal** after everything is finalized (see [05-PREREQS Phase 3/7](05-PREREQS.md)). Search Console TXT is owner-side DNS, non-blocking for code.
+## 6b. Phase 3 frontend pattern — how pages are ported (reuse this for any remaining UI)
+- **Page** = `app/(site)/<route>/page.tsx` Server Component: `export const metadata = pageMetadata('<id>')` + `<JsonLd data={[...]} />` + renders `<XView/>`.
+- **View** = `app/(site)/<route>/XView.tsx` `"use client"`: `const {navigate, openPackageModal, openConsultation} = useSite()` → renders the unchanged `@/src/views/X` with those as props.
+- **Chrome/context** = `app/(site)/SiteChrome.tsx` (`useSite()`), wrapped by `app/(site)/layout.tsx`. Home lives at `app/(site)/page.tsx` (root `app/page.tsx` removed). Legal = 4 routes sharing `app/(site)/LegalView.tsx`.
+- **SEO single source** = `lib/site/routes.ts` (routes+titles+descriptions), `lib/seo/{pageMetadata,jsonld}.ts`, `app/_components/JsonLd.tsx`.
 
-**Hard Hostinger constraint (for the cutover):** start command fixed to `node dist/server.cjs` (run by npm), **cannot change** — but the **entry file content CAN change** and **Node→22.x**. So the cutover build must make `dist/server.cjs` boot the Next standalone server (`output:'standalone'` already set).
+## 6. ▶️ EXACT NEXT STEP — Phase 3 backend (API parity → middleware → headers → cutover)
+**Gate:** code proceeds now. **Sitemap submission + indexing wait for the owner's green signal** (see [05-PREREQS Phase 3/7](05-PREREQS.md)). Search Console TXT is owner-side DNS, non-blocking.
 
-**Approach:**
-1. **Port pages** `src/views/*` → `app/<route>/page.tsx` Server Components (home, websites, chatbots, calling-agents, automations, examples, about, contact, faq, legal/*, pakistan). Interactive bits (modals, Pip widget, SystemDemo hero, voice tools) become **client islands** (`"use client"`). Reuse `src/components/*` where they can be client components.
-2. **SEO core:** per-route `generateMetadata` (title/description/canonical/OG/Twitter/og:image; exactly one real `<h1>`); JSON-LD (Organization + LocalBusiness site-wide, Service+Offer on service pages from a **single pricing source** — CONTENT-04, FAQPage, BreadcrumbList); `app/sitemap.ts` + `app/robots.ts` (keep `/previews/`,`/admin/` disallowed). Generate the og:image (1200×630).
-3. **API parity:** reconcile un-deaded `app/api/*` against Express 1:1 — inventory in §below. Add the routes Express has that Next lacks (contact-submission, package-inquiry, pip-lead, preview-leads, region-offer, admin/*, public/previews, **preview file serving + banner injection**). Port **Pakistan geo-gating** + country resolution to **Next middleware**. Reuse `lib/*` as-is. Fix SEC-01 (`trust proxy`) + add security headers (SEC-02) via `next.config` `headers()`.
-4. **Boot cutover (last):** make the build copy `.next/standalone/*` (+ `.next/static`, `public/`) into `dist/` and turn `dist/server.cjs` into a thin shim that boots the standalone Next `server.js`. **Tag a rollback commit of the Express build first.** Test locally, then push to live (no staging).
-5. **Acceptance (Phase 3):** view-source of every route shows unique title/desc/canonical + JSON-LD; Rich Results Test passes; sitemap reachable + in robots; all forms/chat/preview/admin work through Next; security headers present; Express retired. Then hand the owner the **green-signal checklist** for sitemap submission.
+**Hard Hostinger constraint (for the cutover):** start command fixed to `node dist/server.cjs` (run by npm), **cannot change** — but the **entry file content CAN change** and **Node→22.x**. The cutover build must make `dist/server.cjs` boot the Next standalone server (`output:'standalone'` already set). ⚠️ **At cutover the assistant must hand the owner exact Hostinger steps** (set entry/startup file + Node 22).
 
-**Express endpoints to map (`server.ts`):** `/api/chat`, `/api/pip/{chat,lead,whatsapp}`, `/api/pip-lead`, `/api/contact-submission`, `/api/package-inquiry`, `/api/preview-leads`, `/api/region-offer`, `/api/admin/{config,me,previews}`, `/api/public/previews`, `/api/elevenlabs/tools/search-office-pigeon-knowledge`, `/previews/:slug/*` (file serve + banner inject), Pakistan gate. Existing Next routes already present: `pip/{chat,health,lead,recommend,whatsapp,handoff}`, `admin/reindex-knowledge`, `elevenlabs/.../search-office-pigeon-knowledge`.
+**Approach (in order):**
+1. **API parity.** Next already has `app/api/pip/{chat,health,lead,recommend,whatsapp,handoff}`, `admin/reindex-knowledge`, `elevenlabs/.../search`. Add Route Handlers for the rest the SPA calls, reconciled 1:1 vs `server.ts`, reusing `lib/*`: `/api/chat`, `/api/pip-lead`, `/api/contact-submission`, `/api/package-inquiry`, `/api/preview-leads`, `/api/region-offer`, `/api/admin/{config,me,previews}`, `/api/public/previews`, and **preview file serving + banner injection** (`/previews/:slug/*`, keep `X-Robots-Tag: noindex` + cache headers). zod validation (BE-04), origin/honeypot on public POSTs (SEC-08).
+2. **Pakistan geo-gating → `middleware.ts`:** port `canAccessPakistanPage` + country resolution; `/pakistan` stays noindex/region-gated (SEO-09).
+3. **Security headers** via `next.config` `headers()` (CSP/HSTS/X-CTO/frame-ancestors/Referrer-Policy/Permissions-Policy, SEC-02); fix `trust proxy` to the real Hostinger hop (SEC-01); admin allowlist env-only (SEC-04).
+4. **og:image** 1200×630 branded → wire into OpenGraph (root + `pageMetadata`).
+5. **Boot cutover (last):** build copies `.next/standalone/*` (+ `.next/static`, `public/`) into `dist/`; `dist/server.cjs` → thin shim booting the standalone `server.js`. **Tag an Express rollback commit first.** Test locally → push. Hand owner the Hostinger steps.
+
+**Acceptance (Phase 3):** every route view-source has unique title/desc/canonical + JSON-LD (✅ done); Rich Results passes; all forms/chat/preview/admin work through Next; security headers present; Express retired. Then hand the owner the **green-signal checklist** for sitemap submission.
+
+**Express endpoints map (`server.ts`):** `/api/chat`, `/api/pip/{chat,lead,whatsapp}`, `/api/pip-lead`, `/api/contact-submission`, `/api/package-inquiry`, `/api/preview-leads`, `/api/region-offer`, `/api/admin/{config,me,previews}`, `/api/public/previews`, `/api/elevenlabs/tools/search-office-pigeon-knowledge`, `/previews/:slug/*` (file serve + banner inject), Pakistan gate.
 
 ## 7. Landmines / gotchas
 - Live runtime is **Express** (`server.ts`), NOT Next. `app/api/*` is currently **dead** (no `next.config`/scripts).
@@ -73,6 +82,9 @@ Phase 2 is **done**. Mechanics to know before touching the build:
 - Untracked stray file: `public/logos/office-pigeon-icon .png` (note the space) — confirm intent before adding/deleting.
 
 ## 8. Commit log this overhaul (newest first)
+- `2ed3211` feat(next): Phase 3 — port all 13 marketing pages to SSR (metadata + JSON-LD per page)
+- `c197e20` feat(next): Phase 3 — SSR foundation, SEO core (routes/jsonld/sitemap/robots), chrome + About
+- `2c9c147` chore: add office-pigeon-icon .png asset
 - `8dfd263` feat(next): Phase 2 — Next.js App Router foundation beside live SPA (SSR proven; src/pages→src/views; tsconfig/postcss split)
 - `368ec6b` docs: rewrite HANDOFF as a complete self-sufficient resume doc
 - `7f4a9b3` fix(perf): mitigate /websites CLS (RESP-08)
