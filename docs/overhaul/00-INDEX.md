@@ -10,6 +10,7 @@ This folder is the **persistent brain** for the Office Pigeon improvement progra
 | [02-PLAN.md](02-PLAN.md) | Phase-by-phase fix plan with tasks, acceptance criteria, risks. Stable spec. | When scope changes |
 | [03-STATE.md](03-STATE.md) | **Living** memory: decisions, progress board, metrics, next-up, open questions. | **Every session** |
 | [04-HANDOFF.md](04-HANDOFF.md) | "Pick up the thread" doc for resuming. | End of each session |
+| [05-PREREQS.md](05-PREREQS.md) | **Manual-step gate** — per-phase steps the owner must do; the assistant waits for `done` before starting a gated phase. | When a step completes |
 
 ## Resume protocol (every new session)
 **Fastest: type `/resume`** — the project command that loads this brain, reports current phase/next-up, and continues work. **Not `/init`** (that only rewrites `CLAUDE.md`).

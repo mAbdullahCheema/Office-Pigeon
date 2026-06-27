@@ -9,6 +9,7 @@
 > 4. This session = docs + memory only; no code yet.
 
 ## How to use this plan
+- **Manual-step gate:** before starting any phase, check [05-PREREQS.md](05-PREREQS.md). If that phase has unmet manual prerequisites, present them step-by-step and **wait for the user to reply `done`** before doing phase work.
 - Phases are ordered by dependency and risk. **Do not start a phase until its predecessor's acceptance criteria pass**, unless marked parallel-safe.
 - Each phase: Goal → Tasks (with issue IDs) → Acceptance criteria → Risk/rollback.
 - Mark progress in [03-STATE.md](03-STATE.md), not here. This file is the stable spec.

@@ -1,19 +1,33 @@
 # CLAUDE.md — Office Pigeon
 
-Codebase guide + session-resume hub. Auto-loaded every session.
+Codebase guide + session-resume hub. **Auto-loaded every session** — so context transfers automatically, including after `/init`.
 
-## 🔄 Overhaul / Resume Protocol (READ FIRST)
-This repo is in a multi-phase improvement program. **To resume work, run `/resume`** (project command — it loads the brain, reports state, and continues the current phase). **Do NOT use `/init` to resume** — `/init` only rewrites this file, it does not read STATE/HANDOFF or start phases.
+## ▶️ ON SESSION START — DO THIS FIRST
+This repo is in a multi-phase overhaul. At the start of every session (and whenever the user says "continue", "resume", or runs `/init` or `/resume`):
+1. Read [`docs/overhaul/04-HANDOFF.md`](docs/overhaul/04-HANDOFF.md) → [`docs/overhaul/03-STATE.md`](docs/overhaul/03-STATE.md) (current focus, status board, decisions, open questions).
+2. Give the user a short progress report: what's done, the current phase, and the next tasks.
+3. Check [`docs/overhaul/05-PREREQS.md`](docs/overhaul/05-PREREQS.md) for the next phase. **If it has unmet manual prerequisites, STOP, present the full step-by-step instructions, and WAIT for the user to reply `done` before doing any phase work.** (See "Manual-step gate" below.)
+4. If no manual prereqs block the next task, continue the work per [`02-PLAN.md`](docs/overhaul/02-PLAN.md).
 
-**To regain context manually, open [`docs/overhaul/`](docs/overhaul/00-INDEX.md):**
-1. [`docs/overhaul/04-HANDOFF.md`](docs/overhaul/04-HANDOFF.md) — where we left off.
-2. [`docs/overhaul/03-STATE.md`](docs/overhaul/03-STATE.md) — **living** progress, decisions, open questions, next-up.
-3. [`docs/overhaul/02-PLAN.md`](docs/overhaul/02-PLAN.md) — phased fix plan (acceptance criteria per phase).
-4. [`docs/overhaul/01-ANALYSIS.md`](docs/overhaul/01-ANALYSIS.md) — deep analysis, issue IDs (`PERF-01`, `SEO-04`, …).
+> **`/init` note:** `/init` regenerates this file from the codebase — when doing so, **preserve this "ON SESSION START" section, the Progress Snapshot, the Manual-step gate, and the Locked decisions verbatim**, and still perform the session-start steps above. `/resume` is the project command that does all of this automatically.
 
-**After doing work, update `03-STATE.md` and `04-HANDOFF.md`.** Don't re-litigate locked decisions (see STATE Decision Log).
+## 🚦 Manual-step gate (blocking)
+Before starting a phase, consult [`05-PREREQS.md`](docs/overhaul/05-PREREQS.md). If that phase lists manual steps the user must do (e.g. provide Hostinger runtime details, capture PageSpeed baselines, grant Search Console access), **present them step-by-step and do not begin the phase until the user replies `done`.** Phases marked "Manual prerequisites: none" proceed immediately. Tick the boxes in `05-PREREQS.md` as steps complete.
 
-**Standing rule:** at the end of **every phase** (and after meaningful tasks), **commit & push to `origin/main`** — `rtk git add -A && rtk git commit -m "..." && rtk git push`. Every phase is a recoverable checkpoint; never close a phase without pushing.
+## ✅ Progress Snapshot  (keep in sync with 03-STATE; update after each work chunk)
+- **Done:**
+  - Overhaul docs/memory system + `/resume` command + this hub.
+  - Phase 1 perf: PERF-01 (no per-frame setState), PERF-03 (font preconnect), PERF-07 (chunks), PERF-08 (dead SmoothScroll removed).
+  - Phase 4 hero: `SystemDemo` on Home + Pakistan; Three.js/typewriter removed; single H1 (PERF-04/06, CONTENT-01/02/03, SEO-06).
+  - Phase 0 infra: GitHub Actions CI (now using `npm install` — fixed lockfile-drift failure), `.gitattributes`, `.editorconfig`, real README.
+- **Not done / next:**
+  - Phase 0: ESLint/Prettier (eslint-9 peer-dep conflict — use `--legacy-peer-deps`), Playwright smoke test, owner PageSpeed baselines.
+  - **Phase 2/3 (Next.js SSR migration — the SEO fix):** BLOCKED on manual prereqs in `05-PREREQS.md` (Hostinger Node runtime details, og:image, Search Console). Not started.
+  - Phase 5 responsive matrix, Phase 6 backend/scale, Phase 7 launch.
+
+**After doing work, update `03-STATE.md`, `04-HANDOFF.md`, and this Progress Snapshot.** Don't re-litigate locked decisions (see STATE Decision Log).
+
+**Standing rule:** at the end of **every phase** (and after meaningful tasks), **commit & push to `origin/main`** — `git add -A && git commit -m "..." && git push` (`rtk` prefix if on PATH). Every phase is a recoverable checkpoint; never close a phase without pushing.
 
 ### Locked decisions
 - Host = **Hostinger Node**, live officepigeon.com → run **Next.js via `next start`**.

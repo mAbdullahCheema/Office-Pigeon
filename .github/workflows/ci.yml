@@ -17,12 +17,13 @@ jobs:
           node-version: 20
           cache: npm
 
-      # Skip the postinstall prod build during install; we build explicitly below.
-      - name: Install dependencies
-        run: npm ci --ignore-scripts
+      # Use `npm install` (not `npm ci`): the committed lockfile drifts on
+      # optional platform binaries, which makes `npm ci`'s strict check fail.
+      # `npm install` provisions the correct native binaries and its
+      # `postinstall` runs the real prod build (vite + copyPreviews + esbuild),
+      # mirroring how Hostinger deploys — so CI fails the same way prod would.
+      - name: Install + build (via postinstall)
+        run: npm install --no-audit --no-fund
 
       - name: Type check
         run: npm run lint
-
-      - name: Build
-        run: npm run build
