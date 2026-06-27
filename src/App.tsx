@@ -121,7 +121,7 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    // Prefetch all lazy pages and ThreeHub when browser is idle to optimize navigation responsiveness
+    // Prefetch lazy pages when the browser is idle to optimize navigation responsiveness
     const prefetch = () => {
       import('./pages/Websites');
       import('./pages/Chatbots');
@@ -133,7 +133,6 @@ export default function App() {
       import('./pages/FAQ');
       import('./pages/Legal');
       import('./pages/Pakistan');
-      import('./components/ThreeHub');
     };
 
     if ('requestIdleCallback' in window) {

@@ -45,7 +45,7 @@ Legend: ⬜ not started · 🟡 in progress · ✅ done · ⏸ blocked
 | 1 | Performance quick wins | 🟡 | PERF-01/03/07/08 done; PERF-02/06 deferred to Phase 4; PERF-05/09/10 TODO |
 | 2 | Next.js foundation | ⬜ | Needs Hostinger runtime answers |
 | 3 | Pages + API migration + SEO core | ⬜ | Critical path for SEO |
-| 4 | Hero "show the system working" | ⬜ | Parallel-safe after Phase 2 |
+| 4 | Hero "show the system working" | 🟡 | Home + Pakistan now use SystemDemo; three.js removed. Copy polish + responsive matrix pending |
 | 5 | Responsive & device hardening | ⬜ | Broad; per-page + matrix |
 | 6 | Backend scalability & observability | ⬜ | |
 | 7 | Polish, QA, launch | ⬜ | |
@@ -68,7 +68,12 @@ Legend: ⬜ not started · 🟡 in progress · ✅ done · ⏸ blocked
 | ARCH-01 | Two backends (Express/dead Next) | 2/3 | ⬜ | |
 | RESP-01..03 | Overflow / absolute hero | 4/5 | ⬜ | |
 | SEC-01/02 | trust proxy / security headers | 3 | ⬜ | |
-| CONTENT-01/02 | Hero shows the system | 4 | ⬜ | |
+| CONTENT-01/02 | Hero shows the system | 4 | ✅ | new SystemDemo (CSS/SVG) on Home + Pakistan |
+| CONTENT-03 | De-gimmick headline | 4 | ✅ | typewriter → static gradient headline |
+| PERF-04 | Three.js off home path | 4 | ✅ | ThreeHub deleted; `three` no longer bundled/loaded |
+| PERF-06 | Typewriter setState loop | 4 | ✅ | removed with headline |
+| SEO-06 | Single H1 on Home | 4 | ✅ | decorative "AUTOMATE" h1 → aria-hidden span |
+| _cleanup_ | Dead `PakistanHeroVisual`/`heroModes` | 5 | ⬜ | tree-shaken from bundle; remove from source w/ ESLint pass |
 
 ---
 
@@ -87,6 +92,7 @@ Targets (Phase 7): mobile Perf ≥ 90, LCP < 2.5s, CLS < 0.1, unique SSR metadat
 ---
 
 ## Session Log (newest first)
+- **2026-06-27 (e)** — Phase 4 hero (autonomous). Built `src/components/SystemDemo.tsx` — a lightweight CSS/SVG "show the system working" panel (customer msg → AI books it → lead captured/team notified, with the 4 product channels). Wired into Home + Pakistan heroes; deleted `ThreeHub.tsx` and removed `three` from the home path (PERF-04); removed the typewriter (PERF-06/CONTENT-03) for a static gradient headline; demoted the decorative "AUTOMATE" `<h1>` to an aria-hidden span (SEO-06); simplified Home's risky absolute hero column to an in-grid layout (RESP-02). Old `PakistanHeroVisual`/`heroModes` now unused (tree-shaken; source cleanup pending). Reduced-motion-safe (CSS gated). tsc + build green; `three` chunk gone, Pakistan chunk 42→32KB. **Subjective:** hero copy/visual are my call per "show the system working" — owner can tweak wording.
 - **2026-06-27 (d)** — Started Phase 1. Landed PERF-01 (ThreeHub: ref + 150ms throttle, no per-frame setState), PERF-03 (fonts off @import → preconnect+link in index.html), PERF-07 (vite manualChunks split three/motion/react), PERF-08 (deleted dead SmoothScroll.tsx + comment), and Phase-0 ARCH-04 (real README). `tsc` clean; `vite build` green in 8.79s — three (504KB) + motion (96KB) now lazy/separate chunks. Deferred PERF-02/PERF-06 to Phase 4 (hero replaces ThreeHub/typewriter). Noted: initial index chunk ~353KB needs deeper splitting later.
 - **2026-06-27 (c)** — `/init` didn't resume work (it only rewrites CLAUDE.md). Added `/resume` project command (`.claude/commands/resume.md`) that loads the brain, reports state, and continues the current phase. Pointed CLAUDE.md/INDEX/HANDOFF at `/resume`. **To resume: type `/resume`, not `/init`.**
 - **2026-06-27 (b)** — Added standing rule: commit & push to `origin/main` at end of every phase (recorded in PLAN/CLAUDE.md/HANDOFF). Committed + pushed the docs/memory deliverables.

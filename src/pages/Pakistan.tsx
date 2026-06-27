@@ -26,6 +26,7 @@ import {
 } from 'lucide-react';
 import { BRAND } from '../config';
 import { Package, PageId } from '../types';
+import SystemDemo from '../components/SystemDemo';
 
 interface PakistanProps {
   onPageChange: (page: PageId) => void;
@@ -769,7 +770,7 @@ export default function Pakistan({ onPageChange, onOpenPackageModal, onOpenConsu
           </motion.div>
 
           <motion.div {...sectionMotion} className="lg:col-span-5">
-            <PakistanHeroVisual />
+            <SystemDemo />
           </motion.div>
         </div>
       </section>

@@ -52,7 +52,7 @@ Env: copy `.env.example` → `.env`. Needs Supabase + at least one LLM key (GEMI
 - **SEO is client-side only** today (meta set in a `useEffect`) — this is the #1 thing the migration fixes; don't add more client-only meta hacks.
 - `src/components/SmoothScroll.tsx` is an intentional **no-op** (native scroll). Don't "restore" scroll-jacking.
 - The home `<h1>` "AUTOMATE" background word is decorative but a real `<h1>` (collapse to one H1 when editing the hero).
-- **ThreeHub** drives React state inside its rAF loop — the main perf bug (`PERF-01`). WebGL is already disabled <768px with an FPS fallback.
+- The hero is now `src/components/SystemDemo.tsx` (lightweight CSS/SVG "show the system working" panel) on both Home and Pakistan. The old `ThreeHub` (Three.js) was deleted; `three` is no longer loaded. Old `PakistanHeroVisual`/`heroModes` in `Pakistan.tsx` are dead (tree-shaken) — remove in the ESLint cleanup pass.
 - **Pricing is duplicated** across `src/config.ts`, the server `SYSTEM_PROMPT`, and the knowledge base — change all or single-source it.
 - Pakistan page (`src/pages/Pakistan.tsx`, ~1022 lines) is bespoke + geo-gated — mirror Home changes there.
 - Two component trees exist (`src/components` vs root `components/pip-ai` via a re-export shim) — to be unified in the migration.
@@ -63,9 +63,9 @@ Env: copy `.env.example` → `.env`. Needs Supabase + at least one LLM key (GEMI
 |------|------|
 | `server.ts` | Live Express server (~1400 lines): APIs, previews, geo-gating, LLM fan-out, admin auth |
 | `src/App.tsx` | SPA shell: manual routing, page maps, client meta injection |
-| `src/pages/Home.tsx` | Home (hero = ThreeHub + typewriter) |
-| `src/pages/Pakistan.tsx` | Geo-gated PK page (bespoke) |
-| `src/components/ThreeHub.tsx` | Three.js hero (perf hot spot `PERF-01`) |
+| `src/pages/Home.tsx` | Home (hero = SystemDemo) |
+| `src/pages/Pakistan.tsx` | Geo-gated PK page (hero = SystemDemo; has dead PakistanHeroVisual) |
+| `src/components/SystemDemo.tsx` | Hero "show the system working" demo (CSS/SVG, reduced-motion safe) |
 | `src/config.ts` | Packages, pricing, FAQs, example builds |
 | `lib/pip-ai/*`, `lib/llm/*` | Pip AI RAG + LLM provider router (shared) |
 | `app/api/*` | DEAD Next route handlers (to consolidate) |

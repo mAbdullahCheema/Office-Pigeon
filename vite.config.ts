@@ -20,13 +20,12 @@ export default defineConfig(() => {
     },
     build: {
       // PERF-07: split heavy/independent vendors into their own cacheable chunks.
-      // three + motion are only pulled in by lazy routes, so this keeps the
-      // initial bundle lean and improves long-term caching.
+      // motion is only pulled in by lazy routes, so this keeps the initial bundle
+      // lean and improves long-term caching. (three was removed with the old hero.)
       rollupOptions: {
         output: {
           manualChunks: {
             react: ['react', 'react-dom'],
-            three: ['three'],
             motion: ['motion'],
           },
         },

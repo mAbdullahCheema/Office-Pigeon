@@ -162,6 +162,33 @@ textarea {
   }
 }
 
+/* ── System Demo hero (CONTENT-01 / PERF-04): cheap, GPU-friendly, motion-safe ── */
+@keyframes sdReveal {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes sdDot {
+  0%, 80%, 100% { transform: translateY(0); opacity: 0.45; }
+  40%           { transform: translateY(-3px); opacity: 1; }
+}
+@keyframes sdPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: 0.55; transform: scale(0.82); }
+}
+@keyframes sdFloat {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-6px); }
+}
+.sd-reveal { opacity: 0; animation: sdReveal 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.sd-dot { animation: sdDot 1.2s ease-in-out infinite; }
+.sd-pulse { animation: sdPulse 1.8s ease-in-out infinite; }
+.sd-float { animation: sdFloat 5s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .sd-reveal { opacity: 1 !important; animation: none !important; transform: none !important; }
+  .sd-dot, .sd-pulse, .sd-float { animation: none !important; }
+}
+
 .navbar-kicker {
   font-size: 0.625rem !important;
   letter-spacing: 0.11em !important;

@@ -3,62 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useState, useEffect, lazy, Suspense } from 'react';
 import { motion } from 'motion/react';
 import { ArrowRight, HelpCircle, Check, Play, UserCheck, Smartphone, Settings, Zap, ArrowUpRight, MessageSquare, Flame, Sparkles, Volume2 } from 'lucide-react';
 import { PageId, Package } from '../types';
 import { BRAND, WEBSITE_PACKAGES, CHATBOT_PACKAGES, CALLING_AGENT_PACKAGES, AUTOMATION_EXAMPLES } from '../config';
-const ThreeHub = lazy(() => import('../components/ThreeHub'));
-
-function TypewriterWord() {
-  const word = "LOSING CUSTOMERS";
-  const [displayedText, setDisplayedText] = useState("");
-  const [isDeleting, setIsDeleting] = useState(false);
-
-  useEffect(() => {
-    let timer: any;
-
-    const handleType = () => {
-      if (!isDeleting) {
-        if (displayedText.length < word.length) {
-          setDisplayedText(word.substring(0, displayedText.length + 1));
-          timer = setTimeout(handleType, 150);
-        } else {
-          timer = setTimeout(() => {
-            setIsDeleting(true);
-          }, 2000);
-        }
-      } else {
-        if (displayedText.length > 0) {
-          setDisplayedText(word.substring(0, displayedText.length - 1));
-          timer = setTimeout(handleType, 80);
-        } else {
-          setIsDeleting(false);
-          timer = setTimeout(handleType, 500);
-        }
-      }
-    };
-
-    timer = setTimeout(handleType, isDeleting ? 80 : 150);
-
-    return () => clearTimeout(timer);
-  }, [displayedText, isDeleting]);
-
-  return (
-    <span className="relative inline-block whitespace-nowrap">
-      {/* Static size reservation layout block */}
-      <span className="invisible select-none pointer-events-none font-black text-transparent bg-clip-text bg-gradient-to-r from-orange-500 via-rose-500 to-amber-500">
-        {word}
-      </span>
-      {/* Absolute interactive layer for text updates */}
-      <span className="absolute inset-y-0 left-0 flex items-center">
-        <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 via-rose-500 to-amber-500 font-black">
-          {displayedText}
-        </span>
-      </span>
-    </span>
-  );
-}
+import SystemDemo from '../components/SystemDemo';
 
 function scrollToSection(sectionId: string) {
   const section = document.getElementById(sectionId);
@@ -101,11 +50,11 @@ export default function Home({ onPageChange, onOpenPackageModal, onOpenConsultat
     <div className="space-y-28 pb-20 mt-16 font-sans select-none overflow-hidden relative">
       <div className="home-orbit-field absolute inset-0 z-0 pointer-events-none" />
       
-      {/* Background Text Layer Stamp behind core elements */}
-      <div className="absolute top-[8%] left-1/2 -translate-x-1/2 w-full text-center pointer-events-none select-none z-0 opacity-40">
-        <h1 className="text-[120px] sm:text-[180px] lg:text-[230px] leading-[0.8] font-black tracking-tighter text-[#EFECE7] uppercase">
+      {/* Background Text Layer Stamp behind core elements (decorative, not a heading) */}
+      <div aria-hidden="true" className="absolute top-[8%] left-1/2 -translate-x-1/2 w-full text-center pointer-events-none select-none z-0 opacity-40">
+        <span className="block text-[120px] sm:text-[180px] lg:text-[230px] leading-[0.8] font-black tracking-tighter text-[#EFECE7] uppercase">
           AUTOMATE
-        </h1>
+        </span>
       </div>
 
       {/* 1. HERO SECTION */}
@@ -120,7 +69,11 @@ export default function Home({ onPageChange, onOpenPackageModal, onOpenConsultat
             </div>
             
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-[68px] font-black text-gray-900 leading-[1.05] tracking-tighter uppercase mb-4 max-w-4xl">
-              Your Business Shouldn't Be <TypewriterWord /> While You're Busy.
+              Never{' '}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 via-rose-500 to-amber-500">
+                Lose a Customer
+              </span>{' '}
+              While You're Busy.
             </h1>
             
             <p className="text-sm sm:text-base text-gray-800 max-w-xl leading-relaxed font-sans font-semibold">
@@ -154,22 +107,9 @@ export default function Home({ onPageChange, onOpenPackageModal, onOpenConsultat
             </div>
           </div>
 
-          {/* RIGHT 3D MODEL VIEWPORT */}
-          <div className="lg:col-span-5 relative w-full flex items-center justify-center lg:absolute lg:top-1/2 lg:-translate-y-1/2 lg:-right-[8%] xl:-right-[14%] lg:w-[48vw] lg:h-[700px] lg:max-w-[900px] z-10 pointer-events-none">
-            <div className="w-full h-full pointer-events-auto flex items-center justify-center">
-              <Suspense fallback={
-                <div className="w-full h-full flex flex-col items-center justify-center relative p-6 animate-pulse" id="threejs-fallback-hub">
-                  <div className="relative w-48 h-48 bg-orange-50/50 border border-orange-100/50 rounded-full flex items-center justify-center shadow-lg shadow-orange-50/20">
-                    <div className="absolute inset-2 border-2 border-dashed border-orange-200/50 rounded-full animate-spin [animation-duration:15s]" />
-                    <div className="absolute inset-8 border border-rose-100/30 rounded-full animate-reverse-spin [animation-duration:8s]" />
-                    <div className="w-16 h-16 bg-gradient-to-tr from-orange-500 to-rose-500 opacity-80 rounded-full flex items-center justify-center p-3 shadow-md" />
-                  </div>
-                  <p className="mt-6 text-xs text-gray-400 text-center uppercase tracking-widest font-mono">Initializing ThreeHub...</p>
-                </div>
-              }>
-                <ThreeHub />
-              </Suspense>
-            </div>
+          {/* RIGHT — LIVE SYSTEM DEMO (shows the product working) */}
+          <div className="lg:col-span-5 relative w-full flex items-center justify-center z-10">
+            <SystemDemo />
           </div>
 
         </div>
