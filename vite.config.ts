@@ -11,6 +11,13 @@ export default defineConfig(() => {
         '@': path.resolve(__dirname, '.'),
       },
     },
+    css: {
+      // The root postcss.config.mjs exists for Next.js (@tailwindcss/postcss).
+      // Pin Vite to an inline empty PostCSS config so it does NOT auto-load that
+      // file and double-process Tailwind — Vite handles Tailwind via the
+      // @tailwindcss/vite plugin above. (Phase 2 coexistence; see HANDOFF.)
+      postcss: { plugins: [] },
+    },
     server: {
       // HMR is disabled in AI Studio via DISABLE_HMR env var.
       // Do not modifyâfile watching is disabled to prevent flickering during agent edits.

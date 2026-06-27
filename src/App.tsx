@@ -13,18 +13,18 @@ import PackageModal from './components/PackageModal';
 import PakistanOfferCurtain from './components/PakistanOfferCurtain';
 
 // Pages
-import Home from './pages/Home';
-const Websites = lazy(() => import('./pages/Websites'));
-const Chatbots = lazy(() => import('./pages/Chatbots'));
-const CallingAgents = lazy(() => import('./pages/CallingAgents'));
-const Automations = lazy(() => import('./pages/Automations'));
-const Examples = lazy(() => import('./pages/Examples'));
-const About = lazy(() => import('./pages/About'));
-const Contact = lazy(() => import('./pages/Contact'));
-const FAQ = lazy(() => import('./pages/FAQ'));
-const Legal = lazy(() => import('./pages/Legal'));
-const Admin = lazy(() => import('./pages/Admin'));
-const Pakistan = lazy(() => import('./pages/Pakistan'));
+import Home from './views/Home';
+const Websites = lazy(() => import('./views/Websites'));
+const Chatbots = lazy(() => import('./views/Chatbots'));
+const CallingAgents = lazy(() => import('./views/CallingAgents'));
+const Automations = lazy(() => import('./views/Automations'));
+const Examples = lazy(() => import('./views/Examples'));
+const About = lazy(() => import('./views/About'));
+const Contact = lazy(() => import('./views/Contact'));
+const FAQ = lazy(() => import('./views/FAQ'));
+const Legal = lazy(() => import('./views/Legal'));
+const Admin = lazy(() => import('./views/Admin'));
+const Pakistan = lazy(() => import('./views/Pakistan'));
 
 const PAGE_TITLES: Record<PageId, string> = {
   home: 'Office Pigeon | AI Websites, Chatbots, Calling Agents & Automations',
@@ -123,16 +123,16 @@ export default function App() {
   useEffect(() => {
     // Prefetch lazy pages when the browser is idle to optimize navigation responsiveness
     const prefetch = () => {
-      import('./pages/Websites');
-      import('./pages/Chatbots');
-      import('./pages/CallingAgents');
-      import('./pages/Automations');
-      import('./pages/Examples');
-      import('./pages/About');
-      import('./pages/Contact');
-      import('./pages/FAQ');
-      import('./pages/Legal');
-      import('./pages/Pakistan');
+      import('./views/Websites');
+      import('./views/Chatbots');
+      import('./views/CallingAgents');
+      import('./views/Automations');
+      import('./views/Examples');
+      import('./views/About');
+      import('./views/Contact');
+      import('./views/FAQ');
+      import('./views/Legal');
+      import('./views/Pakistan');
     };
 
     if ('requestIdleCallback' in window) {

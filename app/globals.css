@@ -1,0 +1,60 @@
+/*
+ * Global stylesheet for the Next.js runtime (Phase 2 foundation).
+ *
+ * Processed by @tailwindcss/postcss (see postcss.config.mjs). Mirrors the brand
+ * tokens + base typography from src/index.css. Fonts are wired to next/font
+ * CSS variables (--font-manrope / --font-jetbrains-mono) set on <body> in
+ * app/layout.tsx, with literal-name fallbacks.
+ *
+ * NOTE: src/index.css remains the SPA's source of truth during coexistence.
+ * Phase 3 unifies these into one stylesheet once pages are ported and Express
+ * is retired (CONTENT-04 / ARCH cleanup).
+ */
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-manrope), "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-manrope), "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  --color-gray-400: #2c3540;
+  --color-gray-500: #1a1a1a;
+  --color-gray-600: #1a1a1a;
+  --color-gray-700: #1a1a1a;
+  --color-gray-800: #0c0d0e;
+  --color-gray-900: #0c0d0e;
+}
+
+html {
+  scroll-behavior: smooth;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: #faf9f6;
+  color: #1a1a1a;
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-sans);
+  font-weight: 800;
+  letter-spacing: -0.018em;
+  line-height: 1.08;
+  text-wrap: balance;
+}
+
+p,
+li {
+  line-height: 1.7;
+  text-wrap: pretty;
+}

@@ -69,7 +69,7 @@ function trimAtWord(value: string, maxLength = 420) {
 
 function keywordSet(input: OfficePigeonVectorSearchInput) {
   const text = `${input.query} ${input.caller_need || ''}`.toLowerCase();
-  const words = new Set((text.match(/[a-z0-9$]+/g) || []).filter((word) => word.length > 2));
+  const words = new Set((text.match(/[a-z0-9$]+/g) || ([] as string[])).filter((word) => word.length > 2));
 
   if (/\b(number|phone|twilio|own)\b/i.test(text)) {
     ['number', 'phone', 'twilio', 'existing', 'provider', 'carrier'].forEach((word) => words.add(word));

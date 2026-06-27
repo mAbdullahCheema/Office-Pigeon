@@ -31,7 +31,7 @@ Legend: ⬜ not done · ✅ done · ➖ n/a
 
 ---
 
-## Phase 2 — Next.js foundation  ✅ UNBLOCKED (answers received 2026-06-27)
+## Phase 2 — Next.js foundation  ✅ COMPLETE (shipped 2026-06-27; was unblocked, answers received same day)
 **Owner answers (recorded):**
 - ✅ **Node.js version:** 22.x available; owner **can change** the Node version.
 - ✅ **Start setup:** Hostinger runs `node dist/server.cjs` via npm. Owner **CANNOT change the start command**, but **CAN change the entry file**. → Build must make the entry (`dist/server.cjs` or the configured startup file) **boot the Next production server** (Next `output: 'standalone'` server.js, or a thin programmatic `next start` wrapper bundled to that path).

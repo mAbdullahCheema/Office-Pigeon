@@ -53,7 +53,7 @@ const sectionMotion = {
   whileInView: { opacity: 1, y: 0 },
   viewport: { once: true, margin: '150px 0px' },
   transition: { duration: 0.35, ease: 'easeOut' }
-};
+} as const;
 
 const websitePackages: PakistanPackage[] = [
   {

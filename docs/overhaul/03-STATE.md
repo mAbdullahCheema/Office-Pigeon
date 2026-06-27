@@ -3,19 +3,27 @@
 > **This is the living file.** Update it every session. The analysis ([01](01-ANALYSIS.md)) and plan ([02](02-PLAN.md)) are stable specs; this file tracks *what's actually done and what's next*.
 > Convention: keep the **Decision Log** append-only; update the **Status Board** and **Current Focus** in place. Convert any relative dates to absolute.
 
-Last updated: **2026-06-27** by Claude (analysis session).
+Last updated: **2026-06-27** by Claude (Phase 2 — Next.js foundation shipped).
 
 ---
 
 ## Current Focus
-Baselines captured + all Phase 2/3 owner answers received. **Phase 2 (Next foundation) is now UNBLOCKED** except: og:image (mine — "make one"), Search Console TXT (owner adds to DNS, non-blocking for code). Next major effort = the Next.js SSR migration, using the **entry-file boot strategy** (see Decision Log: Hostinger start command is fixed, but entry file + Node 22 are changeable → make the entry boot Next).
+**Phase 2 (Next.js foundation) is DONE** — Next App Router now builds and runs side-by-side with the live Vite/Express SPA without breaking it. SSR proven (view-source title/desc/canonical/h1, no JS) + one API route (`/api/pip/health`) works end-to-end through Next. Next major effort = **Phase 3** (port pages to SSR + API migration + SEO core + cutover) — the actual SEO payoff.
 
 ## Next Up (start here next session)
-1. **Phase 2 — Next.js foundation:** scaffold `app/` (root layout, Tailwind via Next, `next/font`), `next.config` with `output: 'standalone'`; design the build so the Hostinger entry file boots Next (standalone `server.js` or thin `next start` wrapper to `dist/server.cjs`). Keep Express live until parity. Test locally (no staging).
-2. **RESP-08 (quick win, do early):** fix `/websites` CLS ≈ 0.99 — investigate `src/pages/Websites.tsx` for a late-shifting element. Re-run PageSpeed after.
-3. Phase 0 leftovers: ESLint/Prettier (`--legacy-peer-deps`), Playwright smoke test.
-4. Generate the og:image asset (1200×630, branded) for Phase 3 metadata.
-5. Phase 3 prep: add Search Console TXT to DNS (owner), then build per-route metadata + JSON-LD + sitemap/robots, then cutover.
+1. **Phase 3 — Pages + API migration to SSR/SSG + SEO core + cutover.** Port each `src/views/*` page to `app/<route>/page.tsx` Server Components (interactive bits as client islands); per-route `generateMetadata`; JSON-LD; `app/sitemap.ts` + `app/robots.ts`; reconcile the un-deaded `app/api/*` against Express behavior 1:1; Pakistan gating → Next middleware; security headers; then the entry-file boot cutover (`dist/server.cjs` shim → Next standalone) with Express kept as tagged rollback.
+2. **RESP-08:** `/websites` CLS ≈ 0.99 — inherently fixed by SSR; re-measure after the page is ported. (Interim mitigation already shipped.) Source now at `src/views/Websites.tsx`.
+3. Generate the og:image asset (1200×630, branded) for Phase 3 metadata.
+4. Phase 0 leftovers: ESLint/Prettier (`--legacy-peer-deps`), Playwright smoke test.
+5. Phase 3 prep: add Search Console TXT to DNS (owner), submit sitemap only after green signal.
+
+## Phase 2 — how Next & Vite coexist (read before touching the build)
+- **Two runtimes, one repo (transitional).** Live = Vite SPA + Express (`server.ts` → `dist/server.cjs`); new = Next App Router (`app/`). Live build path **untouched**: `npm run build`, `npm start`, `postinstall` unchanged.
+- **Next-only scripts:** `npm run build:next` / `start:next` / `dev:next`.
+- **Tailwind split:** `postcss.config.mjs` (`@tailwindcss/postcss`) is for **Next only**; `vite.config.ts` pins inline `css.postcss:{plugins:[]}` so Vite ignores it and keeps using `@tailwindcss/vite`. `app/globals.css` mirrors `src/index.css` brand tokens (fonts via `next/font` vars).
+- **TypeScript split:** root `tsconfig.json` stays the SPA's (untouched). Next uses `tsconfig.next.json` (via `next.config` `typescript.tsconfigPath`) scoped to `app/` + `lib/` only — so Next does NOT type-check the legacy SPA. Next mutates `tsconfig.next.json`, not root.
+- **Rename:** `src/pages/` → `src/views/` (these are SPA view components, not Next pages) so Next's App Router doesn't collide with a Pages Router dir. Only `src/App.tsx` imported them.
+- **Boot cutover (Phase 3, not yet wired):** `next.config` `output:'standalone'` → build copies `.next/standalone/*` into `dist/` and `dist/server.cjs` becomes a thin shim that boots the standalone Next server (Hostinger's fixed `node dist/server.cjs` then runs Next; entry file changeable, Node→22).
 
 ---
 
@@ -50,7 +58,7 @@ Legend: ⬜ not started · 🟡 in progress · ✅ done · ⏸ blocked
 |-------|-------|--------|-------|
 | 0 | Safety net & baselines | 🟡 | README + CI + .gitattributes/.editorconfig + **PageSpeed baselines** done; ESLint/Prettier + Playwright still TODO |
 | 1 | Performance quick wins | 🟡 | PERF-01/03/07/08 done; PERF-02/06 deferred to Phase 4; PERF-05/09/10 TODO |
-| 2 | Next.js foundation | ⬜ | Needs Hostinger runtime answers |
+| 2 | Next.js foundation | ✅ | App Router builds + runs beside live SPA; SSR + 1 API route verified; coexistence (Tailwind/tsconfig split, src/views rename) documented |
 | 3 | Pages + API migration + SEO core | ⬜ | Critical path for SEO |
 | 4 | Hero "show the system working" | 🟡 | SystemDemo on Home + Pakistan; three.js removed; **channel tabs interactive** (CONTENT-05). Responsive matrix in Phase 5 |
 | 5 | Responsive & device hardening | ⬜ | Broad; per-page + matrix |
@@ -62,7 +70,7 @@ Legend: ⬜ not started · 🟡 in progress · ✅ done · ⏸ blocked
 
 | ID | Title | Phase | Status | Commit/PR |
 |----|-------|-------|--------|-----------|
-| SEO-01 | Client-only rendering | 2/3 | ⬜ | |
+| SEO-01 | Client-only rendering | 2/3 | 🟡 | Phase 2: Next SSR pipeline stood up + proven (view-source). Full fix when pages ported in Phase 3 |
 | SEO-02 | Per-page metadata | 3 | ⬜ | |
 | SEO-04 | JSON-LD structured data | 3 | ⬜ | |
 | SEO-05 | sitemap + robots | 3 | ⬜ | |
@@ -72,7 +80,7 @@ Legend: ⬜ not started · 🟡 in progress · ✅ done · ⏸ blocked
 | PERF-07 | Bundle chunking | 1 | ✅ | vite manualChunks: three/motion/react split |
 | PERF-08 | Dead SmoothScroll | 1 | ✅ | removed component + misleading comment |
 | ARCH-04 | Stale README | 0 | ✅ | real setup/run/deploy README |
-| ARCH-01 | Two backends (Express/dead Next) | 2/3 | ⬜ | |
+| ARCH-01 | Two backends (Express/dead Next) | 2/3 | 🟡 | Phase 2: `app/api/*` un-deaded (build green, health route verified through Next). Full 1:1 reconcile + Express retirement in Phase 3 |
 | RESP-01..03 | Overflow / absolute hero | 4/5 | ⬜ | |
 | SEC-01/02 | trust proxy / security headers | 3 | ⬜ | |
 | CONTENT-01/02 | Hero shows the system | 4 | ✅ | new SystemDemo (CSS/SVG) on Home + Pakistan |
@@ -106,6 +114,7 @@ Targets (Phase 7): mobile Perf ≥ 90 every route, LCP < 2.5s, **CLS < 0.05 ever
 ---
 
 ## Session Log (newest first)
+- **2026-06-27 (i)** — **Phase 2 (Next.js foundation) shipped.** Stood up Next 16 App Router *beside* the live Vite/Express SPA without breaking it. Added `next.config.ts` (`output:'standalone'`, scoped `tsconfig.next.json`), `postcss.config.mjs` (Next-only), `app/layout.tsx` (metadata + `next/font` Manrope/JetBrains Mono, canonical=apex), `app/globals.css` (brand tokens), `app/page.tsx` (real SSR home placeholder). Resolved 3 coexistence collisions: (1) Tailwind — pinned Vite to inline empty PostCSS so it ignores the Next PostCSS config; (2) tsconfig — gave Next its own `tsconfig.next.json` scoped to `app/`+`lib/`, restored root tsconfig to the SPA's (Next no longer type-checks the legacy SPA); (3) routing — renamed `src/pages/`→`src/views/` (App Router vs Pages Router clash; only `src/App.tsx` imports them). Un-deaded `app/api/*`. Fixed 2 latent type issues that the refreshed dep tree surfaced (`lib/server/office-pigeon-vector-search.ts` `never[]`; `Pakistan.tsx` `sectionMotion` `ease` widening → `as const`). **Verified:** `next build` green; `next start` view-source shows real title/desc/canonical/h1 (SSR, no JS); `/api/pip/health` returns JSON through Next; **and** SPA path unbroken — `npm run lint` green + full `npm run build` → `dist/server.cjs` (128KB). Boot cutover + page/API/SEO migration = Phase 3.
 - **2026-06-27 (h)** — Owner provided PageSpeed baselines (recorded above) + all Phase 2/3/5/7 prereq answers (recorded in Decision Log + 05-PREREQS). Found **RESP-08: /websites CLS 0.99**. Made the hero **interactive** (CONTENT-05): channel tabs now switch between distinct Website (browser+form), WhatsApp (chat), Call (transcript+waveform), and Automation (step flow) scenarios; fixed min-height to avoid switch-induced CLS; accessible tabs (role/aria/focus-visible). tsc + build green. Phase 2 now unblocked → next.
 - **2026-06-27 (g)** — **Fixed failing CI** (root cause: committed `package-lock.json` drifts on optional platform binaries → `npm ci` strict check fails; also `--ignore-scripts` skipped esbuild's native binary). CI now uses `npm install` (provisions binaries + builds via postinstall, mirrors Hostinger). Added the **manual-step gate system**: new [05-PREREQS.md](05-PREREQS.md) listing per-phase manual steps; assistant must present them and wait for `done` before starting a gated phase. Reworked `CLAUDE.md` top: ON-SESSION-START protocol + Progress Snapshot (done/not-done) + gate + `/init`-preserve note, so context+progress transfer on any new session. Wired the gate into `/resume`, 02-PLAN, 00-INDEX.
 - **2026-06-27 (f)** — Phase 0 infra: added GitHub Actions CI (`.github/workflows/ci.yml` — typecheck + build on push/PR), `.gitattributes` (LF normalization — stops the CRLF churn) and `.editorconfig`. Still TODO in Phase 0: ESLint+Prettier (deferred — will surface a warning flood + needs deps; do as a focused pass with non-breaking config), Playwright smoke test (needs browser install; add config + spec next), and owner PageSpeed baselines.

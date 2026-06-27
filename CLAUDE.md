@@ -20,9 +20,10 @@ Before starting a phase, consult [`05-PREREQS.md`](docs/overhaul/05-PREREQS.md).
   - Phase 0: CI (`npm install` — fixed lockfile-drift fail), `.gitattributes`, `.editorconfig`, real README, **PageSpeed baselines captured** (in 03-STATE).
   - Phase 1 perf: PERF-01/03/07/08.
   - Phase 4 hero: `SystemDemo` on Home + Pakistan; Three.js/typewriter removed; single H1; **interactive channel tabs** (Website/WhatsApp/Call/Automation) — PERF-04/06, CONTENT-01/02/03/05, SEO-06.
+  - **Phase 2 (Next.js foundation): DONE.** Next 16 App Router builds + runs **beside** the live Vite/Express SPA without breaking it. SSR proven (view-source title/desc/canonical/h1, no JS) + `/api/pip/health` works through Next; SPA path still green. Coexistence: `postcss.config.mjs` (Next-only) + Vite pinned to inline empty postcss; **`tsconfig.next.json`** scopes Next type-check to `app/`+`lib/` (root tsconfig untouched = SPA's); **`src/pages/`→`src/views/`** rename (App-vs-Pages-Router clash). Live `npm run build`/`start`/`postinstall` untouched; Next-only `build:next`/`start:next`/`dev:next`. (See 04-HANDOFF §6a.)
 - **Not done / next:**
-  - **RESP-08 (high-pri):** `/websites` CLS ≈ 0.99 (near-full-page shift) — investigate `src/pages/Websites.tsx`.
-  - **Phase 2/3 (Next.js SSR migration — the SEO fix): now UNBLOCKED.** Key constraint: Hostinger start command is fixed (`node dist/server.cjs`) but the **entry file + Node 22 are changeable** → make the entry boot Next (standalone/`next start` wrapper). No staging → test locally then push. Canonical = apex. og:image = generate one.
+  - **Phase 3 (the SEO payoff):** port `src/views/*` → `app/<route>/page.tsx` SSR + per-route metadata/JSON-LD + sitemap/robots + API 1:1 parity + Pakistan gating→middleware + security headers, then the **boot cutover** (`dist/server.cjs` shim → Next standalone; Express kept as tagged rollback). Canonical = apex; og:image = generate one; no staging → test locally then push.
+  - **RESP-08:** `/websites` CLS ≈ 0.99 — inherently fixed by SSR; re-measure after porting `src/views/Websites.tsx`.
   - Phase 0 leftovers: ESLint/Prettier (`--legacy-peer-deps`), Playwright smoke test.
   - Phase 5 responsive matrix (16:9 + 16:10, old+new devices), Phase 6 backend/scale, Phase 7 launch (Sentry + PostHog; owner submits sitemap after green signal).
 
@@ -41,7 +42,7 @@ Before starting a phase, consult [`05-PREREQS.md`](docs/overhaul/05-PREREQS.md).
 Marketing + lead-gen site for **Office Pigeon**, an agency selling: **Websites, Smart Chatbots, AI Calling Agents, Workflow Automations** to small/growing businesses. Includes a **Pip AI** RAG assistant, an **ElevenLabs voice tool** endpoint, a **free-preview hosting** system (`/previews/:slug`) with an admin manager, and a geo-gated **Pakistan** page (PK-only). Brand voice + design principles: see [`PRODUCT.md`](PRODUCT.md).
 
 ## Current architecture (as-built — see ANALYSIS for issues)
-- **Frontend:** Vite 6 + React 19 **SPA**, TypeScript, Tailwind v4, `motion` (Framer Motion), Three.js hero. Manual routing in `src/App.tsx` (`history.pushState` + a `switch`, no router lib). Pages in `src/pages/*`, shared UI in `src/components/*`, content/pricing in `src/config.ts`.
+- **Frontend:** Vite 6 + React 19 **SPA**, TypeScript, Tailwind v4, `motion` (Framer Motion), Three.js hero. Manual routing in `src/App.tsx` (`history.pushState` + a `switch`, no router lib). SPA view components in `src/views/*` (renamed from `src/pages/` in Phase 2 to avoid the Next App-Router-vs-Pages-Router clash), shared UI in `src/components/*`, content/pricing in `src/config.ts`.
 - **Server (LIVE):** `server.ts` — Express. Serves the built SPA (`dist`) + all APIs (chat, pip/*, contact, package-inquiry, preview-leads, region-offer, admin/*, elevenlabs tool), preview file serving with banner injection, and Pakistan geo-gating.
 - **`lib/*`** — framework-agnostic logic (Pip AI, LLM provider router, Supabase vectors). **Used by Express.**
 - **`app/api/*`** — Next.js 16 route handlers that **duplicate** some Express routes but are **DEAD** (no `next.config`, no `next` build/start script; the `next` dependency is vestigial). Slated for consolidation in the migration.
@@ -69,7 +70,7 @@ Env: copy `.env.example` → `.env`. Needs Supabase + at least one LLM key (GEMI
 - The home `<h1>` "AUTOMATE" background word is decorative but a real `<h1>` (collapse to one H1 when editing the hero).
 - The hero is now `src/components/SystemDemo.tsx` (lightweight CSS/SVG "show the system working" panel) on both Home and Pakistan. The old `ThreeHub` (Three.js) was deleted; `three` is no longer loaded. Old `PakistanHeroVisual`/`heroModes` in `Pakistan.tsx` are dead (tree-shaken) — remove in the ESLint cleanup pass.
 - **Pricing is duplicated** across `src/config.ts`, the server `SYSTEM_PROMPT`, and the knowledge base — change all or single-source it.
-- Pakistan page (`src/pages/Pakistan.tsx`, ~1022 lines) is bespoke + geo-gated — mirror Home changes there.
+- Pakistan page (`src/views/Pakistan.tsx`, ~1022 lines) is bespoke + geo-gated — mirror Home changes there.
 - Two component trees exist (`src/components` vs root `components/pip-ai` via a re-export shim) — to be unified in the migration.
 - Keep `main` deployable; small commits; preview routes + `/admin` stay `noindex`.
 
@@ -78,8 +79,8 @@ Env: copy `.env.example` → `.env`. Needs Supabase + at least one LLM key (GEMI
 |------|------|
 | `server.ts` | Live Express server (~1400 lines): APIs, previews, geo-gating, LLM fan-out, admin auth |
 | `src/App.tsx` | SPA shell: manual routing, page maps, client meta injection |
-| `src/pages/Home.tsx` | Home (hero = SystemDemo) |
-| `src/pages/Pakistan.tsx` | Geo-gated PK page (hero = SystemDemo; has dead PakistanHeroVisual) |
+| `src/views/Home.tsx` | Home (hero = SystemDemo) |
+| `src/views/Pakistan.tsx` | Geo-gated PK page (hero = SystemDemo; has dead PakistanHeroVisual) |
 | `src/components/SystemDemo.tsx` | Hero "show the system working" demo (CSS/SVG, reduced-motion safe) |
 | `src/config.ts` | Packages, pricing, FAQs, example builds |
 | `lib/pip-ai/*`, `lib/llm/*` | Pip AI RAG + LLM provider router (shared) |
