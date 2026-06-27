@@ -72,9 +72,9 @@ export function serviceJsonLd(opts: {
   name: string;
   description: string;
   url: string;
-  packages: Package[];
+  packages?: Package[];
 }) {
-  return {
+  const base = {
     '@context': 'https://schema.org',
     '@type': 'Service',
     name: opts.name,
@@ -83,6 +83,10 @@ export function serviceJsonLd(opts: {
     serviceType: opts.name,
     provider: { '@id': ORG_ID },
     areaServed: 'Worldwide',
+  };
+  if (!opts.packages?.length) return base;
+  return {
+    ...base,
     hasOfferCatalog: {
       '@type': 'OfferCatalog',
       name: opts.name,
