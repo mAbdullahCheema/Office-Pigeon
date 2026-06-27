@@ -6,6 +6,7 @@
 Big multi-phase overhaul of officepigeon.com (websites/chatbots/AI-calling-agents/automations agency site). Deep analysis + phased plan + memory system are written. **No code changed yet** — this first session was docs-only by owner's choice. Resume by reviewing the plan with the owner, then doing Phase 0 baselines + Phase 1 perf quick wins.
 
 ## How to resume (do this every new session)
+**Type `/resume`** (project slash command) — it loads the brain, reports state, and continues the current phase. **Do NOT use `/init`** (it only rewrites `CLAUDE.md`). Steps `/resume` runs:
 1. Read `CLAUDE.md` (auto-loaded) → it points here.
 2. Read [03-STATE.md](03-STATE.md) → **Current Focus**, **Next Up**, **Status Board**, **Open Questions**. That's ground truth for progress.
 3. Skim [02-PLAN.md](02-PLAN.md) for the current phase's tasks + acceptance criteria.

@@ -3,7 +3,9 @@
 Codebase guide + session-resume hub. Auto-loaded every session.
 
 ## 🔄 Overhaul / Resume Protocol (READ FIRST)
-This repo is in a multi-phase improvement program. **To regain context, open [`docs/overhaul/`](docs/overhaul/00-INDEX.md):**
+This repo is in a multi-phase improvement program. **To resume work, run `/resume`** (project command — it loads the brain, reports state, and continues the current phase). **Do NOT use `/init` to resume** — `/init` only rewrites this file, it does not read STATE/HANDOFF or start phases.
+
+**To regain context manually, open [`docs/overhaul/`](docs/overhaul/00-INDEX.md):**
 1. [`docs/overhaul/04-HANDOFF.md`](docs/overhaul/04-HANDOFF.md) — where we left off.
 2. [`docs/overhaul/03-STATE.md`](docs/overhaul/03-STATE.md) — **living** progress, decisions, open questions, next-up.
 3. [`docs/overhaul/02-PLAN.md`](docs/overhaul/02-PLAN.md) — phased fix plan (acceptance criteria per phase).
@@ -39,6 +41,8 @@ npm run lint     # tsc --noEmit  (no ESLint yet — Phase 0 adds it)
 # Knowledge base:
 npm run pip:generate-knowledge | pip:index-knowledge | pip:test-vectors
 ```
+**No test runner** — `tsc --noEmit` (`npm run lint`) is the only automated check; there are no unit/e2e tests. The `pip:test-vectors` script is a manual Supabase vector-search smoke check, not a test suite.
+**`postinstall` runs `npm run build`** — a plain `npm install` triggers a full prod build (vite + esbuild → `dist/server.cjs`). This is how Hostinger deploys, but it makes installs slow and they fail if env/deps are missing. Use `npm install --ignore-scripts` to skip it locally.
 Env: copy `.env.example` → `.env`. Needs Supabase + at least one LLM key (GEMINI_API_KEY). Full list in `.env.example`.
 
 > Note: tooling here is RTK-aware (see global `~/.claude/CLAUDE.md`) — prefer `rtk <cmd>` for git/build/test where applicable.

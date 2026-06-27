@@ -12,6 +12,9 @@ This folder is the **persistent brain** for the Office Pigeon improvement progra
 | [04-HANDOFF.md](04-HANDOFF.md) | "Pick up the thread" doc for resuming. | End of each session |
 
 ## Resume protocol (every new session)
+**Fastest: type `/resume`** — the project command that loads this brain, reports current phase/next-up, and continues work. **Not `/init`** (that only rewrites `CLAUDE.md`).
+
+Manual equivalent:
 1. `CLAUDE.md` (auto-loaded) → points here.
 2. Read [04-HANDOFF.md](04-HANDOFF.md) (where we left off).
 3. Read [03-STATE.md](03-STATE.md) (current focus, status board, open questions).
