@@ -261,8 +261,12 @@ export default function App() {
         <div className="pt-2">
           {/* Main dynamic viewport transition */}
           <main id="main-content-viewport">
+            {/* Fallback reserves the full viewport so below-fold content (footer)
+                isn't painted then pushed down when the lazy page mounts — this
+                is what caused the large CLS on direct loads of lazy routes
+                (RESP-08). The real fix is the Next SSR migration (Phase 3). */}
             <Suspense fallback={
-              <div className="min-h-[60vh] flex flex-col items-center justify-center animate-pulse">
+              <div className="min-h-[100dvh] flex flex-col items-center justify-center pt-[20vh] animate-pulse">
                 <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-orange-500 to-rose-500 animate-spin" />
                 <p className="mt-4 text-xs text-gray-400 font-mono uppercase tracking-widest">Loading Page...</p>
               </div>

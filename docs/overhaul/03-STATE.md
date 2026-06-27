@@ -81,7 +81,7 @@ Legend: ⬜ not started · 🟡 in progress · ✅ done · ⏸ blocked
 | PERF-06 | Typewriter setState loop | 4 | ✅ | removed with headline |
 | SEO-06 | Single H1 on Home | 4 | ✅ | decorative "AUTOMATE" h1 → aria-hidden span |
 | _cleanup_ | Dead `PakistanHeroVisual`/`heroModes` | 5 | ⬜ | tree-shaken from bundle; remove from source w/ ESLint pass |
-| RESP-08 | **/websites CLS ≈ 0.99** (near-full-page shift) | 1/5 | ⬜ | NEW — found in baseline; drags perf to 62/74. Investigate Websites.tsx (likely a late-shifting hero/section/image). High priority. |
+| RESP-08 | **/websites CLS ≈ 0.99** (near-full-page shift) | 1/5 | 🟡 | Root cause: lazy-route **Suspense fallback** (`min-h-[60vh]` spinner) swapped for the tall page on direct load → footer jumps up. Applies to all lazy routes; Home exempt (non-lazy). **Interim fix applied:** fallback now `min-h-[100dvh]` so below-fold content isn't painted then shifted. **Real fix = SSR (Phase 3)** — re-measure then. Owner to re-run PageSpeed on /websites to confirm interim improvement. |
 | CONTENT-05 | Interactive hero channel tabs | 4 | ✅ | tabs switch Website/WhatsApp/Call/Automation scenarios |
 
 ---
