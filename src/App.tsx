@@ -7,7 +7,6 @@ import { useEffect, useState, lazy, Suspense } from 'react';
 import { PageId, Package } from './types';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import SmoothScroll from './components/SmoothScroll';
 import PipAIWidget from './components/PipAIWidget';
 import VoiceAgentClientTools from './components/VoiceAgentClientTools';
 import PackageModal from './components/PackageModal';
@@ -258,8 +257,8 @@ export default function App() {
         onPageChange={handlePageChange}
       />
 
-      {/* PHYSICS-BASED INERTIAL SMOOTH SCROLLER WITH MOBILE MOMENTUM FALLBACK */}
-      <SmoothScroll>
+      {/* Native scrolling (no scroll-jacking). PERF-08 */}
+      <div className="w-full">
         <div className="pt-2">
           {/* Main dynamic viewport transition */}
           <main id="main-content-viewport">
@@ -276,7 +275,7 @@ export default function App() {
           {/* FOOTER */}
           <Footer onPageChange={handlePageChange} />
         </div>
-      </SmoothScroll>
+      </div>
 
       {/* FLOATING CHAT ASSISTANT - OVERLAY */}
       <VoiceAgentClientTools />

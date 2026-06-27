@@ -1,4 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+/* Fonts are loaded via <link> in index.html (preconnect + display=swap) to avoid
+   the render-blocking @import chain. PERF-03 */
 @import "tailwindcss";
 
 @theme {

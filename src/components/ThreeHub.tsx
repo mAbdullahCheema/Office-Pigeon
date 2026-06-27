@@ -11,6 +11,9 @@ export default function ThreeHub() {
   const [activeNode, setActiveNode] = useState<string | null>(null);
   const [webGlSupported, setWebGlSupported] = useState(false);
   const [shouldRender, setShouldRender] = useState(false);
+  // PERF-01: throttle activeNode React updates instead of setState-ing every rAF frame
+  const activeNodeRef = useRef<string | null>(null);
+  const lastActiveUpdateRef = useRef(0);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -293,14 +296,17 @@ export default function ThreeHub() {
       }
       particles.geometry.attributes.position.needsUpdate = true;
 
-      // Raycast test to identify closest orbit nodes
+      // Identify closest orbit node. PERF-01: only push to React state when the
+      // value actually changes AND at most ~6x/sec, so the 60fps render loop
+      // doesn't trigger a React re-render storm on every frame.
       const currentHighest = nodesData.reduce((prev, curr) => {
         return curr.node.mesh.position.z > prev.node.mesh.position.z ? curr : prev;
       });
-      if (currentHighest.node.mesh.position.z > 2) {
-        setActiveNode(currentHighest.id);
-      } else {
-        setActiveNode(null);
+      const nextActive = currentHighest.node.mesh.position.z > 2 ? currentHighest.id : null;
+      if (nextActive !== activeNodeRef.current && time - lastActiveUpdateRef.current > 150) {
+        activeNodeRef.current = nextActive;
+        lastActiveUpdateRef.current = time;
+        setActiveNode(nextActive);
       }
 
       renderer.render(scene, camera);

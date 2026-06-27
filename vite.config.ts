@@ -18,5 +18,19 @@ export default defineConfig(() => {
       // Disable file watching when DISABLE_HMR is true to save CPU during agent edits.
       watch: process.env.DISABLE_HMR === 'true' ? null : {},
     },
+    build: {
+      // PERF-07: split heavy/independent vendors into their own cacheable chunks.
+      // three + motion are only pulled in by lazy routes, so this keeps the
+      // initial bundle lean and improves long-term caching.
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            react: ['react', 'react-dom'],
+            three: ['three'],
+            motion: ['motion'],
+          },
+        },
+      },
+    },
   };
 });

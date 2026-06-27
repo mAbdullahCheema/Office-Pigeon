@@ -8,13 +8,13 @@ Last updated: **2026-06-27** by Claude (analysis session).
 ---
 
 ## Current Focus
-**Phase: pre-implementation.** Deliverables for this session = docs + memory only (no code). Next action = owner reviews the [analysis](01-ANALYSIS.md) + [plan](02-PLAN.md), then we begin **Phase 0 (baselines)** and **Phase 1 (perf quick wins)** — both parallel-safe and improve the live SPA immediately.
+**Phase 1 in progress** (perf quick wins, parallel-safe). First safe batch landed: PERF-01, PERF-03, PERF-07, PERF-08 + Phase-0 README. Build + typecheck green. PERF-02 and PERF-06 intentionally deferred to bundle with the Phase 4 hero rebuild (ThreeHub/typewriter get replaced there — avoids double work).
 
 ## Next Up (start here next session)
-1. Confirm owner approved the plan / any scope changes.
-2. Phase 0: capture Lighthouse + SEO baselines into the **Metrics Baseline** table below.
-3. Phase 1: implement **PERF-01** (ThreeHub re-render storm) first — highest impact, lowest risk.
-4. Open decision: Hostinger Node version + process manager + exact start command (needed before Phase 2). See Open Questions.
+1. **Owner action (Phase 0 baseline):** run PageSpeed Insights on officepigeon.com for `/`, `/websites`, `/pakistan` (mobile+desktop) and paste numbers into the Metrics Baseline table — needs a browser, can't do headless here.
+2. Phase 0 tooling still TODO: ESLint/Prettier flat config, minimal CI (typecheck+build), Playwright overflow/console smoke test.
+3. Follow-up perf: the initial `index` chunk is ~353KB (102KB gz) — investigate deeper splitting (lucide icon imports, config) in a later pass.
+4. Phase 2 still blocked on: Hostinger Node version + process manager + exact start command (see Open Questions).
 
 ---
 
@@ -41,8 +41,8 @@ Legend: ⬜ not started · 🟡 in progress · ✅ done · ⏸ blocked
 
 | Phase | Title | Status | Notes |
 |-------|-------|--------|-------|
-| 0 | Safety net & baselines | ⬜ | Do first; parallel-safe |
-| 1 | Performance quick wins | ⬜ | PERF-01 first |
+| 0 | Safety net & baselines | 🟡 | README done; baselines (owner/PageSpeed) + lint/CI/Playwright TODO |
+| 1 | Performance quick wins | 🟡 | PERF-01/03/07/08 done; PERF-02/06 deferred to Phase 4; PERF-05/09/10 TODO |
 | 2 | Next.js foundation | ⬜ | Needs Hostinger runtime answers |
 | 3 | Pages + API migration + SEO core | ⬜ | Critical path for SEO |
 | 4 | Hero "show the system working" | ⬜ | Parallel-safe after Phase 2 |
@@ -59,9 +59,12 @@ Legend: ⬜ not started · 🟡 in progress · ✅ done · ⏸ blocked
 | SEO-02 | Per-page metadata | 3 | ⬜ | |
 | SEO-04 | JSON-LD structured data | 3 | ⬜ | |
 | SEO-05 | sitemap + robots | 3 | ⬜ | |
-| PERF-01 | ThreeHub re-render storm | 1 | ⬜ | |
-| PERF-02 | Always-on paint layers | 1 | ⬜ | |
-| PERF-03 | Render-blocking fonts | 1 | ⬜ | |
+| PERF-01 | ThreeHub re-render storm | 1 | ✅ | ref + 150ms throttle; only setState on change |
+| PERF-02 | Always-on paint layers | 4 | ⏸ | deferred to Phase 4 hero rebuild |
+| PERF-03 | Render-blocking fonts | 1 | ✅ | @import → preconnect + <link> in index.html |
+| PERF-07 | Bundle chunking | 1 | ✅ | vite manualChunks: three/motion/react split |
+| PERF-08 | Dead SmoothScroll | 1 | ✅ | removed component + misleading comment |
+| ARCH-04 | Stale README | 0 | ✅ | real setup/run/deploy README |
 | ARCH-01 | Two backends (Express/dead Next) | 2/3 | ⬜ | |
 | RESP-01..03 | Overflow / absolute hero | 4/5 | ⬜ | |
 | SEC-01/02 | trust proxy / security headers | 3 | ⬜ | |
@@ -84,6 +87,7 @@ Targets (Phase 7): mobile Perf ≥ 90, LCP < 2.5s, CLS < 0.1, unique SSR metadat
 ---
 
 ## Session Log (newest first)
+- **2026-06-27 (d)** — Started Phase 1. Landed PERF-01 (ThreeHub: ref + 150ms throttle, no per-frame setState), PERF-03 (fonts off @import → preconnect+link in index.html), PERF-07 (vite manualChunks split three/motion/react), PERF-08 (deleted dead SmoothScroll.tsx + comment), and Phase-0 ARCH-04 (real README). `tsc` clean; `vite build` green in 8.79s — three (504KB) + motion (96KB) now lazy/separate chunks. Deferred PERF-02/PERF-06 to Phase 4 (hero replaces ThreeHub/typewriter). Noted: initial index chunk ~353KB needs deeper splitting later.
 - **2026-06-27 (c)** — `/init` didn't resume work (it only rewrites CLAUDE.md). Added `/resume` project command (`.claude/commands/resume.md`) that loads the brain, reports state, and continues the current phase. Pointed CLAUDE.md/INDEX/HANDOFF at `/resume`. **To resume: type `/resume`, not `/init`.**
 - **2026-06-27 (b)** — Added standing rule: commit & push to `origin/main` at end of every phase (recorded in PLAN/CLAUDE.md/HANDOFF). Committed + pushed the docs/memory deliverables.
 - **2026-06-27 (a)** — Deep scan of codebase. Identified root causes: SPA client-render kills SEO (SEO-01..04), ThreeHub `setActiveNode` per rAF frame (PERF-01), always-on gradient repaints (PERF-02), dead Next `app/api` duplicating Express (ARCH-01), hero doesn't sell (CONTENT-01). Got 4 decisions from owner (see Decision Log). Wrote analysis, plan, this state file, handoff, index, root `CLAUDE.md`, and global memory. No code changes.
