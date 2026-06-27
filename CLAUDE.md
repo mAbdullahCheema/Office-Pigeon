@@ -16,14 +16,15 @@ Before starting a phase, consult [`05-PREREQS.md`](docs/overhaul/05-PREREQS.md).
 
 ## ✅ Progress Snapshot  (keep in sync with 03-STATE; update after each work chunk)
 - **Done:**
-  - Overhaul docs/memory system + `/resume` command + this hub.
-  - Phase 1 perf: PERF-01 (no per-frame setState), PERF-03 (font preconnect), PERF-07 (chunks), PERF-08 (dead SmoothScroll removed).
-  - Phase 4 hero: `SystemDemo` on Home + Pakistan; Three.js/typewriter removed; single H1 (PERF-04/06, CONTENT-01/02/03, SEO-06).
-  - Phase 0 infra: GitHub Actions CI (now using `npm install` — fixed lockfile-drift failure), `.gitattributes`, `.editorconfig`, real README.
+  - Overhaul docs/memory system + `/resume` command + manual-step gate (`05-PREREQS`) + this hub.
+  - Phase 0: CI (`npm install` — fixed lockfile-drift fail), `.gitattributes`, `.editorconfig`, real README, **PageSpeed baselines captured** (in 03-STATE).
+  - Phase 1 perf: PERF-01/03/07/08.
+  - Phase 4 hero: `SystemDemo` on Home + Pakistan; Three.js/typewriter removed; single H1; **interactive channel tabs** (Website/WhatsApp/Call/Automation) — PERF-04/06, CONTENT-01/02/03/05, SEO-06.
 - **Not done / next:**
-  - Phase 0: ESLint/Prettier (eslint-9 peer-dep conflict — use `--legacy-peer-deps`), Playwright smoke test, owner PageSpeed baselines.
-  - **Phase 2/3 (Next.js SSR migration — the SEO fix):** BLOCKED on manual prereqs in `05-PREREQS.md` (Hostinger Node runtime details, og:image, Search Console). Not started.
-  - Phase 5 responsive matrix, Phase 6 backend/scale, Phase 7 launch.
+  - **RESP-08 (high-pri):** `/websites` CLS ≈ 0.99 (near-full-page shift) — investigate `src/pages/Websites.tsx`.
+  - **Phase 2/3 (Next.js SSR migration — the SEO fix): now UNBLOCKED.** Key constraint: Hostinger start command is fixed (`node dist/server.cjs`) but the **entry file + Node 22 are changeable** → make the entry boot Next (standalone/`next start` wrapper). No staging → test locally then push. Canonical = apex. og:image = generate one.
+  - Phase 0 leftovers: ESLint/Prettier (`--legacy-peer-deps`), Playwright smoke test.
+  - Phase 5 responsive matrix (16:9 + 16:10, old+new devices), Phase 6 backend/scale, Phase 7 launch (Sentry + PostHog; owner submits sitemap after green signal).
 
 **After doing work, update `03-STATE.md`, `04-HANDOFF.md`, and this Progress Snapshot.** Don't re-litigate locked decisions (see STATE Decision Log).
 

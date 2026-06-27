@@ -14,7 +14,8 @@ Legend: ⬜ not done · ✅ done · ➖ n/a
 
 ## Phase 0 — Safety net & baselines
 **Manual prerequisites:**
-- ⬜ **Capture PageSpeed baselines.** (So we can prove the before/after.)
+- ✅ **PageSpeed baselines captured** (2026-06-27) — recorded in [03-STATE Metrics Baseline](03-STATE.md). Note: `/pakistan` measured the region-gate page (crawler not in PK); `/websites` has CLS ≈ 0.99 (RESP-08).
+- ⬜ *(original)* **Capture PageSpeed baselines.** (So we can prove the before/after.)
   1. Open https://pagespeed.web.dev/
   2. Test each URL, **Mobile** and **Desktop** tabs: `https://officepigeon.com/`, `https://officepigeon.com/websites`, `https://officepigeon.com/pakistan`
   3. For each, record: Performance score, LCP, CLS, TBT (and "Total Blocking Time").
@@ -30,45 +31,45 @@ Legend: ⬜ not done · ✅ done · ➖ n/a
 
 ---
 
-## Phase 2 — Next.js foundation  ⚠️ BLOCKING — needs your input before any code
-**Manual prerequisites:**
-- ⬜ **Hostinger Node runtime details.** In hPanel → your hosting → **Node.js app** (or "Setup Node.js App"):
-  1. Tell me the **Node.js version** available/selected (e.g. 20.x).
-  2. Tell me the **process / start setup**: what is the **Application startup file** and **start command** currently? (Today it should be `node dist/server.cjs` or similar.)
-  3. Tell me whether you can **change the start command** to `npm run start` / `next start` and change the **Node version** yourself in the panel (yes/no).
-  4. Tell me **how environment variables are set** (hPanel "Environment variables" UI, or a `.env` file on the server?).
-- ⬜ **Confirm a safe test path.** Can we point a **subdomain** (e.g. `staging.officepigeon.com`) at a Next build to verify parity before touching the live site? (yes/no — if no, we test locally only and cut over carefully.)
-- ⬜ **Provide an `og:image`.** A 1200×630 PNG/JPG share image for social/SEO. If you don't have one, say "make one" and I'll generate a branded placeholder.
+## Phase 2 — Next.js foundation  ✅ UNBLOCKED (answers received 2026-06-27)
+**Owner answers (recorded):**
+- ✅ **Node.js version:** 22.x available; owner **can change** the Node version.
+- ✅ **Start setup:** Hostinger runs `node dist/server.cjs` via npm. Owner **CANNOT change the start command**, but **CAN change the entry file**. → Build must make the entry (`dist/server.cjs` or the configured startup file) **boot the Next production server** (Next `output: 'standalone'` server.js, or a thin programmatic `next start` wrapper bundled to that path).
+- ✅ **Env vars:** set in Hostinger's Node.js deployment settings (UI), not a `.env` file → Next reads `process.env` at runtime.
+- ✅ **No staging subdomain** → test locally, then push to live. Keep Express build tagged for rollback.
+- ⬜ **og:image:** owner said **"make one"** → assistant generates a branded 1200×630 asset (Phase 3 metadata wiring).
 
-**Gate:** reply `done` with the four runtime answers + the subdomain yes/no + the og:image (or "make one"). I will not start the Next migration until these land.
+**Gate:** satisfied. Proceed with Phase 2.
 
 ---
 
-## Phase 3 — Pages + API migration + SEO core + cutover  ⚠️ BLOCKING items
-**Manual prerequisites:**
-- ⬜ **Google Search Console access.** Verify `officepigeon.com` in https://search.google.com/search-console (DNS or HTML-tag method). Needed to submit the sitemap and watch indexing. Tell me when verified.
-- ⬜ **Confirm Supabase env on the server.** Make sure `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` (and the rest of `.env.example`) are set in the Hostinger env. Confirm you have Supabase dashboard access for an RLS/index review.
-- ⬜ **Canonical domain decision.** Confirm the canonical host: apex `officepigeon.com` vs `www.` — and that HTTPS is enforced. (Default: apex, HTTPS forced.)
-- ⬜ **Cutover window.** Agree a low-traffic window to switch the live start command from Express to Next, with the Express build kept as a tagged rollback.
+## Phase 3 — Pages + API migration + SEO core + cutover
+**Owner answers (recorded 2026-06-27):**
+- ⬜ **Google Search Console — TXT pending.** Owner has the verification record. **ACTION (owner):** in Hostinger DNS zone for `officepigeon.com`, add a **TXT record** (host `@` / root) with value:
+  `google-site-verification=E3BCUJxl6vi7Owulx2oiRpF41YgCRhF8s8RGtDw4xw0`
+  then click **Verify** in Search Console. Tell me when verified. (Non-blocking for building code; needed before sitemap submit.)
+- ✅ **Supabase env present** on Hostinger (URL + service role key). RLS/index review still to schedule.
+- ✅ **Canonical = apex `https://officepigeon.com`** (no www), HTTPS enforced.
+- ✅ **Cutover approved** ("agree if it's the better way") — proceed with the careful local-test→push cutover, Express kept as tagged rollback.
 
-**Gate:** reply `done` per item (or batch) before the cutover step. Page/JSON-LD/sitemap code can be built first; the **cutover** waits on these.
+**Gate:** Page/JSON-LD/sitemap/robots code builds first. **Sitemap submission + final indexing wait for the owner's green-signal after everything is finalized** (owner: "I will submit the proper sitemap after you finalize everything and give me the green signal").
 
 ---
 
 ## Phase 4 — Hero "show the system working"
 **Manual prerequisites:**
 - ✅ Code shipped (Home + Pakistan use `SystemDemo`).
-- ⬜ **Your review of the hero** copy + visual (subjective). Optional: send real product screenshots if you want literal mockups instead of the stylized panel.
+- ✅ **Owner review:** "good, but the Website/WhatsApp/Call/Automation buttons should work and show different relevant things." → **Done:** channel tabs are now interactive, each rendering a distinct scenario (CONTENT-05).
 
-**Gate:** none (non-blocking). Tell me any copy/visual tweaks anytime.
+**Gate:** none. Further copy/visual tweaks welcome anytime.
 
 ---
 
 ## Phase 5 — Responsive & device hardening
-**Manual prerequisites:**
-- ⬜ **Device list / access (optional but ideal).** List the real devices you care about most (specific phones, an old laptop, tablet). I test the full emulated matrix regardless; real-device confirmation from you on 2–3 of yours closes the loop.
+**Owner target devices (recorded):** mobile (old **and** new), tablet, laptops, and desktops across **different resolutions + aspect ratios — especially 16:9 and 16:10**.
+- Test matrix to use: 320 / 360 / 390 / 414 px phones (old + modern), 768 / 834 / 1024 tablet, 1280 / 1366 / 1440 / 1536 / 1920 / 2560 desktop, both 16:9 and 16:10, plus 200% zoom, no-WebGL, and reduced-motion. Zero overflow/clipping everywhere.
 
-**Gate:** non-blocking. Provide devices when convenient.
+**Gate:** non-blocking.
 
 ---
 
@@ -82,11 +83,11 @@ Legend: ⬜ not done · ✅ done · ➖ n/a
 ---
 
 ## Phase 7 — Polish, QA, launch
-**Manual prerequisites:**
-- ⬜ **Analytics decision.** Want analytics (e.g. Plausible/GA4) to measure the hero/conversion impact? If yes, which — I'll wire it; you provide the site key.
-- ⬜ **Final indexing/submit.** Submit the sitemap in Search Console; request indexing on key pages (I'll give the click-path).
+**Owner answers (recorded):**
+- ✅ **Observability decided: Sentry + PostHog.** Assistant wires both; owner provides the Sentry DSN + PostHog project key/host when we reach this phase.
+- ⬜ **Final indexing/submit — owner-gated.** Owner: "I'll submit the proper sitemap **after** you finalize everything and give me the **green signal** — all on-page + technical SEO, robots.txt, sitemap correct." → Assistant must complete + verify all SEO/technical work, then explicitly hand a green-signal checklist; owner then submits the sitemap and requests indexing.
 
-**Gate:** reply `done` per item.
+**Gate:** Sentry/PostHog keys when starting; final submit waits on the green signal.
 
 ---
 
