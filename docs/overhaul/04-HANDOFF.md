@@ -1,45 +1,79 @@
-# Office Pigeon — Session Handoff
+# Office Pigeon — Session Handoff (READ THIS FIRST TO RESUME)
 
-> Read this first when resuming. It tells a fresh session (you, next time) exactly where things stand and how to continue. The durable detail lives in the other files; this is the "pick up the thread" doc.
+> Ask me to "read the handoff and continue" → I read this top-to-bottom and pick up exactly here. This file is self-sufficient; the other docs are reference. **Last updated: 2026-06-27.**
 
-## TL;DR
-Big multi-phase overhaul of officepigeon.com (websites/chatbots/AI-calling-agents/automations agency site). Deep analysis + phased plan + memory system are written. **No code changed yet** — this first session was docs-only by owner's choice. Resume by reviewing the plan with the owner, then doing Phase 0 baselines + Phase 1 perf quick wins.
+---
 
-## How to resume (do this every new session)
-**Type `/resume`** (project slash command) — it loads the brain, reports state, and continues the current phase. **Do NOT use `/init`** (it only rewrites `CLAUDE.md`). Steps `/resume` runs:
-1. Read `CLAUDE.md` (auto-loaded) → it points here.
-2. Read [03-STATE.md](03-STATE.md) → **Current Focus**, **Next Up**, **Status Board**, **Open Questions**. That's ground truth for progress.
-3. Skim [02-PLAN.md](02-PLAN.md) for the current phase's tasks + acceptance criteria.
-4. Reference [01-ANALYSIS.md](01-ANALYSIS.md) for the *why* behind any issue ID (e.g. `PERF-01`).
-5. After doing work: update [03-STATE.md](03-STATE.md) (Status Board, per-issue tracker, Session Log) and append a line to this handoff's "What changed last session".
+## 1. What this project is
+Marketing + lead-gen site for **Office Pigeon** (agency: Websites, Chatbots, AI Calling Agents, Workflow Automations). Live at **officepigeon.com** on **Hostinger (Node app)**. Currently a **Vite + React 19 SPA served by Express** (`server.ts`). We are mid-overhaul: perf, SEO/AEO/GEO, responsive, security, scalability, and a new hero.
 
-## Locked decisions (don't re-litigate — see [03-STATE Decision Log](03-STATE.md#decision-log))
-- Host: **Hostinger Node**, live officepigeon.com → run **Next.js via `next start`**.
-- SEO: **full Next.js SSR/SSG migration** (also kills the Express-vs-dead-Next duplication).
-- Hero: **"show the system working"** demo (Home + Pakistan); remove Three.js hub.
-- Cadence: small commits, keep `main` deployable, baseline-then-improve.
-- **Commit & push to `origin/main` at the end of every phase** (and after meaningful tasks) — `rtk git add -A && rtk git commit && rtk git push`. Each phase = recoverable checkpoint.
+Full brain: [01-ANALYSIS](01-ANALYSIS.md) (issues+IDs) · [02-PLAN](02-PLAN.md) (phases) · [03-STATE](03-STATE.md) (live progress, baselines, decisions) · [05-PREREQS](05-PREREQS.md) (manual-step gate). Root [`CLAUDE.md`](../../CLAUDE.md) auto-loads each session.
 
-## State of the code (snapshot 2026-06-27)
-- Live runtime = Express `server.ts` → serves the **Vite React SPA** (`dist`) + all APIs. This is what's on Hostinger.
-- `app/api/*` (Next route handlers) = **dead** (no `next.config`, no `next` scripts). `lib/*` is shared & used by Express.
-- Branch `main`, clean except one untracked stray asset: `public/logos/office-pigeon-icon .png` (note the space — likely accidental; verify before adding).
-- No tests, no CI, lint = `tsc --noEmit` only.
+## 2. Locked decisions (do NOT re-litigate)
+- **Runtime target = Next.js**, run on Hostinger Node via the **entry file** (see §6). Full **SSR/SSG migration** is the SEO fix; it also kills the dead duplicate Next `app/api`.
+- **Hero = "show the system working"** demo (done, see §4).
+- **Canonical = apex `https://officepigeon.com`** (no www).
+- **No staging** → test locally, then push to live. Keep Express build as tagged rollback before cutover.
+- **Observability = Sentry + PostHog** (Phase 7).
+- Standing rule: **commit & push to `origin/main` at the end of every phase / meaningful task.**
+- **Manual-step gate:** before starting a phase, check [05-PREREQS](05-PREREQS.md); if it has unmet manual steps, present them and **wait for the user to reply `done`** before phase code work.
 
-## What to do next (concrete first steps)
-1. **Confirm Open Questions** in [03-STATE](03-STATE.md#open-questions--pending-decisions) — especially the **Hostinger Node runtime details** (blocks the Next cutover) and the **og:image** asset.
-2. **Phase 0:** record Lighthouse + view-source SEO baselines in the [Metrics Baseline](03-STATE.md#metrics-baseline-fill-in-phase-0) table; add lint/format + a Playwright overflow/console smoke test.
-3. **Phase 1:** start with **PERF-01** (ThreeHub: stop `setActiveNode` every frame — use a ref + throttle or direct DOM). Then fonts (PERF-03), paint layers (PERF-02). These improve the *live* site immediately and are reversible.
+## 3. Status — what's DONE
+- **Docs/memory system + `/resume` command + manual-step gate.**
+- **Phase 0 (partial):** GitHub Actions CI (uses `npm install` — fixed the lockfile-drift failure), `.gitattributes` (LF), `.editorconfig`, real README, **PageSpeed baselines captured** (in [03-STATE](03-STATE.md#metrics-baseline--captured-2026-06-27-pagespeedlighthouse-134-post-phase-14)).
+- **Phase 1 (perf):** PERF-01 (no per-frame setState in old hero), PERF-03 (fonts preconnect), PERF-07 (vite chunks), PERF-08 (dead SmoothScroll removed).
+- **Phase 4 (hero):** `src/components/SystemDemo.tsx` on Home + Pakistan — Three.js + typewriter removed (`three` no longer loaded), single H1, and **interactive channel tabs** (Website/WhatsApp/Call/Automation each show a distinct scenario). PERF-04/06, CONTENT-01/02/03/05, SEO-06.
+- **RESP-08 interim:** `/websites` CLS≈0.99 root-caused (lazy-route Suspense fallback) and mitigated (fallback now `min-h-[100dvh]`). Real fix = SSR.
 
-## Gotchas / landmines for next session
-- Don't "fix" `SmoothScroll.tsx` to add scrolling — it's intentionally a no-op now (native scroll). Just remove it + the misleading comment (PERF-08). Prior scroll-jacking churn is in git history.
-- The home `<h1>` "AUTOMATE" background word is decorative but is a real `<h1>` (SEO-06) — collapse to one H1 when touching the hero.
-- ThreeHub already disables WebGL <768px and FPS-falls-back; the perf problem is the React state loop, not WebGL itself.
-- Pricing is duplicated (config.ts, server `SYSTEM_PROMPT`, knowledge base) — when changing prices, change all sources or (better) single-source it (CONTENT-04).
-- `trust proxy: true` + IP rate limits = spoofable (SEC-01); fix when porting to Next.
-- Pakistan page is geo-gated server-side (PK only) and bespoke (1022 lines) — mirror any Home changes there.
+## 4. Status — what's NOT done / next
+1. **Phase 2 — Next.js foundation (the next big task).** See §6 for the exact approach.
+2. **Phase 3 — SSR pages + JSON-LD + sitemap/robots + backend consolidation + cutover.** The actual SEO payoff.
+3. **RESP-08 full fix** via SSR; owner to re-run PageSpeed on `/websites` to confirm the interim drop.
+4. **Phase 0 leftovers:** ESLint/Prettier (install hit an eslint-9 peer-dep conflict vs react19/next16 → use `--legacy-peer-deps` or pinned versions, advisory/non-breaking config), Playwright smoke test (`npx playwright install`).
+5. **og:image** 1200×630 branded asset (generate during Phase 3 metadata).
+6. **Phase 5** responsive matrix (old+new mobile, tablet, laptop, desktop; esp **16:9 and 16:10**; 200% zoom; no-WebGL; reduced-motion). **Phase 6** backend/scale. **Phase 7** Sentry+PostHog + launch.
+7. **Clean up** dead `PakistanHeroVisual`/`heroModes` in `src/pages/Pakistan.tsx` (tree-shaken, but remove from source in the ESLint pass).
 
-## What changed last session (append newest first)
-- **2026-06-27 (Phase 4 hero):** New `SystemDemo` hero on Home + Pakistan ("show the system working" — customer → AI books it → lead captured). Deleted ThreeHub/three (PERF-04), removed typewriter (PERF-06), single H1 (SEO-06), de-risked Home hero layout (RESP-02). Reduced-motion safe. Hero copy is my call — owner may tweak. Next: finish Phase 0 tooling (ESLint/CI/Playwright), then Phase 2 Next foundation (needs Hostinger runtime answers — will use sane defaults if none).
-- **2026-06-27 (Phase 1 start):** Landed safe perf wins — PERF-01 (ThreeHub no longer setState every frame), PERF-03 (fonts preconnect+link, off @import), PERF-07 (vite chunk split), PERF-08 (removed dead SmoothScroll), and a real README (ARCH-04). Build + typecheck green. PERF-02/06 deferred to Phase 4. **Next:** owner runs PageSpeed baselines; then Phase 0 tooling (eslint/CI/Playwright) or jump to Phase 2 once Hostinger runtime answers land. Initial index chunk ~353KB flagged for deeper splitting.
-- **2026-06-27:** Created the overhaul doc system (`docs/overhaul/00..04`), root `CLAUDE.md` hub, and global memory entries. Ran a full read-only analysis. No source code modified.
+## 5. Waiting on the owner (non-blocking for code)
+- Confirm **CI is green** now (switched to `npm install`).
+- Add **Search Console TXT** at officepigeon.com DNS → `google-site-verification=E3BCUJxl6vi7Owulx2oiRpF41YgCRhF8s8RGtDw4xw0`, then Verify. Needed before sitemap submit, not before code.
+- **Sentry DSN + PostHog key/host** when we reach Phase 7.
+- Owner will **submit the sitemap only after the assistant's green signal** (all on-page + technical SEO finalized).
+
+## 6. ▶️ EXACT NEXT STEP — start Phase 2 (Next.js foundation)
+**Gate:** Phase 2 prereqs are satisfied (see [05-PREREQS Phase 2](05-PREREQS.md#phase-2--nextjs-foundation--unblocked-answers-received-2026-06-27)). Proceed.
+
+**Hard Hostinger constraint:** the start command is fixed to `node dist/server.cjs` (run by npm) and **cannot change** — but the **entry/startup file CAN change** and **Node can be set to 22.x**. So Next must be launched *through that entry path*, not via a new `next start` command.
+
+**Approach:**
+1. Add Next.js App Router scaffolding **without breaking the live Express build**: `next.config.{js,ts}` with `output: 'standalone'`, `app/layout.tsx` (root metadata, Tailwind v4 via Next, fonts via `next/font`), a first `app/page.tsx`. Wire Tailwind v4 + PostCSS for Next.
+2. Decide the production boot: make the build emit a **Next standalone server** and have the configured Hostinger entry point at it — either (a) set Hostinger's startup file to the standalone `server.js`, or (b) keep `dist/server.cjs` as a thin shim that `require()`s/launches the standalone server. Document the exact build script + the entry path the owner must set.
+3. Reuse `lib/*` as-is (framework-agnostic, already used). Inventory every live Express endpoint in `server.ts` (chat, pip/*, contact, package-inquiry, preview-leads, region-offer, admin/*, elevenlabs tool, **preview file serving + banner injection**, **Pakistan geo-gating**) and plan 1:1 mapping to Next Route Handlers / **Next middleware** (gating). Un-dead the existing `app/api/*` and reconcile against Express behavior.
+4. Keep Express (`npm run build` → `dist/server.cjs`) as the live path until Phase 3 parity is proven. Tag a rollback commit before any cutover.
+5. **Acceptance (Phase 2):** `next build && next start` locally serves a real SSR home page whose `<title>`/meta appear in **view-source** (no JS), and one API route works end-to-end through Next.
+
+**Quick win to also do early:** investigate any remaining CLS and confirm RESP-08 mitigation; the SSR pages inherently fix it.
+
+## 7. Landmines / gotchas
+- Live runtime is **Express** (`server.ts`), NOT Next. `app/api/*` is currently **dead** (no `next.config`/scripts).
+- `lib/*` IS used by Express — reuse it, don't rewrite.
+- Don't restore `SmoothScroll` (deleted; native scroll is intended).
+- Pricing is duplicated (`src/config.ts`, server `SYSTEM_PROMPT`, `knowledge/*`) — single-source it during migration (CONTENT-04).
+- `trust proxy: true` + IP rate limits are spoofable (SEC-01) — fix when porting to Next; add security headers (SEC-02).
+- Pakistan page is bespoke + geo-gated (PK only); mirror Home changes; it still has dead `PakistanHeroVisual`/`heroModes`.
+- Build verify = `npm run lint` (tsc) + `npx vite build`. `gh`/`rtk` are NOT on PATH in this environment — use plain `git`.
+- Untracked stray file: `public/logos/office-pigeon-icon .png` (note the space) — confirm intent before adding/deleting.
+
+## 8. Commit log this overhaul (newest first)
+- `7f4a9b3` fix(perf): mitigate /websites CLS (RESP-08)
+- `9dae432` feat(hero): interactive channel tabs + record baselines & phase inputs
+- `2818bed` fix(ci): npm install (lockfile drift) + phase-gate system
+- `983e73d` docs: eslint peer-dep deferral
+- `a4b0926` chore: Phase 0 infra — CI, line endings, editorconfig
+- `f8cf513` feat(hero): replace 3D hub with SystemDemo
+- `5e3a1b9` perf: Phase 1 quick wins
+- `4a9682c` chore: add /resume command
+- `71ee53b` docs: overhaul analysis/plan/memory/handoff
+
+## 9. End-of-session checklist (every time)
+Update [03-STATE](03-STATE.md) (Status Board, per-issue tracker, Session Log) + this handoff (§3/§4/§8) + the Progress Snapshot in [`CLAUDE.md`](../../CLAUDE.md) + tick [05-PREREQS](05-PREREQS.md) boxes → then **commit & push**.
