@@ -73,6 +73,8 @@ Phase 2 is **done**. Mechanics to know before touching the build:
 - Untracked stray file: `public/logos/office-pigeon-icon .png` (note the space) — confirm intent before adding/deleting.
 
 ## 8. Commit log this overhaul (newest first)
+- `8dfd263` feat(next): Phase 2 — Next.js App Router foundation beside live SPA (SSR proven; src/pages→src/views; tsconfig/postcss split)
+- `368ec6b` docs: rewrite HANDOFF as a complete self-sufficient resume doc
 - `7f4a9b3` fix(perf): mitigate /websites CLS (RESP-08)
 - `9dae432` feat(hero): interactive channel tabs + record baselines & phase inputs
 - `2818bed` fix(ci): npm install (lockfile drift) + phase-gate system
