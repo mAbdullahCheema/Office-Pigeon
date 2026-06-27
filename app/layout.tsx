@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import { JetBrains_Mono, Manrope } from 'next/font/google';
 import './globals.css';
+import JsonLd from './_components/JsonLd';
+import { localBusinessJsonLd, organizationJsonLd } from '@/lib/seo/jsonld';
 
 /**
  * Root layout (Phase 2 foundation).
@@ -42,7 +44,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${manrope.variable} ${jetbrainsMono.variable}`}>
-      <body>{children}</body>
+      <body>
+        <JsonLd data={[organizationJsonLd(), localBusinessJsonLd()]} />
+        {children}
+      </body>
     </html>
   );
 }
