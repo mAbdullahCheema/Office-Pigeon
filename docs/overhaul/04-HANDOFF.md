@@ -25,7 +25,8 @@ Full brain: [01-ANALYSIS](01-ANALYSIS.md) (issues+IDs) · [02-PLAN](02-PLAN.md) 
 - **Phase 4 (hero):** `src/components/SystemDemo.tsx` on Home + Pakistan — Three.js + typewriter removed (`three` no longer loaded), single H1, and **interactive channel tabs** (Website/WhatsApp/Call/Automation each show a distinct scenario). PERF-04/06, CONTENT-01/02/03/05, SEO-06.
 - **RESP-08 interim:** `/websites` CLS≈0.99 root-caused (lazy-route Suspense fallback) and mitigated (fallback now `min-h-[100dvh]`). Real fix = SSR.
 - **Phase 2 (Next.js foundation):** Next 16 App Router now **builds + runs side-by-side** with the live Vite/Express SPA without breaking it. `next.config.ts` (`output:'standalone'` + scoped `tsconfig.next.json`), `postcss.config.mjs` (Next-only), `app/layout.tsx` (metadata + `next/font`, canonical=apex), `app/globals.css`. Un-deaded `app/api/*`. Coexistence mechanics in §6a.
-- **Phase 3 frontend SSR + SEO core:** **all 13 marketing pages ported** to `app/(site)/<route>` Server Components, each reusing its `src/views/*` UI as a client island via the `SiteChrome` actions context. Single-source `lib/site/routes.ts`; per-route metadata (`lib/seo/pageMetadata.ts`, SEO-02); JSON-LD Org/LocalBusiness/Service/FAQ/Breadcrumb (`lib/seo/jsonld.ts` + `app/_components/JsonLd.tsx`, SEO-04); `app/robots.ts` + `app/sitemap.ts` (SEO-05). **Verified:** `next build` (26 routes) green; every page serves unique title+content+JSON-LD in raw HTML; SPA still green. Pakistan noindex + sitemap-excluded (SEO-09 TBD).
+- **Phase 3 frontend SSR + SEO core:** **all 13 marketing pages ported** to `app/(site)/<route>` Server Components, each reusing its `src/views/*` UI as a client island via the `SiteChrome` actions context. Single-source `lib/site/routes.ts`; per-route metadata (`lib/seo/pageMetadata.ts`, SEO-02); JSON-LD Org/LocalBusiness/Service/FAQ/Breadcrumb (`lib/seo/jsonld.ts` + `app/_components/JsonLd.tsx`, SEO-04); `app/robots.ts` + `app/sitemap.ts` (SEO-05). **Verified:** `next build` green; every page serves unique title+content+JSON-LD in raw HTML; SPA still green.
+- **Phase 3 API parity (most) + PK gating:** ported 1:1 from `server.ts` (reuse `lib/*` + new `lib/server/{env,formUtils,previews,adminAuth,pakistanPage}.ts`, `lib/geo/country.ts`): `/api/contact-submission`, `/api/package-inquiry`, `/api/region-offer`, `/api/public/previews`, `/api/admin/{config,me,previews,previews/[slug],previews/[slug]/status}`. `middleware.ts` gates `/pakistan` by visitor country. **Verified** (see §3-test). **Remaining:** preview file serving (`/previews/:slug/*` + banner) + `/api/preview-leads`.
 
 ## 4. Status — what's NOT done / next
 1. **Phase 3 — SSR pages + JSON-LD + sitemap/robots + backend consolidation + boot cutover (the next big task).** The actual SEO payoff. See §6.
@@ -61,15 +62,15 @@ Phase 2 is **done**. Mechanics to know before touching the build:
 **Hard Hostinger constraint (for the cutover):** start command fixed to `node dist/server.cjs` (run by npm), **cannot change** — but the **entry file content CAN change** and **Node→22.x**. The cutover build must make `dist/server.cjs` boot the Next standalone server (`output:'standalone'` already set). ⚠️ **At cutover the assistant must hand the owner exact Hostinger steps** (set entry/startup file + Node 22).
 
 **Approach (in order):**
-1. **API parity.** Next already has `app/api/pip/{chat,health,lead,recommend,whatsapp,handoff}`, `admin/reindex-knowledge`, `elevenlabs/.../search`. Add Route Handlers for the rest the SPA calls, reconciled 1:1 vs `server.ts`, reusing `lib/*`: `/api/chat`, `/api/pip-lead`, `/api/contact-submission`, `/api/package-inquiry`, `/api/preview-leads`, `/api/region-offer`, `/api/admin/{config,me,previews}`, `/api/public/previews`, and **preview file serving + banner injection** (`/previews/:slug/*`, keep `X-Robots-Tag: noindex` + cache headers). zod validation (BE-04), origin/honeypot on public POSTs (SEC-08).
-2. **Pakistan geo-gating → `middleware.ts`:** port `canAccessPakistanPage` + country resolution; `/pakistan` stays noindex/region-gated (SEO-09).
-3. **Security headers** via `next.config` `headers()` (CSP/HSTS/X-CTO/frame-ancestors/Referrer-Policy/Permissions-Policy, SEC-02); fix `trust proxy` to the real Hostinger hop (SEC-01); admin allowlist env-only (SEC-04).
-4. **og:image** 1200×630 branded → wire into OpenGraph (root + `pageMetadata`).
-5. **Boot cutover (last):** build copies `.next/standalone/*` (+ `.next/static`, `public/`) into `dist/`; `dist/server.cjs` → thin shim booting the standalone `server.js`. **Tag an Express rollback commit first.** Test locally → push. Hand owner the Hostinger steps.
+1. **Finish API parity (only 2 endpoints left).** ✅ Done: contact-submission, package-inquiry, region-offer, public/previews, admin/{config,me,previews,previews/[slug],previews/[slug]/status}, plus pre-existing pip/*, admin/reindex, elevenlabs/search. ✅ PK gating via `middleware.ts`. **TODO:** (a) **preview file serving + banner** — Next catch-all `app/previews/[slug]/[[...rest]]/route.ts`: read from `previewDirCandidates()`, port `injectPreviewHtml`/`buildPreviewInjection`/`buildExpiredPreviewPage` into `lib/server/previews.ts`, status-gate (non-`live` → expired page), `X-Robots-Tag: noindex` + cache headers, correct content-types for assets; (b) **`/api/preview-leads`** — rate-limited Supabase insert (banner posts here). Legacy `/api/chat` + `/api/pip-lead` are NOT used by the SPA (it calls `/api/pip/chat` + `/api/pip/lead`, both exist) — skip unless wanted.
+2. **Security headers** via `next.config` `headers()` (SEC-02); fix `trust proxy` (SEC-01, lib/geo already reads x-forwarded-for); admin allowlist env-only (SEC-04).
+3. **og:image** 1200×630 branded → wire into OpenGraph (root + `pageMetadata`).
+4. **Boot cutover (last):** build copies `.next/standalone/*` (+ `.next/static`, `public/`, **`previews/`**) into `dist/`; `dist/server.cjs` → thin shim booting the standalone `server.js`. **Tag an Express rollback commit first.** Test locally → push. ⚠️ **Hand owner the Hostinger steps** (set entry/startup file + Node 22).
 
-**Acceptance (Phase 3):** every route view-source has unique title/desc/canonical + JSON-LD (✅ done); Rich Results passes; all forms/chat/preview/admin work through Next; security headers present; Express retired. Then hand the owner the **green-signal checklist** for sitemap submission.
+**Acceptance (Phase 3):** every route view-source has unique title/desc/canonical + JSON-LD (✅); all forms/chat/preview/admin work through Next; security headers present; Express retired. Then hand the owner the **green-signal checklist** for sitemap submission.
 
-**Express endpoints map (`server.ts`):** `/api/chat`, `/api/pip/{chat,lead,whatsapp}`, `/api/pip-lead`, `/api/contact-submission`, `/api/package-inquiry`, `/api/preview-leads`, `/api/region-offer`, `/api/admin/{config,me,previews}`, `/api/public/previews`, `/api/elevenlabs/tools/search-office-pigeon-knowledge`, `/previews/:slug/*` (file serve + banner inject), Pakistan gate.
+### §3-test — how the ported APIs were verified (local `next start`)
+region-offer → JSON; contact/package-inquiry POST → 503 Supabase-guard (no local env), same as Express; admin/config → JSON; admin/me (no token) → 401; public/previews → lists real `previews/` folders; `/pakistan` → restricted page by default, real page with `x-vercel-ip-country: PK`, restricted with `US`.
 
 ## 7. Landmines / gotchas
 - Live runtime is **Express** (`server.ts`), NOT Next. `app/api/*` is currently **dead** (no `next.config`/scripts).
@@ -82,6 +83,8 @@ Phase 2 is **done**. Mechanics to know before touching the build:
 - Untracked stray file: `public/logos/office-pigeon-icon .png` (note the space) — confirm intent before adding/deleting.
 
 ## 8. Commit log this overhaul (newest first)
+- `6440e17` feat(next): Phase 3 API parity — admin previews, public previews, PK middleware
+- `817cdf7` feat(next): Phase 3 API parity — contact, package-inquiry, region-offer
 - `2ed3211` feat(next): Phase 3 — port all 13 marketing pages to SSR (metadata + JSON-LD per page)
 - `c197e20` feat(next): Phase 3 — SSR foundation, SEO core (routes/jsonld/sitemap/robots), chrome + About
 - `2c9c147` chore: add office-pigeon-icon .png asset
