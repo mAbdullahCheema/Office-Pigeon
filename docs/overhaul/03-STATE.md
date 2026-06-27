@@ -12,7 +12,7 @@ Last updated: **2026-06-27** by Claude (analysis session).
 
 ## Next Up (start here next session)
 1. **Owner action (Phase 0 baseline):** run PageSpeed Insights on officepigeon.com for `/`, `/websites`, `/pakistan` (mobile+desktop) and paste numbers into the Metrics Baseline table — needs a browser, can't do headless here.
-2. Phase 0 tooling still TODO: ESLint/Prettier flat config, minimal CI (typecheck+build), Playwright overflow/console smoke test.
+2. Phase 0 tooling: CI (typecheck+build) ✅ done. Still TODO: ESLint/Prettier (install hit an eslint-9 plugin peer-dep conflict vs react19/next16 — resolve with `--legacy-peer-deps` or pinned versions in a focused pass, config advisory/non-breaking), Playwright overflow/console smoke test (needs `npx playwright install`).
 3. Follow-up perf: the initial `index` chunk is ~353KB (102KB gz) — investigate deeper splitting (lucide icon imports, config) in a later pass.
 4. Phase 2 still blocked on: Hostinger Node version + process manager + exact start command (see Open Questions).
 
