@@ -56,4 +56,4 @@ appwrite-export.backup.json
 deploy.tar.gz
 
 # Local e2e output
-pip-e2e.log
+pip-e2e*.log
