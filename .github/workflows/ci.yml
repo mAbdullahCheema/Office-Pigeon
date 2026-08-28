@@ -46,6 +46,24 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      # `new URL()` on a malformed site URL fails the build deep inside page
+      # collection, and GitHub masks the offending value in the log, so the
+      # error names neither the variable nor what was wrong with it. Checking it
+      # up front turns a five-minute puzzle into one line.
+      - name: Preflight the site URL
+        env:
+          NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL || 'https://officepigeon.com' }}
+        run: |
+          node -e '
+            const raw = process.env.NEXT_PUBLIC_SITE_URL ?? "";
+            console.log("length:", raw.length);
+            console.log("scheme:", raw.slice(0, raw.indexOf(":") + 1) || "(none)");
+            console.log("has whitespace:", /\s/.test(raw));
+            console.log("codepoints:", [...raw].map((c) => c.codePointAt(0)).join(","));
+            new URL(raw);
+            console.log("parses as a URL: yes");
+          '
+
       - name: Build
         env:
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
