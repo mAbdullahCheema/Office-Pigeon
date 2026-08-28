@@ -26,6 +26,22 @@ const TOOL_TOKENS = 800;
 const FINAL_TOKENS = 500;
 /** A turn that wants more tools than this is looping, not working. */
 const MAX_TOOL_CALLS = 8;
+/**
+ * How long one turn may take, end to end.
+ *
+ * The per-call timeout in `providers.ts` bounds a single provider, not a turn:
+ * five tiers across five rounds is a quarter of an hour of one visitor holding
+ * a request open, a rate-limit slot and a database connection — which is not a
+ * chat reply anyone would still want, and is how a provider outage turns into
+ * an outage here.
+ *
+ * Seventy-five seconds is deliberately generous against the normal case, which
+ * is under fifteen: it leaves room for one provider to time out at forty-five
+ * and the next to answer, without ever letting the worst case run away. Past
+ * it the turn ends the way every other total failure ends — a person picks it
+ * up — rather than by hanging.
+ */
+const TURN_BUDGET_MS = 75_000;
 /** Longer than this and it is a document, not a reply. */
 const MAX_REPLY = 1200;
 
@@ -102,6 +118,7 @@ async function withPrices(
   messages: ChatMessage[],
   context: { toolsUsed: Set<string> },
   question: string,
+  deadline: number,
 ): Promise<string> {
   const dodged =
     PRICE_INTENT.test(question) && context.toolsUsed.has('get_pricing') && !/\d/.test(reply);
@@ -120,6 +137,7 @@ async function withPrices(
       ],
       [],
       FINAL_TOKENS,
+      deadline,
     );
 
     return second.content || reply;
@@ -172,6 +190,9 @@ export async function runPip(input: PipInput): Promise<PipTurn> {
   const armed = confirmationHint(input.confirmed);
   if (armed) messages.push({ role: 'system', content: armed });
 
+  // One clock for the whole turn, set before the first provider is asked.
+  const deadline = Date.now() + TURN_BUDGET_MS;
+
   let provider = 'none';
   let model = 'none';
   let toolCallsSpent = 0;
@@ -187,7 +208,7 @@ export async function runPip(input: PipInput): Promise<PipTurn> {
 
     let answer;
     try {
-      answer = await complete(messages, tools, spent ? FINAL_TOKENS : TOOL_TOKENS);
+      answer = await complete(messages, tools, spent ? FINAL_TOKENS : TOOL_TOKENS, deadline);
     } catch (error) {
       if (!(error instanceof AllProvidersFailed)) throw error;
 
@@ -218,7 +239,7 @@ export async function runPip(input: PipInput): Promise<PipTurn> {
     model = answer.model;
 
     if (answer.toolCalls.length === 0) {
-      const reply = await withPrices(answer.content, messages, context, input.message);
+      const reply = await withPrices(answer.content, messages, context, input.message, deadline);
 
       return {
         reply: tidy(reply),

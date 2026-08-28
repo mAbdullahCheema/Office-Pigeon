@@ -97,9 +97,15 @@ export async function callTier(
   messages: ChatMessage[],
   tools: ToolSpec[],
   maxTokens: number,
+  /** Wall-clock ms since epoch after which this call must already be over. */
+  deadline?: number,
 ): Promise<Completion> {
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
+  // A tier never gets longer than the turn has left. Without this the last
+  // tier tried could start a 45-second call one second before the budget runs
+  // out and overshoot it by 44.
+  const allowance = deadline ? Math.min(TIMEOUT_MS, deadline - Date.now()) : TIMEOUT_MS;
+  const timer = setTimeout(() => controller.abort(), Math.max(allowance, 0));
 
   try {
     const response = await fetch(`${tier.baseUrl}/chat/completions`, {
@@ -166,6 +172,15 @@ export async function complete(
   messages: ChatMessage[],
   tools: ToolSpec[] = [],
   maxTokens = 900,
+  /**
+   * When the whole turn must be over by. Five tiers at 45 seconds each, across
+   * five rounds, is a quarter of an hour of one visitor holding a server slot
+   * — which is not a chat reply anyone wants and is a real availability risk
+   * when several providers degrade at once. Past the deadline the chain stops
+   * trying rather than working through tiers whose answer would arrive too
+   * late to use.
+   */
+  deadline?: number,
 ): Promise<Completion> {
   const attempts: { provider: string; reason: string }[] = [];
   const replayingTools = messages.some(
@@ -175,8 +190,13 @@ export async function complete(
   for (const tier of providerChain()) {
     if (tier.skipAfterToolCalls && replayingTools) continue;
 
+    if (deadline && Date.now() >= deadline) {
+      attempts.push({ provider: tier.id, reason: 'turn budget exhausted' });
+      break;
+    }
+
     try {
-      return await callTier(tier, messages, tools, maxTokens);
+      return await callTier(tier, messages, tools, maxTokens, deadline);
     } catch (error) {
       const reason = error instanceof Error ? error.message : String(error);
       attempts.push({ provider: tier.id, reason });

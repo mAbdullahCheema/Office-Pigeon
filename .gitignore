@@ -54,3 +54,6 @@ appwrite-export.backup.json
 
 # The Hostinger upload archive
 deploy.tar.gz
+
+# Local e2e output
+pip-e2e.log
