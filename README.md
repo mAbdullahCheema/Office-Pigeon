@@ -301,7 +301,7 @@ Two specific pieces of hard-won reliability engineering are worth calling out:
 
 ### Consent, honestly implemented
 
-The cookie banner is not decorative. Nothing optional loads until the visitor chooses: PostHog is not initialised, not merely opted-out. Switching analytics off later stops capture immediately and purges PostHog's `ph_*` cookies and localStorage keys by prefix. **Global Privacy Control and `DNT: 1` are treated as a hard override**, not as a default the visitor can be nudged past. Session replay is off, because it would record what people type into the contact and order forms.
+The cookie banner is not decorative, and the site currently has nothing optional to load — there is no analytics vendor, no pixel and no third-party script anywhere on the page. The consent machinery is still real: the decision is written to both localStorage and a first-party cookie, `lib/consent.ts` is the single implementation that reads it, switching a category off purges that category's cookies immediately, and **Global Privacy Control and `DNT: 1` are treated as a hard override** rather than a default a visitor can be nudged past. That matters because the first thing anyone adds later will be tempted to skip it.
 
 ---
 
@@ -313,7 +313,7 @@ The cookie banner is not decorative. Nothing optional loads until the visitor ch
 - **One round trip for rate limiting.** See the Lua script above.
 - **Fonts.** `next/font` self-hosts Bricolage Grotesque and Plus Jakarta Sans with `display: swap` — no external font request, which is also what lets `font-src` stay `'self'`.
 - **No CSS framework payload.** Styles are generated and deduplicated at render.
-- **Analytics is a dynamic import.** `posthog-js` is 261 KB uncompressed and sits in its own chunk, fetched only after a visitor accepts the analytics category. Importing it statically and merely skipping `init` would have shipped it to everyone — including the majority who decline — which is both slower and a broken promise, since the banner says nothing optional loads until you choose.
+- **No third-party JavaScript.** No analytics vendor, no tag manager, no pixel. The only external origin the browser is permitted to reach is Sentry's ingest endpoint, and only when a DSN is configured.
 
 ---
 
@@ -336,8 +336,6 @@ Every price in that graph is read from `lib/catalog.ts` — the same module the 
 Both integrations are keyed off an environment variable and do nothing at all without it, so the site runs identically with neither configured.
 
 **Sentry** — server, edge and browser. Errors that React swallows into a digest are caught through Next's `onRequestError` hook, which is the only place they surface. `tracesSampleRate` is 0.1 because the free tier is a fixed monthly quota and at 100% a single crawler run can exhaust the month and leave a real outage unreported. Source maps upload only when an auth token is present, so a build without one succeeds with minified traces rather than failing. The build plugin is only applied when a DSN exists — a deployment without Sentry cannot have its build broken by Sentry.
-
-**PostHog** — product analytics, gated on consent as described above, loaded as a dynamic import so declining costs the visitor nothing, with every runtime-fetched bundle disabled so the strict CSP never has to be loosened for it.
 
 **Health** — `/api/health` reports database and cache separately, and only Postgres decides the status code. A non-200 must mean "this instance cannot serve", not "something is imperfect", or a load balancer will drain a fleet that was working.
 

@@ -3,11 +3,12 @@ import { CONSENT_COOKIE } from './supabase/config';
 /**
  * The visitor's cookie decision, and how to read it.
  *
- * This lives apart from the banner that writes it because the banner is no
- * longer the only thing that cares: analytics has to ask the same question
- * before it loads, and a second copy of the parsing would be a second place for
- * "did they allow this?" to answer differently. For a control that exists to
- * satisfy a law, one answer is the whole point.
+ * Kept apart from the banner that writes it so that reading the decision has
+ * exactly one implementation. Nothing optional loads on this site today, but
+ * the moment something does — analytics, an embed, a pixel — it must ask this
+ * question rather than parse the cookie a second time. For a control that
+ * exists to satisfy a law, two answers is the failure mode worth designing out
+ * in advance.
  */
 
 export type ConsentPrefs = {
@@ -79,9 +80,4 @@ export function readConsent(): StoredConsent | null {
     /* unreadable storage falls through to the cookie */
   }
   return readConsentCookie();
-}
-
-/** Whether the visitor has allowed analytics. Absent decision means no. */
-export function analyticsAllowed(): boolean {
-  return readConsent()?.prefs.analytics === true;
 }

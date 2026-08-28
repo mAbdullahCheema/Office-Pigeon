@@ -83,27 +83,6 @@ function purge(prefs: Prefs) {
       }
     });
   });
-
-  // PostHog names its store after the project key — `ph_<key>_posthog` — so it
-  // is cleared by prefix rather than by a name this file would have to know.
-  // `posthog.opt_out_capturing()` already stops new writes; this removes what a
-  // previous "accept" left behind.
-  if (!prefs.analytics) {
-    document.cookie
-      .split('; ')
-      .map((entry) => entry.split('=')[0])
-      .filter((name) => name.startsWith('ph_'))
-      .forEach((name) => {
-        document.cookie = `${name}=; Max-Age=0; path=/`;
-      });
-    try {
-      Object.keys(localStorage)
-        .filter((key) => key.startsWith('ph_'))
-        .forEach((key) => localStorage.removeItem(key));
-    } catch {
-      /* nothing to clear */
-    }
-  }
 }
 
 export function CookieConsent() {

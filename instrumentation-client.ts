@@ -1,13 +1,11 @@
 import * as Sentry from '@sentry/nextjs';
 
-import { capturePageview, initAnalytics } from '@/lib/analytics';
-
 /**
- * Browser-side observability, started before React hydrates.
+ * Browser-side error monitoring, started before React hydrates.
  *
- * Both halves are keyed off an environment variable and do nothing at all when
- * it is absent, so the site runs identically with neither service configured —
- * which is how it runs locally, and how it ran before either was added.
+ * Keyed off an environment variable and does nothing at all when it is absent,
+ * so the site runs identically with Sentry unconfigured — which is how it runs
+ * locally, and how it ran before Sentry was added.
  */
 
 const dsn = process.env.NEXT_PUBLIC_SENTRY_DSN;
@@ -46,18 +44,14 @@ if (dsn) {
   });
 }
 
-initAnalytics();
-
 /**
- * Client navigations are not page loads, so neither service sees them unless
- * they are told. Sentry needs the hook to attribute an error to the route the
- * visitor was actually on; PostHog needs it for the pageview count to mean
- * anything on a single-page app.
+ * A client navigation is not a page load, so Sentry does not see it unless it
+ * is told. Without this an error is attributed to the route the visitor first
+ * landed on rather than the one they were actually reading.
  */
 export function onRouterTransitionStart(
   url: string,
   navigationType: 'push' | 'replace' | 'traverse',
 ) {
   if (dsn) Sentry.captureRouterTransitionStart(url, navigationType);
-  capturePageview(new URL(url, window.location.origin).href);
 }

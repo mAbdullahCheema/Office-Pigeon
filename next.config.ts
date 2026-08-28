@@ -15,17 +15,12 @@ const supabaseHost = supabaseOrigin ? new URL(supabaseOrigin).hostname : '';
 const production = process.env.NODE_ENV === 'production';
 
 /**
- * The observability origins the browser is allowed to talk to.
+ * The one third-party origin the browser is allowed to talk to.
  *
- * Both are derived from the keys rather than hard-coded, so a deployment with
- * no PostHog project and no Sentry DSN ships a policy that does not mention
- * them — the tightest policy is the default, and configuring a service is what
- * opens the hole it needs.
+ * Derived from the DSN rather than hard-coded, so a deployment with no Sentry
+ * configured ships a policy that does not mention it: the tightest policy is
+ * the default, and configuring the service is what opens the hole it needs.
  */
-const posthogOrigin = process.env.NEXT_PUBLIC_POSTHOG_KEY
-  ? origin(process.env.NEXT_PUBLIC_POSTHOG_HOST ?? 'https://us.i.posthog.com')
-  : '';
-
 const sentryOrigin = origin(process.env.NEXT_PUBLIC_SENTRY_DSN);
 
 /**
@@ -55,7 +50,7 @@ const csp = [
   // The design language carries its styling as inline declarations.
   "style-src 'self' 'unsafe-inline'",
   `script-src 'self' 'unsafe-inline'${production ? '' : " 'unsafe-eval'"}`,
-  ['connect-src', "'self'", supabaseOrigin, supabaseOrigin.replace('https://', 'wss://'), posthogOrigin, sentryOrigin]
+  ['connect-src', "'self'", supabaseOrigin, supabaseOrigin.replace('https://', 'wss://'), sentryOrigin]
     .filter(Boolean)
     .join(' '),
   "worker-src 'self' blob:",
