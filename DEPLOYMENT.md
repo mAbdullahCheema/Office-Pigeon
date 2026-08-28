@@ -14,9 +14,22 @@ Hostinger offers two routes and they are genuinely different. Everything below i
 
 **B — Manual upload.** `npm run package:hostinger` produces a self-contained `deploy/` folder you upload and start yourself. Slower to iterate on, but entirely under your control and useful when a platform build misbehaves. See [Appendix: manual upload](#appendix-manual-upload).
 
+### Why the config is `.mjs` and not `.ts`
+
+A `next.config.ts` has to be **compiled** before Next can read it, and Next compiles it with SWC. Hostinger's build container ships a glibc older than 2.29, so the native `@next/swc-linux-x64-gnu` binary cannot load and Next falls back to the WASM build. That fallback runs the app fine but never produces the temporary module the compiled config imports, so every build died with:
+
+```
+⚠ Attempted to load @next/swc-linux-x64-gnu, but an error occurred:
+  /lib64/libm.so.6: version `GLIBC_2.29' not found
+⨯ Failed to load next.config.ts
+Error: Cannot find module '/…/6a91d936cab70.next.config'
+```
+
+The hashed filename is **generated**, and it changes on every run — it is not a file in the repository, and there is nothing to delete. A `.mjs` config is imported directly by Node with no compilation step, which removes the failure mode entirely. `// @ts-check` plus the JSDoc annotation keeps the editor types and still catches a misspelled option.
+
 ### Why `output: 'standalone'` stays on
 
-`next.config.ts` sets `output: 'standalone'`, which emits an extra `.next/standalone/server.js` beside the ordinary `.next` build. That is what route B uploads, and it costs route A nothing: the standalone folder is **additive**, `next build` still produces the normal output, and `next start` runs against it perfectly well — verified against this build, not assumed. Leaving it on means both routes work with no config change, and route B remains available as a rollback.
+`next.config.mjs` sets `output: 'standalone'`, which emits an extra `.next/standalone/server.js` beside the ordinary `.next` build. That is what route B uploads, and it costs route A nothing: the standalone folder is **additive**, `next build` still produces the normal output, and `next start` runs against it perfectly well — verified against this build, not assumed. Leaving it on means both routes work with no config change, and route B remains available as a rollback.
 
 ---
 
@@ -76,7 +89,7 @@ The site ships no third-party JavaScript — no analytics, no tag manager, no pi
 2. Copy the DSN into both `NEXT_PUBLIC_SENTRY_DSN` and `SENTRY_DSN`. The DSN is public by design — it only says where to send events.
 3. For readable stack traces, create an auth token at **Settings → Auth Tokens** with the `project:releases` scope and set `SENTRY_ORG`, `SENTRY_PROJECT` and `SENTRY_AUTH_TOKEN`. On route A these belong in Hostinger's panel, because Hostinger runs the build.
 
-Without the token the build still succeeds; traces are just minified. Without a DSN, Sentry's build plugin is not applied at all, and `next.config.ts` does not add its origin to the Content Security Policy.
+Without the token the build still succeeds; traces are just minified. Without a DSN, Sentry's build plugin is not applied at all, and `next.config.mjs` does not add its origin to the Content Security Policy.
 
 To confirm ingestion works at any time:
 
@@ -289,6 +302,9 @@ CI runs typecheck, lint and build on every push, so a broken commit fails on Git
 | Symptom | Cause | Fix |
 | --- | --- | --- |
 | Build fails, `TypeError: Invalid URL` at `app/layout.tsx` | `NEXT_PUBLIC_SITE_URL` empty or malformed in the panel | Set it to `https://officepigeon.com` and redeploy |
+| `Cannot find module '/…/<hash>.next.config'` | A TypeScript config Next could not compile, because the native SWC binary needs glibc ≥ 2.29 | Already fixed: the config is `next.config.mjs`. The hashed name is generated and changes each run — never a file to delete |
+| `GLIBC_2.29' not found` warning, build continues | The host falls back to `@next/swc-wasm-nodejs` | Harmless but slow. If the build times out, deploy via [manual upload](#appendix-manual-upload), which builds with the native binary on your machine |
+| Install fails on `@sentry/cli` | Its postinstall downloads a binary the container cannot fetch | Set `SENTRYCLI_SKIP_DOWNLOAD=1`. It is only needed for source-map upload |
 | Build succeeds, site 502s | Wrong start command, or a missing required env var | Start command should be `npm start`; check the runtime log |
 | Pages render but images 404 | Output directory wrong | It must be `.next` |
 | Sign-in loops back to `/login` | Redirect URL not allow-listed in Supabase | Step 4 |
@@ -296,7 +312,7 @@ CI runs typecheck, lint and build on every push, so a broken commit fails on Git
 | Pip says it cannot answer | No provider key reached the server, or `PIP_ENABLED=false` | Check the panel. `/api/health` stays green — Pip is not a health dependency |
 | `cache.status: "degraded"` | Redis unreachable or using `redis://` | Use `rediss://` for TLS |
 | Site down after ~7 days idle | Supabase project paused | Restore it, then fix the keep-alive (step 8) |
-| CSP errors after adding a script | The policy allows no third-party `script-src` | Add the origin in `next.config.ts` deliberately, and rebuild |
+| CSP errors after adding a script | The policy allows no third-party `script-src` | Add the origin in `next.config.mjs` deliberately, and rebuild |
 | Scheduled workflow stopped running | 60-day repository inactivity | Re-enable in the Actions tab, and add the hPanel cron |
 
 ---

@@ -1,8 +1,28 @@
+// @ts-check
 import { withSentryConfig } from '@sentry/nextjs';
-import type { NextConfig } from 'next';
 
-/** The origin of a URL-shaped environment variable, or '' if it is unset. */
-function origin(value: string | undefined): string {
+/**
+ * Plain ESM rather than TypeScript, deliberately.
+ *
+ * A `next.config.ts` has to be compiled before it can be read, and Next does
+ * that with SWC. Hostinger's build container ships a glibc older than 2.29, so
+ * the native `@next/swc-linux-x64-gnu` binary cannot load and Next falls back
+ * to the WASM build — which loads the app fine but never produces the temporary
+ * module the compiled config imports, failing every build with
+ * `ERR_MODULE_NOT_FOUND` on a hashed filename that changes each run.
+ *
+ * `.mjs` is imported directly by Node with no compilation step, so the whole
+ * failure mode disappears. The cost is that the config is no longer type
+ * checked by `tsc`; `// @ts-check` and the JSDoc annotation below recover the
+ * editor types and catch a misspelled option just as well.
+ */
+
+/**
+ * The origin of a URL-shaped environment variable, or '' if it is unset.
+ * @param {string | undefined} value
+ * @returns {string}
+ */
+function origin(value) {
   try {
     return new URL(value ?? '').origin;
   } catch {
@@ -57,10 +77,13 @@ const csp = [
   ...(production ? ['upgrade-insecure-requests'] : []),
 ].join('; ');
 
-const nextConfig: NextConfig = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   /**
-   * Hostinger runs the app as a plain Node process, so build a self-contained
+   * The host runs the app as a plain Node process, so build a self-contained
    * server bundle rather than relying on node_modules being present at runtime.
+   * Additive: `next build` still emits the ordinary `.next` output, which is
+   * what a platform build serves.
    */
   output: 'standalone',
 
@@ -117,7 +140,7 @@ const nextConfig: NextConfig = {
 /**
  * Sentry's build plugin, only when Sentry is actually configured.
  *
- * The wrapper is not free: it rewrites the webpack config, injects its own
+ * The wrapper is not free: it rewrites the bundler config, injects its own
  * client instrumentation module and — given an auth token — uploads source maps
  * as a build step. A deployment with no DSN gets none of that, and more to the
  * point cannot have a build broken by it.
