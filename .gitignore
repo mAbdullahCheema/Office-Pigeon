@@ -19,6 +19,7 @@
 
 # production
 /build
+/deploy
 
 # misc
 .DS_Store
@@ -32,6 +33,7 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
 
 # vercel
 .vercel
@@ -39,3 +41,16 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# one-time backup of the data imported from the previous backend
+appwrite-export.backup.json
+
+# Pinecone namespace snapshots written by `npm run kb:index` before it
+# replaces the namespace. Local rollback material, not source.
+/page-backups
+
+# Machine-local Claude Code settings. `.claude/launch.json` is shared.
+.claude/settings.local.json
+
+# The Hostinger upload archive
+deploy.tar.gz

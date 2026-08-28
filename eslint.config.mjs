@@ -12,6 +12,10 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // The Hostinger bundle is generated output, node_modules and all.
+    "deploy/**",
+    // Snapshots of pages taken out of the build, kept verbatim for restoring.
+    "page-backups/**",
   ]),
 ]);
 

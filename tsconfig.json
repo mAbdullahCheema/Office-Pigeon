@@ -30,5 +30,9 @@
     ".next/dev/types/**/*.ts",
     "**/*.mts"
   ],
-  "exclude": ["node_modules"]
+  // Edge functions are Deno, not Node: they resolve `.ts` imports directly and
+  // rely on Deno's own globals, neither of which this config describes.
+  // `page-backups` holds snapshots of pages that are out of the build; they are
+  // kept verbatim for restoring, not maintained against the current code.
+  "exclude": ["node_modules", "supabase/functions", "page-backups"]
 }

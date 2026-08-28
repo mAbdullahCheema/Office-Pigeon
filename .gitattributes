@@ -1,0 +1,10 @@
+# Normalise line endings in the repository so a Windows and a Linux
+# checkout produce identical blobs.
+* text=auto eol=lf
+
+# Binary assets, left alone.
+*.png binary
+*.webp binary
+*.jpg binary
+*.ico binary
+*.woff2 binary

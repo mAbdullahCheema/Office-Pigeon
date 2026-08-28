@@ -1,0 +1,70 @@
+# Keeps the Supabase project awake.
+#
+# A free-tier project pauses after seven days without activity and the site goes
+# down with it. This calls the deployed site's keep-alive endpoint, which does
+# one authenticated row read against Postgres over the API gateway — activity
+# the platform can see, unlike a job running inside the database itself.
+#
+# `*/5` in the day-of-month field fires on the 1st, 6th, 11th, 16th, 21st, 26th
+# and 31st, so the longest gap in any month is five days. Well inside seven.
+#
+# One caveat worth knowing: GitHub disables scheduled workflows in a repository
+# with no activity for 60 days, and emails the owner a few days beforehand.
+# Either push something occasionally, or add the same curl as a Hostinger cron
+# job as a second trigger — the deployment guide has the one-liner.
+
+name: Supabase keep-alive
+
+on:
+  schedule:
+    - cron: '17 4 */5 * *'
+  workflow_dispatch:
+
+# Nothing here reads or writes the repository.
+permissions: {}
+
+concurrency:
+  group: keepalive
+  cancel-in-progress: false
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Ping the keep-alive endpoint
+        env:
+          SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "${SITE_URL:-}" ] || [ -z "${CRON_SECRET:-}" ]; then
+            echo "::error::NEXT_PUBLIC_SITE_URL and CRON_SECRET must both be set as repository secrets."
+            exit 1
+          fi
+
+          # --retry covers a cold start on the host; a 5xx is retried, a 401 is
+          # not, because a wrong secret will not fix itself on the second try.
+          status=$(curl --silent --show-error --location \
+            --request POST "${SITE_URL%/}/api/cron/keepalive" \
+            --header "Authorization: Bearer ${CRON_SECRET}" \
+            --header 'Content-Type: application/json' \
+            --max-time 30 --retry 3 --retry-delay 10 --retry-all-errors \
+            --output response.json --write-out '%{http_code}')
+
+          echo "HTTP ${status}"
+          cat response.json || true
+          echo
+
+          {
+            echo "### Supabase keep-alive"
+            echo
+            echo "- Endpoint: \`${SITE_URL%/}/api/cron/keepalive\`"
+            echo "- Status: \`${status}\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          if [ "${status}" != "200" ]; then
+            echo "::error::Keep-alive failed with HTTP ${status}. The site or its database is unreachable."
+            exit 1
+          fi

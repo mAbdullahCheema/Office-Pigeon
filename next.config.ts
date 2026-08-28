@@ -1,7 +1,148 @@
-import type { NextConfig } from "next";
+import { withSentryConfig } from '@sentry/nextjs';
+import type { NextConfig } from 'next';
+
+/** The origin of a URL-shaped environment variable, or '' if it is unset. */
+function origin(value: string | undefined): string {
+  try {
+    return new URL(value ?? '').origin;
+  } catch {
+    return '';
+  }
+}
+
+const supabaseOrigin = origin(process.env.NEXT_PUBLIC_SUPABASE_URL);
+const supabaseHost = supabaseOrigin ? new URL(supabaseOrigin).hostname : '';
+const production = process.env.NODE_ENV === 'production';
+
+/**
+ * The observability origins the browser is allowed to talk to.
+ *
+ * Both are derived from the keys rather than hard-coded, so a deployment with
+ * no PostHog project and no Sentry DSN ships a policy that does not mention
+ * them — the tightest policy is the default, and configuring a service is what
+ * opens the hole it needs.
+ */
+const posthogOrigin = process.env.NEXT_PUBLIC_POSTHOG_KEY
+  ? origin(process.env.NEXT_PUBLIC_POSTHOG_HOST ?? 'https://us.i.posthog.com')
+  : '';
+
+const sentryOrigin = origin(process.env.NEXT_PUBLIC_SENTRY_DSN);
+
+/**
+ * Content Security Policy.
+ *
+ * `script-src` keeps `'unsafe-inline'` because Next.js emits its hydration
+ * bootstrap as inline script; removing it needs a per-request nonce, which in
+ * turn needs the proxy to run on every route. The policy still closes the parts
+ * that cost nothing to close: no plugins, no framing by third parties, no form
+ * posting off-site, and no base-tag rewriting.
+ *
+ * `connect-src` has to include the Supabase origin over both http and ws: the
+ * REST and Auth calls are ordinary fetches, and Realtime is a WebSocket to the
+ * same host.
+ */
+const csp = [
+  "default-src 'self'",
+  "base-uri 'self'",
+  "object-src 'none'",
+  "frame-ancestors 'self'",
+  "form-action 'self'",
+  "manifest-src 'self'",
+  // Supabase Storage serves avatars and media; blob: and data: cover canvas
+  // exports and the inlined initials avatar.
+  `img-src 'self' data: blob: ${supabaseOrigin}`.trim(),
+  "font-src 'self' data:",
+  // The design language carries its styling as inline declarations.
+  "style-src 'self' 'unsafe-inline'",
+  `script-src 'self' 'unsafe-inline'${production ? '' : " 'unsafe-eval'"}`,
+  ['connect-src', "'self'", supabaseOrigin, supabaseOrigin.replace('https://', 'wss://'), posthogOrigin, sentryOrigin]
+    .filter(Boolean)
+    .join(' '),
+  "worker-src 'self' blob:",
+  ...(production ? ['upgrade-insecure-requests'] : []),
+].join('; ');
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  /**
+   * Hostinger runs the app as a plain Node process, so build a self-contained
+   * server bundle rather than relying on node_modules being present at runtime.
+   */
+  output: 'standalone',
+
+  experimental: {
+    /**
+     * Routes an unmatched URL straight to `app/global-not-found.tsx` instead of
+     * rendering the root layout around `not-found.tsx`. That is what lets the
+     * 404 carry its own `<title>` rather than inheriting the homepage's.
+     */
+    globalNotFound: true,
+  },
+
+  poweredByHeader: false,
+  compress: true,
+
+  images: {
+    remotePatterns: supabaseHost
+      ? [{ protocol: 'https', hostname: supabaseHost, pathname: '/storage/v1/object/public/**' }]
+      : [],
+  },
+
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: [
+          { key: 'Content-Security-Policy', value: csp },
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+          { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
+          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+          { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=(), payment=(), usb=()' },
+          { key: 'Cross-Origin-Opener-Policy', value: 'same-origin' },
+          ...(production
+            ? [{ key: 'Strict-Transport-Security', value: 'max-age=63072000; includeSubDomains; preload' }]
+            : []),
+        ],
+      },
+      {
+        /** Nothing behind a session should be indexed or cached by a proxy. */
+        source: '/dashboard/:path*',
+        headers: [
+          { key: 'X-Robots-Tag', value: 'noindex, nofollow' },
+          { key: 'Cache-Control', value: 'private, no-store' },
+        ],
+      },
+      {
+        source: '/api/:path*',
+        headers: [{ key: 'Cache-Control', value: 'no-store' }],
+      },
+    ];
+  },
 };
 
-export default nextConfig;
+/**
+ * Sentry's build plugin, only when Sentry is actually configured.
+ *
+ * The wrapper is not free: it rewrites the webpack config, injects its own
+ * client instrumentation module and — given an auth token — uploads source maps
+ * as a build step. A deployment with no DSN gets none of that, and more to the
+ * point cannot have a build broken by it.
+ *
+ * `widenClientFileUpload` is what makes a minified stack trace readable; the
+ * tunnel route is deliberately not enabled, because it would proxy browser
+ * error payloads through this server, and the CSP already permits the direct
+ * connection.
+ */
+export default sentryOrigin
+  ? withSentryConfig(nextConfig, {
+      org: process.env.SENTRY_ORG,
+      project: process.env.SENTRY_PROJECT,
+      authToken: process.env.SENTRY_AUTH_TOKEN,
+      silent: !process.env.CI,
+      widenClientFileUpload: true,
+      // Without a token there is nothing to upload to, and attempting it fails
+      // the build on a machine that only has the public DSN.
+      sourcemaps: { disable: !process.env.SENTRY_AUTH_TOKEN },
+      disableLogger: true,
+      telemetry: false,
+    })
+  : nextConfig;

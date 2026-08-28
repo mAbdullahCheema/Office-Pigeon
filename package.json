@@ -6,19 +6,42 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "start:hostinger": "node .next/standalone/server.js",
+    "clean": "node -e \"require('node:fs').rmSync('.next',{recursive:true,force:true})\"",
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit",
+    "package:hostinger": "node scripts/package-hostinger.mjs",
+    "assets": "node scripts/build-assets.mjs",
+    "db:seed": "tsx --env-file-if-exists=.env.local scripts/seed.ts",
+    "db:create-admin": "tsx --env-file-if-exists=.env.local scripts/create-admin.ts",
+    "db:status": "tsx --env-file-if-exists=.env.local scripts/status.ts",
+    "db:types": "supabase gen types typescript --project-id igroecjpycaqlxoxqksq > lib/supabase/database.types.ts",
+    "kb:index": "tsx --env-file-if-exists=.env.local scripts/index-knowledge.ts",
+    "test:e2e": "tsx --env-file-if-exists=.env.local scripts/e2e.ts",
+    "test:pip": "tsx --conditions=react-server --env-file-if-exists=.env.local scripts/e2e-pip.ts"
   },
   "dependencies": {
+    "@pinecone-database/pinecone": "^8.2.0",
+    "@sentry/nextjs": "^10.71.0",
+    "@supabase/ssr": "^0.12.4",
+    "@supabase/supabase-js": "^2.112.3",
+    "ioredis": "^6.0.0",
     "next": "16.3.1",
+    "posthog-js": "^1.422.2",
     "react": "19.2.8",
-    "react-dom": "19.2.8"
+    "react-dom": "19.2.8",
+    "server-only": "0.0.1",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@types/node": "^20",
+    "@types/node": "^20.19.43",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "dotenv": "^17.4.2",
     "eslint": "^9",
     "eslint-config-next": "16.3.1",
+    "tar": "^7.5.22",
+    "tsx": "^4.23.12",
     "typescript": "^5"
   }
 }
