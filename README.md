@@ -199,7 +199,7 @@ Five tiers, tried strictly in order, every one of them tool-capable:
 | 4 | Cerebras · gpt-oss-120b | Very fast, free tier |
 | 5 | Groq · gpt-oss-120b | Last resort, a different network path again |
 
-A tier with no key is skipped rather than attempted; a tier that errors hands on to the next. Two findings in here are measured rather than assumed, and both are recorded in the code:
+A tier with no key is skipped rather than attempted; a tier that errors hands on to the next. The whole turn also runs against one wall-clock deadline, and each tier is capped at whatever the turn has left — without it, five tiers across five rounds is a quarter of an hour of a single visitor holding a request open, which is how a provider degradation would otherwise become an outage here. Two findings in here are measured rather than assumed, and both are recorded in the code:
 
 - `gemini-3.7-flash` and `gemini-flash-latest` were returning 503s and taking 40–70 seconds while `gemini-3.6-flash` answered in about two. The model is pinned deliberately, with the measurement written next to the pin.
 - The Gemini tier is marked `skipAfterToolCalls`, because its OpenAI-compatible layer rejects a conversation containing another provider's tool calls — it wants a `thought_signature` nothing else emits. It still answers the first round perfectly well, which is most turns, so it stays in the chain rather than being dropped.
