@@ -49,7 +49,7 @@ Book a free call: ${contactPoints.demoCall}
 - Services are a one-time build fee plus a monthly fee that covers hosting, monitoring and edits.
 - A typical service goes live in about 14 days; a one-page website goes live in a day.
 - Orders are placed at ${abs(routes.order)}. Nothing is charged there — a person replies with a firm quote first.
-- The site's own AI assistant, Pip, answers questions, quotes prices, books calls and hands over to a human when asked.
+- The site's own AI assistant, Pip, answers questions, quotes prices, books calls and hands over to a human when asked. Pip is available to signed-in visitors; anyone else can use the phone, WhatsApp, email or booking link above.
 
 ${sections
   .map(

@@ -24,6 +24,8 @@ Office Pigeon sells four things — websites, chatbots, AI calling agents and au
 
 It is not a demo. Every price Pip quotes is read from the same Postgres rows the pricing table renders from. Every booking it offers is a live Cal.com slot. Every order it places lands in a staff dashboard with an audit trail behind it.
 
+Pip is behind sign-in. Its tools read a viewer's own account, invoices and payment details and can place an order against them, so the conversation is tied to a real user row rather than an anonymous session — and the row level security that governs a dashboard read governs a tool call identically. The cost is real and stated in [Decisions](#decisions-and-tradeoffs): a first-time visitor asking "how much is a chatbot" has to sign in first. The widget shows anonymous visitors the phone, WhatsApp, email and booking links instead of a dead box.
+
 **Why it is worth reading as an engineering artefact:**
 
 - One codebase covers a public marketing site, a multi-tenant customer portal, a role-gated staff back-office and an LLM agent — with no separate admin app and no duplicated data layer.
@@ -65,7 +67,7 @@ It is not a demo. Every price Pip quotes is read from the same Postgres rows the
 | **Ordering** | `/order` | A multi-step order flow that writes a real order and notifies staff. |
 | **Customer portal** | `/dashboard`, `/dashboard/orders`, `/billing`, `/files`, `/messages`, `/classes` | Orders, invoices, payment submission, deliverable downloads, a message thread with the team. |
 | **Staff back-office** | `/dashboard/manage/*` | Catalogue, content, media, people, payment review, audit log — role-gated to `owner`, `admin`, `editor`. |
-| **Assistant** | `/api/chat` + widget on every page | Pip. |
+| **Assistant** | `/api/chat` + widget on every page | Pip. Signed-in visitors chat; anonymous ones get the human channels. |
 | **Machine surface** | `/sitemap.xml`, `/robots.txt`, `/llms.txt`, `/opengraph-image`, `/manifest.webmanifest`, `/api/health` | Everything a crawler, an answer engine, a social card renderer or a load balancer asks for. |
 
 ---
@@ -311,6 +313,7 @@ The cookie banner is not decorative. Nothing optional loads until the visitor ch
 - **One round trip for rate limiting.** See the Lua script above.
 - **Fonts.** `next/font` self-hosts Bricolage Grotesque and Plus Jakarta Sans with `display: swap` — no external font request, which is also what lets `font-src` stay `'self'`.
 - **No CSS framework payload.** Styles are generated and deduplicated at render.
+- **Analytics is a dynamic import.** `posthog-js` is 261 KB uncompressed and sits in its own chunk, fetched only after a visitor accepts the analytics category. Importing it statically and merely skipping `init` would have shipped it to everyone — including the majority who decline — which is both slower and a broken promise, since the banner says nothing optional loads until you choose.
 
 ---
 
@@ -334,7 +337,7 @@ Both integrations are keyed off an environment variable and do nothing at all wi
 
 **Sentry** — server, edge and browser. Errors that React swallows into a digest are caught through Next's `onRequestError` hook, which is the only place they surface. `tracesSampleRate` is 0.1 because the free tier is a fixed monthly quota and at 100% a single crawler run can exhaust the month and leave a real outage unreported. Source maps upload only when an auth token is present, so a build without one succeeds with minified traces rather than failing. The build plugin is only applied when a DSN exists — a deployment without Sentry cannot have its build broken by Sentry.
 
-**PostHog** — product analytics, gated on consent as described above, with every runtime-fetched bundle disabled so the strict CSP never has to be loosened for it.
+**PostHog** — product analytics, gated on consent as described above, loaded as a dynamic import so declining costs the visitor nothing, with every runtime-fetched bundle disabled so the strict CSP never has to be loosened for it.
 
 **Health** — `/api/health` reports database and cache separately, and only Postgres decides the status code. A non-200 must mean "this instance cannot serve", not "something is imperfect", or a load balancer will drain a fleet that was working.
 
@@ -363,6 +366,10 @@ Each of these was a fork in the road. The cost of each is stated, not hidden.
 **Human-tap confirmation on every write tool.**
 *Gained:* prompt injection and hallucination cannot cause a side effect. Ever.
 *Cost:* one extra tap in every booking and order flow, and a slightly longer conversation. For actions involving money and calendars, the friction is the feature.
+
+**Pip behind sign-in.**
+*Gained:* every tool call is executed as a known user, so RLS governs the agent exactly as it governs a page, and `get_my_account`, `get_payment_details` and `place_order` are safe to expose at all.
+*Cost:* friction at the top of the funnel — the visitor most likely to ask Pip a pricing question is the one who has not signed up. The honest alternative is a second, anonymous tool set with no account access; that is a real piece of work and it has not been done.
 
 **Redis optional rather than required.**
 *Gained:* the app runs on one instance with no cache infrastructure at all.
