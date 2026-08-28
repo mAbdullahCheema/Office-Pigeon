@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Bricolage_Grotesque, Plus_Jakarta_Sans } from 'next/font/google';
 
 import { NotFoundCard } from '@/components/site/NotFoundCard';
+import { siteUrl } from '@/lib/supabase/config';
 
 import './globals.css';
 
@@ -29,8 +30,17 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
+  /**
+   * Declared here rather than inherited, because this route composes no layout
+   * — that is the whole point of it — and so never sees the `metadataBase` the
+   * root layout sets. Without it Next falls back to `http://localhost:3000`
+   * and the social image on every 404 points at a machine that is not serving
+   * the site.
+   */
+  metadataBase: new URL(siteUrl),
   title: 'Page not found — Office Pigeon',
   description: 'That page has moved or the link is wrong. Every main section is one click away.',
+  robots: { index: false, follow: true },
 };
 
 export default function GlobalNotFound() {
