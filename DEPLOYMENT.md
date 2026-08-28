@@ -103,6 +103,14 @@ In the Supabase dashboard:
 
 Supabase will only redirect to URLs on this allow-list. A missing entry produces a silent failed sign-in.
 
+While you are in there, turn on **Authentication → Policies → Leaked password protection**. It checks new passwords against HaveIBeenPwned and refuses ones that appear in a known breach. It is off by default and it is the only security warning Supabase's own advisor raises against this project.
+
+Re-run the advisor any time you change the schema:
+
+```bash
+npx supabase inspect db --linked
+```
+
 ---
 
 ## Step 6 — Build the upload folder
@@ -293,6 +301,11 @@ Work through these once. They catch the things that are invisible until a custom
 
 - [ ] Submit the sitemap in [Google Search Console](https://search.google.com/search-console) and verify the domain
 - [ ] Submit it in [Bing Webmaster Tools](https://www.bing.com/webmasters) — this is also what feeds ChatGPT's web search
+
+**Database**
+
+- [ ] Supabase security advisor is clean (leaked-password protection on)
+- [ ] Performance advisor's "multiple permissive policies" warnings are **expected**: each table carries an own-row policy *and* a staff policy, and both are evaluated for a signed-in reader. Merging each pair into a single `OR` policy is a real optimisation, but it rewrites the authorisation model across 25 tables. Revisit it only when a dashboard query actually shows up slow in Sentry's traces — not before.
 
 **Monitoring**
 

@@ -88,4 +88,15 @@ export const AUTH_COOKIE_PREFIX = (() => {
   }
 })();
 
-export const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
+/**
+ * The origin every canonical URL, share card and OAuth redirect is built from.
+ *
+ * `??` is not enough on its own: a hosting panel row left blank, or a CI step
+ * passing an unset secret, hands over an empty string rather than `undefined`,
+ * and `new URL('')` in the root layout fails the whole build with nothing but
+ * `ERR_INVALID_URL` to go on. Trailing slashes are trimmed for the same class
+ * of reason — `${siteUrl}/pricing` on a value ending in `/` yields a canonical
+ * with a double slash, which search engines treat as a different URL.
+ */
+export const siteUrl =
+  (process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000').trim().replace(/\/+$/, '');
