@@ -160,7 +160,10 @@ export default sentryOrigin
       // Without a token there is nothing to upload to, and attempting it fails
       // the build on a machine that only has the public DSN.
       sourcemaps: { disable: !process.env.SENTRY_AUTH_TOKEN },
-      disableLogger: true,
+      // Strips the SDK's own debug logging from the bundle. Replaces the
+      // deprecated top-level `disableLogger`, and applies now that the build
+      // runs on webpack.
+      webpack: { treeshake: { removeDebugLogging: true } },
       telemetry: false,
     })
   : nextConfig;

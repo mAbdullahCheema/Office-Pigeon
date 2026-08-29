@@ -27,6 +27,17 @@ Error: Cannot find module '/…/6a91d936cab70.next.config'
 
 The hashed filename is **generated**, and it changes on every run — it is not a file in the repository, and there is nothing to delete. A `.mjs` config is imported directly by Node with no compilation step, which removes the failure mode entirely. `// @ts-check` plus the JSDoc annotation keeps the editor types and still catches a misspelled option.
 
+### Why the build runs on webpack
+
+Next 16 makes **Turbopack** the default bundler, and Turbopack exists only as a native binary. The same glibc problem that broke the TypeScript config also denies Hostinger the native bindings, and WASM is not a substitute here — it covers SWC compilation and minification, but not Turbopack:
+
+```
+Error: Turbopack is not supported on this platform (linux/x64) because
+native bindings are not available.
+```
+
+Next's documented escape is the `--webpack` flag, so `npm run build` is `next build --webpack`. It is set in `package.json` rather than only in the panel, so every build — local, CI and host — uses one bundler and a green CI run means a green deploy. Development still uses Turbopack (`npm run dev`), where the native binary loads fine.
+
 ### Why `output: 'standalone'` stays on
 
 `next.config.mjs` sets `output: 'standalone'`, which emits an extra `.next/standalone/server.js` beside the ordinary `.next` build. That is what route B uploads, and it costs route A nothing: the standalone folder is **additive**, `next build` still produces the normal output, and `next start` runs against it perfectly well — verified against this build, not assumed. Leaving it on means both routes work with no config change, and route B remains available as a rollback.
@@ -303,6 +314,7 @@ CI runs typecheck, lint and build on every push, so a broken commit fails on Git
 | --- | --- | --- |
 | Build fails, `TypeError: Invalid URL` at `app/layout.tsx` | `NEXT_PUBLIC_SITE_URL` empty or malformed in the panel | Set it to `https://officepigeon.com` and redeploy |
 | `Cannot find module '/…/<hash>.next.config'` | A TypeScript config Next could not compile, because the native SWC binary needs glibc ≥ 2.29 | Already fixed: the config is `next.config.mjs`. The hashed name is generated and changes each run — never a file to delete |
+| `Turbopack is not supported on this platform` | Next 16 defaults to Turbopack, which has no WASM build | Already fixed: `npm run build` passes `--webpack`. Hostinger's suggested `experimental: { turbopack: false }` is not a real option |
 | `GLIBC_2.29' not found` warning, build continues | The host falls back to `@next/swc-wasm-nodejs` | Harmless but slow. If the build times out, deploy via [manual upload](#appendix-manual-upload), which builds with the native binary on your machine |
 | Install fails on `@sentry/cli` | Its postinstall downloads a binary the container cannot fetch | Set `SENTRYCLI_SKIP_DOWNLOAD=1`. It is only needed for source-map upload |
 | Build succeeds, site 502s | Wrong start command, or a missing required env var | Start command should be `npm start`; check the runtime log |
