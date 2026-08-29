@@ -287,7 +287,7 @@ Two specific pieces of hard-won reliability engineering are worth calling out:
 | Control | Implementation |
 | --- | --- |
 | **Row level security** | Every table. Role helpers in a `private` schema. |
-| **Content Security Policy** | `default-src 'self'`, `object-src 'none'`, no third-party `script-src`. `connect-src` is *derived from configured env vars*, so an unconfigured deployment ships the tighter policy. |
+| **Content Security Policy** | `default-src 'self'`, `object-src 'none'`, no third-party `script-src`. `connect-src` is *derived from configured env vars*, so an unconfigured deployment ships the tighter policy. Sent as both a response header and a `<meta http-equiv>` from one shared source, because some edges rewrite the header. |
 | **Security headers** | HSTS with preload, `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`, `Permissions-Policy`, `Cross-Origin-Opener-Policy`. `poweredByHeader` off. |
 | **Rate limiting** | Named per-route budgets, Redis-backed, enforced by an atomic Lua script — one round trip instead of three, which removed ~200 ms from every guarded request. |
 | **CSRF** | Cross-origin form posts rejected by `Origin` check on every write route. |

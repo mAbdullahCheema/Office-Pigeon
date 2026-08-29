@@ -1,6 +1,8 @@
 // @ts-check
 import { withSentryConfig } from '@sentry/nextjs';
 
+import { csp, origin } from './lib/csp.mjs';
+
 /**
  * Plain ESM rather than TypeScript, deliberately.
  *
@@ -17,65 +19,19 @@ import { withSentryConfig } from '@sentry/nextjs';
  * editor types and catch a misspelled option just as well.
  */
 
-/**
- * The origin of a URL-shaped environment variable, or '' if it is unset.
- * @param {string | undefined} value
- * @returns {string}
- */
-function origin(value) {
-  try {
-    return new URL(value ?? '').origin;
-  } catch {
-    return '';
-  }
-}
-
 const supabaseOrigin = origin(process.env.NEXT_PUBLIC_SUPABASE_URL);
 const supabaseHost = supabaseOrigin ? new URL(supabaseOrigin).hostname : '';
+const sentryOrigin = origin(process.env.NEXT_PUBLIC_SENTRY_DSN);
 const production = process.env.NODE_ENV === 'production';
 
 /**
- * The one third-party origin the browser is allowed to talk to.
+ * The canonical host, used to send `www` traffic to the apex.
  *
- * Derived from the DSN rather than hard-coded, so a deployment with no Sentry
- * configured ships a policy that does not mention it: the tightest policy is
- * the default, and configuring the service is what opens the hole it needs.
+ * Hostinger's panel can do this at the edge, but doing it here means the
+ * redirect ships with the app and cannot be lost to a panel setting.
  */
-const sentryOrigin = origin(process.env.NEXT_PUBLIC_SENTRY_DSN);
-
-/**
- * Content Security Policy.
- *
- * `script-src` keeps `'unsafe-inline'` because Next.js emits its hydration
- * bootstrap as inline script; removing it needs a per-request nonce, which in
- * turn needs the proxy to run on every route. The policy still closes the parts
- * that cost nothing to close: no plugins, no framing by third parties, no form
- * posting off-site, and no base-tag rewriting.
- *
- * `connect-src` has to include the Supabase origin over both http and ws: the
- * REST and Auth calls are ordinary fetches, and Realtime is a WebSocket to the
- * same host.
- */
-const csp = [
-  "default-src 'self'",
-  "base-uri 'self'",
-  "object-src 'none'",
-  "frame-ancestors 'self'",
-  "form-action 'self'",
-  "manifest-src 'self'",
-  // Supabase Storage serves avatars and media; blob: and data: cover canvas
-  // exports and the inlined initials avatar.
-  `img-src 'self' data: blob: ${supabaseOrigin}`.trim(),
-  "font-src 'self' data:",
-  // The design language carries its styling as inline declarations.
-  "style-src 'self' 'unsafe-inline'",
-  `script-src 'self' 'unsafe-inline'${production ? '' : " 'unsafe-eval'"}`,
-  ['connect-src', "'self'", supabaseOrigin, supabaseOrigin.replace('https://', 'wss://'), sentryOrigin]
-    .filter(Boolean)
-    .join(' '),
-  "worker-src 'self' blob:",
-  ...(production ? ['upgrade-insecure-requests'] : []),
-].join('; ');
+const siteOrigin = origin(process.env.NEXT_PUBLIC_SITE_URL);
+const siteHost = siteOrigin ? new URL(siteOrigin).hostname : '';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -103,6 +59,21 @@ const nextConfig = {
     remotePatterns: supabaseHost
       ? [{ protocol: 'https', hostname: supabaseHost, pathname: '/storage/v1/object/public/**' }]
       : [],
+  },
+
+  async redirects() {
+    if (!siteHost || siteHost.startsWith('www.')) return [];
+    return [
+      {
+        source: '/:path*',
+        has: [{ type: 'host', value: `www.${siteHost}` }],
+        destination: `${siteOrigin}/:path*`,
+        // 301 rather than `permanent: true`, which emits 308: nothing posts to
+        // the `www` host, and 301 is the canonicalisation signal every crawler
+        // and auditing tool recognises.
+        statusCode: 301,
+      },
+    ];
   },
 
   async headers() {

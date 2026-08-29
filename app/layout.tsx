@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { Bricolage_Grotesque, Plus_Jakarta_Sans } from 'next/font/google';
 
+import { cspMeta } from '@/lib/csp.mjs';
 import { siteUrl } from '@/lib/supabase/config';
 
 import './globals.css';
@@ -76,6 +77,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       data-scroll-behavior="smooth"
       className={`${bricolage.variable} ${jakarta.variable}`}
     >
+      {/*
+        The same policy the `Content-Security-Policy` response header carries.
+        Hostinger's edge replaces that header with its own, so without this the
+        live site would run with no policy worth the name; a document-delivered
+        one the edge never sees closes that gap.
+      */}
+      <meta httpEquiv="Content-Security-Policy" content={cspMeta} />
       <body>{children}</body>
     </html>
   );

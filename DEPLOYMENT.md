@@ -42,6 +42,16 @@ Next's documented escape is the `--webpack` flag, so `npm run build` is `next bu
 
 `next.config.mjs` sets `output: 'standalone'`, which emits an extra `.next/standalone/server.js` beside the ordinary `.next` build. That is what route B uploads, and it costs route A nothing: the standalone folder is **additive**, `next build` still produces the normal output, and `next start` runs against it perfectly well — verified against this build, not assumed. Leaving it on means both routes work with no config change, and route B remains available as a rollback.
 
+### Why the CSP is sent twice
+
+Hostinger's edge **replaces** the `Content-Security-Policy` response header with its own `upgrade-insecure-requests` — verified against the live site, where every other security header (`X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`, `Cross-Origin-Opener-Policy`, HSTS) passes through untouched.
+
+So the app also carries the policy in the document, as `<meta http-equiv="Content-Security-Policy">` in the root layout. The edge never sees that, so the policy applies either way. Both come from `lib/csp.mjs`, which `next.config.mjs` and `app/layout.tsx` both import, so the two can never describe different policies.
+
+The `<meta>` copy drops `frame-ancestors`, which a document-delivered policy cannot express — browsers ignore it and warn. Nothing is lost: `X-Frame-Options: SAMEORIGIN` says the same thing and does reach the browser.
+
+If you find the panel setting responsible and turn it off, the header arrives intact and the two policies simply agree.
+
 ---
 
 ## Prerequisites
@@ -179,7 +189,9 @@ Point `officepigeon.com` at this hosting account and make sure the application's
 
 ### www → apex redirect
 
-**Domains → Redirects**: redirect `www.officepigeon.com` to `https://officepigeon.com` with a **301**. This is what stops search engines treating the two as separate sites.
+The app already does this: `next.config.mjs` sends any request whose `Host` is `www.<your apex>` to the apex with a **301**, derived from `NEXT_PUBLIC_SITE_URL`, so it follows the domain rather than being hard-coded.
+
+Setting it in **Domains → Redirects** as well is still worth doing — it answers at the edge without waking the Node process — but the site is correctly canonicalised without it. This is what stops search engines treating the two hostnames as separate sites.
 
 ---
 
@@ -259,6 +271,7 @@ Two triggers cost nothing and remove the single point of failure.
 
 - [ ] Home page loads over HTTPS with no console errors
 - [ ] `www.officepigeon.com` 301-redirects to the apex
+- [ ] `curl -sD- -o/dev/null https://officepigeon.com/ | grep -i security` shows the six security headers, and the page source carries the `<meta http-equiv="Content-Security-Policy">` fallback
 - [ ] The cookie banner appears on a first visit in a clean browser profile, and "Reject all" makes it stay away
 - [ ] Contact form submits and appears in **Dashboard → Messages**
 - [ ] Order flow completes and appears in **Dashboard → Orders**
